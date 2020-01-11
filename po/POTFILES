@@ -1,0 +1,7 @@
+data/com.github.amikha1lov.recApp.desktop.in
+data/com.github.amikha1lov.recApp.appdata.xml.in
+data/com.github.amikha1lov.recApp.gschema.xml
+src/window.ui
+src/main.py
+src/window.py
+
