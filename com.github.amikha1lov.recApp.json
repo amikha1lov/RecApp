@@ -26,18 +26,7 @@
         "*.a"
     ],
     "modules": [
-        {
-            "name": "recapp",
-            "builddir": true,
-            "buildsystem": "meson",
-            "sources": [
-                {
-                    "type": "git",
-                    "url": "file:///home/mikhailov/Projects/recApp"
-                }
-            ]
-        },
-        {
+    {
   	    "name": "libwnck",
             "buildsystem": "meson",
             "sources": [
@@ -47,7 +36,19 @@
             	    "sha256": "9595835cf28d0fc6af5526a18f77f2fcf3ca8c09e36741bb33915b6e69b8e3ca"
     		 }
             ]
-       }
+       },
+        {
+            "name": "recapp",
+            "builddir": true,
+            "buildsystem": "meson",
+            "sources": [
+                {
+                    "type": "dir",
+                    "path": "."
+                }
+            ]
+        }
+
 
     ]
 }
