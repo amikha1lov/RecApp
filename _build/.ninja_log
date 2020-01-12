@@ -1,0 +1,5 @@
+# ninja log v5
+2	15	1578867314661397886	src/recapp.gresource	96f93be8d90d1284
+1	300	1578867314919396905	data/com.github.amikha1lov.recApp.appdata.xml	782087db03065ead
+1	306	1578867314923396890	data/com.github.amikha1lov.recApp.desktop	89bdbfbe1ac9bcfb
+0	601	0	meson-install	9bd7faa9472bf40f

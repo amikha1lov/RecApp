@@ -1,0 +1,36 @@
+Build started at 2020-01-13T01:15:14.446359
+Main binary: /usr/bin/python3
+Python system: Linux
+The Meson build system
+Version: 0.50.1
+Source dir: /home/mikhailov/Projects/recApp
+Build dir: /home/mikhailov/Projects/recApp/_build
+Build type: native build
+Project name: recapp
+Project version: 0.1.0
+Build machine cpu family: x86_64
+Build machine cpu: x86_64
+Program desktop-file-validate found: YES (/usr/bin/desktop-file-validate)
+Adding test "Validate desktop file"
+Program appstream-util found: YES (/usr/bin/appstream-util)
+Adding test "Validate appstream file"
+Program glib-compile-schemas found: YES (/usr/bin/glib-compile-schemas)
+Adding test "Validate schema file"
+Pkg-config binary for MachineChoice.HOST is not cached.
+Pkg-config binary missing from cross or native file, or env var undefined.
+Trying a default pkg-config fallback at pkg-config
+Trying pkg-config binary pkg-config for machine MachineChoice.HOST at ['/usr/bin/pkg-config']
+Found pkg-config: /usr/bin/pkg-config (1.6.0)
+Determining dependency 'glib-2.0' with pkg-config executable '/usr/bin/pkg-config'
+Called `/usr/bin/pkg-config --modversion glib-2.0` -> 0
+2.60.7
+Called `/usr/bin/pkg-config --cflags glib-2.0` -> 0
+-I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include
+Called `/usr/bin/pkg-config glib-2.0 --libs` -> 0
+-L/usr/lib/x86_64-linux-gnu -lglib-2.0
+Called `/usr/bin/pkg-config glib-2.0 --libs` -> 0
+-lglib-2.0
+Configuring recapp using configuration
+Program build-aux/meson/postinstall.py found: YES (/home/mikhailov/Projects/recApp/build-aux/meson/postinstall.py)
+Build targets in project: 6
+Found ninja-1.9.0 at /usr/bin/ninja

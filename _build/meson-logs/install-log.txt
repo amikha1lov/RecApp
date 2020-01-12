@@ -1,0 +1,10 @@
+# List of files installed by Meson
+# Does not contain files installed by custom scripts.
+/app/share/applications/com.github.amikha1lov.recApp.desktop
+/app/share/appdata/com.github.amikha1lov.recApp.appdata.xml
+/app/share/recapp/recapp.gresource
+/app/share/glib-2.0/schemas/com.github.amikha1lov.recApp.gschema.xml
+/app/bin/recapp
+/app/share/recapp/recapp/__init__.py
+/app/share/recapp/recapp/main.py
+/app/share/recapp/recapp/window.py

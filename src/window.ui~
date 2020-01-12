@@ -164,7 +164,7 @@
                 <property name="receives_default">False</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
-                <signal name="clicked" handler="on__radio_toggled" swapped="no"/>
+                <signal name="toggled" handler="on_button_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -180,8 +180,8 @@
                 <property name="receives_default">False</property>
                 <property name="active">True</property>
                 <property name="draw_indicator">True</property>
-                <property name="group">_radio_area</property>
-                <signal name="clicked" handler="on__radio_toggled" swapped="no"/>
+                <property name="group">_radio_full</property>
+                <signal name="toggled" handler="on_button_toggled" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -189,29 +189,51 @@
                 <property name="position">1</property>
               </packing>
             </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="_select_window_box">
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
             <child>
-              <object class="GtkRadioButton" id="_radio_area">
-                <property name="label" translatable="yes">Area</property>
+              <object class="GtkLabel" id="_select_window_label">
                 <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">False</property>
-                <property name="active">True</property>
-                <property name="draw_indicator">True</property>
-                <property name="group">_radio_full</property>
-                <signal name="clicked" handler="on__radio_toggled" swapped="no"/>
-                <signal name="toggled" handler="on__radio_toggled" swapped="no"/>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Select window</property>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkComboBoxText">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="active">0</property>
+                <property name="active_id">0</property>
+                <items>
+                  <item id="0" translatable="yes">one</item>
+                  <item id="1" translatable="yes">two</item>
+                </items>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
               </packing>
             </child>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">1</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
