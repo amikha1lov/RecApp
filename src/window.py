@@ -25,6 +25,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
+    _popover_about_button = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -46,7 +47,21 @@ class RecappWindow(Gtk.ApplicationWindow):
         print("STOP")
         self.video.terminate()
 
-
+    @Gtk.Template.Callback()
+    def on__popover_about_button_clicked(self, button):
+        print("About")
+        about = Gtk.AboutDialog()
+        about.set_program_name(_("RecApp"))
+        about.set_version("0.0.1")
+        about.set_authors(["Alexey Mikhailov"])
+        about.set_copyright("GPLv3+")
+        about.set_comments(_("Simple app for recording desktop"))
+        about.set_website("https://github.com/amikha1lov/recApp")
+        about.set_website_label(_("Website"))
+        about.set_wrap_license(True)
+        about.set_license_type(Gtk.License.GPL_3_0)
+        about.run()
+        about.destroy()
 
 
 
