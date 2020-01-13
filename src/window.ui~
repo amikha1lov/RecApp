@@ -213,15 +213,14 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBoxText">
+              <object class="GtkComboBoxText" id="_select_window_combobox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="active">0</property>
                 <property name="active_id">0</property>
-                <items>
-                  <item id="0" translatable="yes">one</item>
-                  <item id="1" translatable="yes">two</item>
-                </items>
+                <signal name="changed" handler="on__select_window_combobox_changed" swapped="no"/>
+                <signal name="move-active" handler="on__select_window_combobox_changed" swapped="no"/>
+                <signal name="popdown" handler="on__select_window_combobox_changed" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>

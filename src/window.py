@@ -26,6 +26,7 @@ from gi.repository import Gtk, Wnck
 class RecappWindow(Gtk.ApplicationWindow):
     video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
     active_radio = "Fullscreen"
+    active_window_id = ""
     __gtype_name__ = 'recAppWindow'
 
     _record_button = Gtk.Template.Child()
@@ -46,14 +47,20 @@ class RecappWindow(Gtk.ApplicationWindow):
             name = button.get_label()
             if (name == "Fullscreen"):
                 self._select_window_box.set_visible(False)
-                print("This is Fullscreen")
                 self.active_radio = "Fullscreen"
                 self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
             elif (name == "Window"):
+                screen = Wnck.Screen.get_default()
+                screen.force_update()
+                screen.get_windows()
+                self._select_window_combobox.remove_all()
+                for window in screen.get_windows():
+                    self._select_window_combobox.append_text(window.get_name()[0:50] + " id:" + str(window.get_xid()))
+
+                self._select_window_combobox.set_active(0)
                 self._select_window_box.set_visible(True)
-                print("This is Window")
                 self.active_radio = "Window"
-                self.vide_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
+                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
 
 
 
@@ -64,13 +71,12 @@ class RecappWindow(Gtk.ApplicationWindow):
         if (self.active_radio == "Fullscreen"):
             self.video = Popen(self.video_str.format(fileName), shell=True)
         elif (self.active_radio == "Window"):
-
-            self.video = Popen(self.video_str.format(xid,fileName), shell=True)
+            self.video_str = self.video_str.format(self.active_window_id,fileName)
+            self.video = Popen(self.video_str, shell=True)
 
 
         self._record_button.set_visible(False)
         self._stop_record_button.set_visible(True)
-        print("RECORD")
 
 
 
@@ -79,13 +85,15 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__stop_record_button_clicked(self, button):
         self._stop_record_button.set_visible(False)
         self._record_button.set_visible(True)
-        print("STOP")
         self.video.terminate()
 
 
     @Gtk.Template.Callback()
     def on__select_window_combobox_changed(self, box):
-        print("combobox")
+        self.active_window_id = box.get_active_text().rsplit('id:', 1)[1]
+        self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
+
+
 
     @Gtk.Template.Callback()
     def on__popover_about_button_clicked(self, button):

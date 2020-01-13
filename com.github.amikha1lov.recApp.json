@@ -1,20 +1,16 @@
 {
-    "app-id": "com.github.amikha1lov.recApp",
-    "runtime": "org.gnome.Platform",
-    "runtime-version": "3.32",
-    "sdk": "org.gnome.Sdk",
-    "command": "recapp",
-    "finish-args": [
+    "app-id" : "com.github.amikha1lov.recApp",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "3.34",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "recapp",
+    "finish-args" : [
         "--share=network",
         "--share=ipc",
         "--socket=fallback-x11",
-        "--socket=wayland",
-        "--filesystem=xdg-run/dconf",
-        "--filesystem=~/.config/dconf:ro",
-        "--talk-name=ca.desrt.dconf",
-        "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+        "--socket=wayland"
     ],
-    "cleanup": [
+    "cleanup" : [
         "/include",
         "/lib/pkgconfig",
         "/man",
@@ -25,32 +21,32 @@
         "*.la",
         "*.a"
     ],
-    "modules": [
-    {
-  	    "name": "libwnck",
-            "buildsystem": "meson",
-            "sources": [
-   		 {
-     		    "type": "archive",
-                    "url": "https://download.gnome.org/sources/libwnck/3.32/libwnck-3.32.0.tar.xz",
-            	    "sha256": "9595835cf28d0fc6af5526a18f77f2fcf3ca8c09e36741bb33915b6e69b8e3ca"
-    		 }
-            ]
-       },
+    "modules" : [
         {
-            "name": "recapp",
-            "builddir": true,
-            "buildsystem": "meson",
-            "sources": [
+            "name" : "libwnck",
+            "buildsystem" : "meson",
+            "sources" : [
                 {
-                    "type": "dir",
-                    "path": "."
+                    "type" : "archive",
+                    "url" : "https://download.gnome.org/sources/libwnck/3.32/libwnck-3.32.0.tar.xz",
+                    "sha256" : "9595835cf28d0fc6af5526a18f77f2fcf3ca8c09e36741bb33915b6e69b8e3ca"
+                }
+            ]
+        },
+        {
+            "name" : "recapp",
+            "builddir" : true,
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type" : "dir",
+                    "path" : "."
                 }
             ]
         }
-
-
-    ]
+    ],
+    "build-options" : {
+        "env" : {
+        }
+    }
 }
-
-
