@@ -70,14 +70,17 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
-        videodir = os.path.join(GLib.get_user_special_dir(GLib.USER_DIRECTORY_VIDEOS))
-        fileName =videodir + "/Recording-from-gg" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
+        fileNameTime ="Recording-from-gg" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
+        fileName = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS),fileNameTime)
+
+
 
         print(fileName)
         if (self.active_radio == "Fullscreen"):
             self.video = Popen(self.video_str.format(fileName), shell=True)
         elif (self.active_radio == "Window"):
             self.video_str = self.video_str.format(self.active_window_id,fileName)
+            print(self.video_str)
             self.video = Popen(self.video_str, shell=True)
 
 
