@@ -17,16 +17,19 @@
 from subprocess import Popen, PIPE
 import time
 import gi
+import os
 gi.require_version('Gtk', '3.0')
 gi.require_version('Wnck', '3.0')
-from gi.repository import Gtk, Wnck
+from gi.repository import Gtk,GLib, Wnck
 
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/recApp/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
     video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
     active_radio = "Fullscreen"
+
     active_window_id = ""
+
     __gtype_name__ = 'recAppWindow'
 
     _record_button = Gtk.Template.Child()
@@ -67,7 +70,10 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
-        fileName ="Recording from " + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
+        videodir = os.path.join(GLib.get_user_special_dir(GLib.USER_DIRECTORY_VIDEOS))
+        fileName =videodir + "/Recording-from-gg" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
+
+        print(fileName)
         if (self.active_radio == "Fullscreen"):
             self.video = Popen(self.video_str.format(fileName), shell=True)
         elif (self.active_radio == "Window"):
