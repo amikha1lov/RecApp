@@ -46,6 +46,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on_button_toggled(self, button):
+
         if button.get_active():
             name = button.get_label()
             if (name == "Fullscreen"):
@@ -54,6 +55,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
             elif (name == "Window"):
                 screen = Wnck.Screen.get_default()
+
                 screen.force_update()
                 screen.get_windows()
                 self._select_window_combobox.remove_all()
@@ -99,7 +101,10 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__select_window_combobox_changed(self, box):
-        self.active_window_id = box.get_active_text().rsplit('id:', 1)[1]
+
+
+        self.active_window_id = hex(int(box.get_active_text().rsplit('id:', 1)[1]))
+        print(self.active_window_id)
         self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
 
 
@@ -121,5 +126,11 @@ class RecappWindow(Gtk.ApplicationWindow):
         about.destroy()
 
 
-
+    def tohex(n):
+        alpha = '0123456789ABCDEF'
+        out = '' if n else '0'
+        while n > 0:
+            out = alpha[n % 16] + out
+            n >>= 4
+        return out
 
