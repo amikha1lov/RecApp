@@ -36,8 +36,11 @@ class RecappWindow(Gtk.ApplicationWindow):
     _stop_record_button = Gtk.Template.Child()
     _radio_full = Gtk.Template.Child()
     _radio_window = Gtk.Template.Child()
+    _recording_mode_box = Gtk.Template.Child()
     _select_window_box = Gtk.Template.Child()
+    _label_video_saved_box = Gtk.Template.Child()
     _select_window_combobox = Gtk.Template.Child()
+
     _popover_about_button = Gtk.Template.Child()
 
 
@@ -86,7 +89,12 @@ class RecappWindow(Gtk.ApplicationWindow):
             self.video = Popen(self.video_str, shell=True)
 
 
+
         self._record_button.set_visible(False)
+        self._recording_mode_box.set_visible(False)
+        self._select_window_box.set_visible(False)
+        self._label_video_saved_box.set_visible(True)
+
         self._stop_record_button.set_visible(True)
 
 
@@ -94,9 +102,11 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, button):
+        self._label_video_saved_box.set_visible(False)
         self._stop_record_button.set_visible(False)
+        self._recording_mode_box.set_visible(True)
         self._record_button.set_visible(True)
-        self.video.terminate()
+        self.video.kill()
 
 
     @Gtk.Template.Callback()
