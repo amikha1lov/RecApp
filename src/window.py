@@ -16,6 +16,7 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 from subprocess import Popen, PIPE
 import time
+import pulsectl
 import gi
 import os
 gi.require_version('Gtk', '3.0')
@@ -23,17 +24,20 @@ gi.require_version('Wnck', '3.0')
 from gi.repository import Gtk,GLib, Wnck
 
 
+
 @Gtk.Template(resource_path='/com/github/amikha1lov/recApp/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
     video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
     active_radio = "Fullscreen"
-
+    soundOn = ""
     active_window_id = ""
-
+    recordSoundOn = False
     __gtype_name__ = 'recAppWindow'
 
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
+    _sound_on_switch = Gtk.Template.Child()
+    _sound_box = Gtk.Template.Child()
     _radio_full = Gtk.Template.Child()
     _radio_window = Gtk.Template.Child()
     _recording_mode_box = Gtk.Template.Child()
@@ -46,6 +50,27 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+
+    @Gtk.Template.Callback()
+    def on__sound_on_switch_activate(self, switch, gparam):
+
+        if switch.get_active():
+            state = "on"
+            with pulsectl.Pulse() as pulse:
+                print(pulse.sink_list())
+                soundOnSource = pulse.sink_list()[0].name
+                self.recordSoundOn = True
+                print(soundOnSource)
+                self.soundOn = " pulsesrc device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,channels=2,rate=48000,format=F32LE,payload=96' ! queue ! audioconvert ! queue ! mux. -e".format(soundOnSource)
+                print(self.soundOn)
+        else:
+            state = "off"
+            self.recordSoundOn = False
+        print("Switch was turned", state)
+
+
+
+
 
     @Gtk.Template.Callback()
     def on_button_toggled(self, button):
@@ -73,20 +98,27 @@ class RecappWindow(Gtk.ApplicationWindow):
 
 
 
+
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
         fileNameTime ="Recording-from-gg" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
         fileName = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS),fileNameTime)
 
-
-
-        print(fileName)
         if (self.active_radio == "Fullscreen"):
-            self.video = Popen(self.video_str.format(fileName), shell=True)
+            if self.recordSoundOn == True:
+                self.video = Popen(self.video_str.format(fileName) + self.soundOn, shell=True)
+
+            else:
+                self.video = Popen(self.video_str, shell=True)
         elif (self.active_radio == "Window"):
-            self.video_str = self.video_str.format(self.active_window_id,fileName)
-            print(self.video_str)
-            self.video = Popen(self.video_str, shell=True)
+            if self.recordSoundOn == True:
+                 self.video_str = self.video_str.format(self.active_window_id,fileName) + self.soundOn
+                 print(self.video_str)
+                 self.video = Popen(self.video_str, shell=True)
+
+            else:
+                self.video_str = self.video_str.format(self.active_window_id,fileName)
+                self.video = Popen(self.video_str, shell=True)
 
 
 
@@ -94,7 +126,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         self._recording_mode_box.set_visible(False)
         self._select_window_box.set_visible(False)
         self._label_video_saved_box.set_visible(True)
-
+        self._sound_box.set_visible(False)
         self._stop_record_button.set_visible(True)
 
 
@@ -108,13 +140,12 @@ class RecappWindow(Gtk.ApplicationWindow):
         self._stop_record_button.set_visible(False)
         self._recording_mode_box.set_visible(True)
         self._record_button.set_visible(True)
+        self._sound_box.set_visible(True)
         self.video.kill()
 
 
     @Gtk.Template.Callback()
     def on__select_window_combobox_changed(self, box):
-
-
         self.active_window_id = hex(int(box.get_active_text().rsplit('id:', 1)[1]))
         print(self.active_window_id)
         self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"

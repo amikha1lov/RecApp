@@ -9,6 +9,7 @@
         "--share=ipc",
         "--socket=fallback-x11",
         "--socket=wayland",
+        "--socket=pulseaudio",
         "--filesystem=xdg-videos"
     ],
     "cleanup" : [
@@ -35,6 +36,18 @@
             ]
         },
         {
+	"name" : "pulsectl",
+            "buildsystem": "simple",
+            "build-commands": [ "python3 ./setup.py install --prefix=/app --root=/" ],
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-20.1.2.tar.gz",
+                    "sha256" : "4a97a4f7fcd8dbe56380980e8c9519ff4e26552604776cbc7555e6a14ff0202f"
+                }
+            ]
+        },
+        {
             "name" : "recapp",
             "builddir" : true,
             "buildsystem" : "meson",
@@ -51,3 +64,5 @@
         }
     }
 }
+
+
