@@ -102,6 +102,8 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, button):
+        if (self.active_radio == "Window"):
+            self._select_window_box.set_visible(True)
         self._label_video_saved_box.set_visible(False)
         self._stop_record_button.set_visible(False)
         self._recording_mode_box.set_visible(True)
@@ -136,11 +138,5 @@ class RecappWindow(Gtk.ApplicationWindow):
         about.destroy()
 
 
-    def tohex(n):
-        alpha = '0123456789ABCDEF'
-        out = '' if n else '0'
-        while n > 0:
-            out = alpha[n % 16] + out
-            n >>= 4
-        return out
+
 
