@@ -62,7 +62,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                 soundOnSource = pulse.sink_list()[0].name
                 self.recordSoundOn = True
                 print(soundOnSource)
-                self.soundOn = " pulsesrc device='{}.monitor' ! 'audio/x-raw,channels=2,rate=48000,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux. -e".format(soundOnSource)
+                self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' ! 'audio/x-raw,channels=2,rate=48000,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux. -e".format(soundOnSource)
                 print(self.soundOn)
         else:
             state = "off"
