@@ -30,7 +30,7 @@ class RecappWindow(Gtk.ApplicationWindow):
     video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
     active_radio = "Fullscreen"
     soundOn = ""
-    active_window_id = ""
+    active_window_id = None
     recordSoundOn = False
     quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2"
     __gtype_name__ = 'recAppWindow'
@@ -90,18 +90,19 @@ class RecappWindow(Gtk.ApplicationWindow):
             if (activeRadioName == "Fullscreen"):
                 self._select_window_box.set_visible(False)
                 self.active_radio = "Fullscreen"
-                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 showы-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
             elif (activeRadioName == "Window"):
+                if (self.active_window_id is None):
+                    self._record_button.set_sensitive(False)
                 screen = Wnck.Screen.get_default()
                 screen.force_update()
                 screen.get_windows()
+
                 self._select_window_combobox.remove_all()
                 for window in screen.get_windows():
+                        self._select_window_combobox.insert(-1,str(window.get_xid()),window.get_name()[0:80])
 
 
-                        self._select_window_combobox.append_text(window.get_name()[0:50] + " | xid - " + str(window.get_xid()))
-
-                self._select_window_combobox.set_active(0)
                 self._select_window_box.set_visible(True)
                 self.active_radio = "Window"
                 self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
@@ -115,10 +116,8 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
-        fileNameTime ="Recording-from-gg" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
+        fileNameTime ="Recording-from-" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
         fileName = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS),fileNameTime)
-        print(self.quality_video)
-        print("выше строка с качеством")
         if (self.active_radio == "Fullscreen"):
             if self.recordSoundOn == True:
                 self.video = Popen(self.video_str.format(self.quality_video,fileName) + self.soundOn, shell=True)
@@ -128,7 +127,6 @@ class RecappWindow(Gtk.ApplicationWindow):
         elif (self.active_radio == "Window"):
             if self.recordSoundOn == True:
                  self.video_str = self.video_str.format(self.active_window_id,self.quality_video,fileName) + self.soundOn
-                 print(self.video_str)
                  self.video = Popen(self.video_str, shell=True)
 
             else:
@@ -161,10 +159,12 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__select_window_combobox_changed(self, box):
-        self.active_window_id = hex(int(box.get_active_text().rsplit(' | xid - ', 1)[1]))
+        self.active_window_id = hex(int(box.get_active_id()))
         print(self.active_window_id)
+        if (self.active_window_id is not None):
+            self._record_button.set_sensitive(True)
         self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
-
+        print(self.video_str)
 
 
     @Gtk.Template.Callback()

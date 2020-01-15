@@ -64,7 +64,8 @@
         <child>
           <object class="GtkButton" id="_record_button">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">False</property>
             <property name="receives_default">True</property>
             <property name="image">image1</property>
             <property name="always_show_image">True</property>
@@ -297,7 +298,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="margin_top">6</property>
-                <property name="label" translatable="yes">Select window</property>
+                <property name="label" translatable="yes">Select a window before you start recording</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -309,6 +310,10 @@
               <object class="GtkComboBoxText" id="_select_window_combobox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="active_id">0</property>
+                <items>
+                  <item id="0" translatable="yes">Select a window to record</item>
+                </items>
                 <signal name="changed" handler="on__select_window_combobox_changed" swapped="no"/>
               </object>
               <packing>
