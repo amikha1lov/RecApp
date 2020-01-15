@@ -97,7 +97,9 @@ class RecappWindow(Gtk.ApplicationWindow):
                 screen.get_windows()
                 self._select_window_combobox.remove_all()
                 for window in screen.get_windows():
-                        self._select_window_combobox.append_text(window.get_name()[0:50] + " id:" + str(window.get_xid()))
+
+
+                        self._select_window_combobox.append_text(window.get_name()[0:50] + " | xid - " + str(window.get_xid()))
 
                 self._select_window_combobox.set_active(0)
                 self._select_window_box.set_visible(True)
@@ -159,7 +161,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__select_window_combobox_changed(self, box):
-        self.active_window_id = hex(int(box.get_active_text().rsplit('id:', 1)[1]))
+        self.active_window_id = hex(int(box.get_active_text().rsplit(' | xid - ', 1)[1]))
         print(self.active_window_id)
         self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
