@@ -91,7 +91,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             if (activeRadioName == "Fullscreen"):
                 self._select_window_box.set_visible(False)
                 self.active_radio = "Fullscreen"
-                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 showы-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
             elif (activeRadioName == "Window"):
                 if (self.active_window_id is None):
                     self._record_button.set_sensitive(False)
@@ -134,6 +134,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             else:
                 self.video = Popen(self.video_str.format(self.quality_video,fileName), shell=True)
         elif (self.active_radio == "Window"):
+            print(self.active_window_id)
             if self.recordSoundOn == True:
                  self.video_str = self.video_str.format(self.active_window_id,self.quality_video,fileName) + self.soundOn
                  self.video = Popen(self.video_str, shell=True)
@@ -172,7 +173,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         print(self.active_window_id)
         if (self.active_window_id is not None):
             self._record_button.set_sensitive(True)
-        self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+        self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 num-buffers=-1 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
         print(self.video_str)
 
 
