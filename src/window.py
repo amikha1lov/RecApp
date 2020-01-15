@@ -75,10 +75,10 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__quality_video_switcher_state_set(self, switch, gparam):
         if switch.get_active():
             state = "on"
-            self.quality_video = "vp8enc min_quantizer=4 max_quantizer=10 cpu-used=8 deadline=1000000 threads=12"
+            self.quality_video = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=8"
         else:
             state = "off"
-            self.quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2"
+            self.quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cq_level=13 cpu-used=2 deadline=1000000 threads=2"
         print("Switch was turned", state)
 
 
