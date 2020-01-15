@@ -45,6 +45,7 @@ class RecappWindow(Gtk.ApplicationWindow):
     _select_window_box = Gtk.Template.Child()
     _label_video_saved_box = Gtk.Template.Child()
     _select_window_combobox = Gtk.Template.Child()
+    _window_research_button = Gtk.Template.Child()
     _quality_video_switcher = Gtk.Template.Child()
     _popover_about_button = Gtk.Template.Child()
 
@@ -107,7 +108,15 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self.active_radio = "Window"
                 self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
+    @Gtk.Template.Callback()
+    def on__window_research_button_clicked(self, button):
+        screen = Wnck.Screen.get_default()
+        screen.force_update()
+        screen.get_windows()
 
+        self._select_window_combobox.remove_all()
+        for window in screen.get_windows():
+            self._select_window_combobox.insert(-1,str(window.get_xid()),window.get_name()[0:80])
 
 
 
@@ -165,6 +174,8 @@ class RecappWindow(Gtk.ApplicationWindow):
             self._record_button.set_sensitive(True)
         self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
         print(self.video_str)
+
+
 
 
     @Gtk.Template.Callback()
