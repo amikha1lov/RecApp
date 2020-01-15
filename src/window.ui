@@ -190,6 +190,7 @@
                 <child>
                   <object class="GtkRadioButton" id="_radio_full">
                     <property name="label" translatable="yes">Fullscreen</property>
+                    <property name="name">Fullscreen</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>
@@ -206,6 +207,7 @@
                 <child>
                   <object class="GtkRadioButton" id="_radio_window">
                     <property name="label" translatable="yes">Window</property>
+                    <property name="name">Window</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">False</property>

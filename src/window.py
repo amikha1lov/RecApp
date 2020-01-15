@@ -86,24 +86,26 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on_button_toggled(self, button):
 
         if button.get_active():
-            name = button.get_label()
-            if (name == "Fullscreen"):
+            activeRadioName = button.get_name()
+            if (activeRadioName == "Fullscreen"):
                 self._select_window_box.set_visible(False)
                 self.active_radio = "Fullscreen"
                 self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
-            elif (name == "Window"):
+            elif (activeRadioName == "Window"):
                 screen = Wnck.Screen.get_default()
-
                 screen.force_update()
                 screen.get_windows()
                 self._select_window_combobox.remove_all()
                 for window in screen.get_windows():
-                    self._select_window_combobox.append_text(window.get_name()[0:50] + " id:" + str(window.get_xid()))
+                        self._select_window_combobox.append_text(window.get_name()[0:50] + " id:" + str(window.get_xid()))
 
                 self._select_window_combobox.set_active(0)
                 self._select_window_box.set_visible(True)
                 self.active_radio = "Window"
                 self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+
+
+
 
 
 
