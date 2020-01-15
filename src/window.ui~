@@ -50,8 +50,9 @@
   </object>
   <template class="recAppWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
-    <property name="default_width">500</property>
-    <property name="default_height">110</property>
+    <property name="default_width">800</property>
+    <property name="default_height">150</property>
+    <property name="icon">icons/appIcons.png</property>
     <signal name="destroy" handler="onQuit" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
@@ -165,6 +166,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="orientation">vertical</property>
+            <property name="baseline_position">top</property>
             <child>
               <object class="GtkLabel" id="_label_recording_mode">
                 <property name="visible">True</property>
@@ -225,6 +227,57 @@
                 <property name="position">1</property>
               </packing>
             </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">Standard quality (for recording applications)</property>
+                    <property name="justify">center</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkSwitch" id="_quality_video_switcher">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="margin_left">6</property>
+                    <property name="margin_right">6</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkLabel">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="label" translatable="yes">High quality. (for recording sports events, etc)</property>
+                    <property name="justify">center</property>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
+                  </packing>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -240,6 +293,7 @@
               <object class="GtkLabel" id="_select_window_label">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="margin_top">6</property>
                 <property name="label" translatable="yes">Select window</property>
               </object>
               <packing>
