@@ -27,7 +27,7 @@ from gi.repository import Gtk,GLib, Wnck
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/recApp/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
-    video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
+    video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
     active_radio = "Fullscreen"
     soundOn = ""
     active_window_id = ""
@@ -61,7 +61,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                 soundOnSource = pulse.sink_list()[0].name
                 self.recordSoundOn = True
                 print(soundOnSource)
-                self.soundOn = " pulsesrc device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,channels=2,rate=48000,format=F32LE,payload=96' ! queue ! audioconvert ! queue ! mux. -e".format(soundOnSource)
+                self.soundOn = " pulsesrc device='{}.monitor' ! 'audio/x-raw,channels=2,rate=48000,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux. -e".format(soundOnSource)
                 print(self.soundOn)
         else:
             state = "off"
@@ -80,7 +80,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             if (name == "Fullscreen"):
                 self._select_window_box.set_visible(False)
                 self.active_radio = "Fullscreen"
-                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
+                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
             elif (name == "Window"):
                 screen = Wnck.Screen.get_default()
 
@@ -93,7 +93,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self._select_window_combobox.set_active(0)
                 self._select_window_box.set_visible(True)
                 self.active_radio = "Window"
-                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
+                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
 
 
@@ -109,7 +109,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self.video = Popen(self.video_str.format(fileName) + self.soundOn, shell=True)
 
             else:
-                self.video = Popen(self.video_str, shell=True)
+                self.video = Popen(self.video_str.format(fileName), shell=True)
         elif (self.active_radio == "Window"):
             if self.recordSoundOn == True:
                  self.video_str = self.video_str.format(self.active_window_id,fileName) + self.soundOn
@@ -148,7 +148,7 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__select_window_combobox_changed(self, box):
         self.active_window_id = hex(int(box.get_active_text().rsplit('id:', 1)[1]))
         print(self.active_window_id)
-        self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.webm"
+        self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=25/1 ! queue ! videoscale ! videoconvert ! vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2 ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
 
 
