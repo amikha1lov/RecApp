@@ -111,6 +111,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__window_research_button_clicked(self, button):
+        print("1")s
         screen = Wnck.Screen.get_default()
         screen.force_update()
         screen.get_windows()

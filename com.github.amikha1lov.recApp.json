@@ -25,6 +25,7 @@
         "*.a"
     ],
     "modules" : [
+
         {
             "name" : "libwnck",
             "buildsystem" : "meson",
