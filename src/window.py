@@ -90,6 +90,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             activeRadioName = button.get_name()
             if (activeRadioName == "Fullscreen"):
                 self._select_window_box.set_visible(False)
+                self._record_button.set_sensitive(True)
                 self.active_radio = "Fullscreen"
                 self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
             elif (activeRadioName == "Window"):
