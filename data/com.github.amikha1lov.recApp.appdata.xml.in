@@ -3,6 +3,5 @@
 	<id>com.github.amikha1lov.recApp.desktop</id>
 	<metadata_license>CC0-1.0</metadata_license>
 	<project_license>GPL-3.0-or-later</project_license>
-	<description>
-	</description>
+	<description> User friendly Open Source screencaster for Linux written in GTK. </description>
 </component>
