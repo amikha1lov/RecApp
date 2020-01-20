@@ -2,7 +2,7 @@
 <!-- 2020 Alexey Mikhailov -->
 <!-- 2020 Artem Polishchuk <ego.cordatus@gmail.com> -->
 <component type="desktop">
-    <id>com.github.amikha1lov.rec-app.desktop</id>
+    <id>com.github.amikha1lov.rec_app.desktop</id>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
     <name>recApp</name>
