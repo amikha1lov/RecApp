@@ -1,12 +1,13 @@
-%global commit      4cc704a99847279004137ec7cac8a7fca383bdc7
+%global commit      8121a4fdd251f9ab8785e5fea00ccbe676a771fd
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date        20200118
+%global date        20200120
 
-%global uuid    com.github.amikha1lov.rec_app
+%global sysname rec_app
+%global uuid    com.github.amikha1lov.%{sysname}
 
-Name:           rec_app
+Name:           rec-app
 Version:        0
-Release:        1.%{date}git%{shortcommit}%{?dist}
+Release:        3.%{date}git%{shortcommit}%{?dist}
 Summary:        User friendly Open Source screencaster for Linux written in GTK
 BuildArch:      noarch
 
@@ -24,14 +25,16 @@ Requires:       gstreamer1-plugins-base
 Requires:       gstreamer1-plugins-good
 Requires:       hicolor-icon-theme
 Requires:       python3-pulsectl
+Requires:       slop
 #Recommends:     gstreamer1-plugins-ugly
 
 %description
-%{summary}.
+User friendly Open Source screencaster for Linux written in GTK. Using free
+GStreamer modules and not depend on FFmpeg.
 
 
 %prep
-%autosetup -n rec_app-%{commit} -p1
+%autosetup -n %{sysname}-%{commit} -p1
 
 
 %build
@@ -45,20 +48,26 @@ Requires:       python3-pulsectl
 
 
 %check
-#appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/*.xml
+appstream-util validate-relax --nonet %{buildroot}%{_metainfodir}/*.xml
 desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 
 
 %files
 %license COPYING
-#%%doc README.md
-%{_bindir}/rec_app
-%{_datadir}/appdata/*.appdata.xml
+%doc README.md
+%{_bindir}/%{sysname}
 %{_datadir}/applications/*.desktop
 %{_datadir}/glib-2.0/schemas/*.gschema.xml
-%{_datadir}/rec_app/
+%{_datadir}/%{sysname}/
+%{_metainfodir}/*.appdata.xml
 
 
 %changelog
+* Mon Jan 20 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0-3.20200120git8121a4f
+- Update to latest git snapshot
+
+* Sat Jan 18 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0-2.20200118git79dc497
+- Update to latest git snapshot
+
 * Sat Jan 18 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0-1.20200118git4cc704a
 - Initial package
