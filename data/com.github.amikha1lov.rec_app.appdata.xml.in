@@ -17,7 +17,7 @@
     <binary>rec-app</binary>
     </provides>
     <developer_name>Alexey Mikhailov</developer_name>
-    <url type="homepage">https://github.com/amikha1lov/recApp</url>
-    <url type="bugtracker">https://github.com/amikha1lov/recApp/issues</url>
+    <url type="homepage">https://github.com/amikha1lov/rec_app</url>
+    <url type="bugtracker">https://github.com/amikha1lov/rec_app/issues</url>
     <url type="translate">https://github.com/amikha1lov/rec_app/tree/master/po</url>
 </component>
