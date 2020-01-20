@@ -62,7 +62,7 @@
     <property name="resizable">False</property>
     <property name="default_width">480</property>
     <property name="default_height">150</property>
-    <property name="icon">icons/appIcons.png</property>
+    <property name="icon_name">media-record</property>
     <signal name="destroy" handler="onQuit" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
