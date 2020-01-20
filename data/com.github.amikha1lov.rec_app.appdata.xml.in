@@ -1,7 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- 2020 Alexey Mikhailov -->
+<!-- 2020 Artem Polishchuk <ego.cordatus@gmail.com> -->
 <component type="desktop">
-	<id>com.github.amikha1lov.rec_app.desktop</id>
-	<metadata_license>CC0-1.0</metadata_license>
-	<project_license>GPL-3.0-or-later</project_license>
-	<description> User friendly Open Source screencaster for Linux written in GTK. </description>
+    <id>com.github.amikha1lov.rec_app.desktop</id>
+    <metadata_license>CC0-1.0</metadata_license>
+    <project_license>GPL-3.0-or-later</project_license>
+    <name>recApp</name>
+    <summary>User friendly Open Source screencaster for Linux written in GTK</summary>
+    <description>
+        <p>
+        User friendly Open Source screencaster for Linux written in GTK. Using
+        free GStreamer modules and not depend on FFmpeg.
+        </p>
+    </description>
+    <provides>
+    <binary>rec-app</binary>
+    </provides>
+    <developer_name>Alexey Mikhailov</developer_name>
+    <url type="homepage">https://github.com/amikha1lov/rec_app</url>
+    <url type="bugtracker">https://github.com/amikha1lov/rec_app/issues</url>
+    <url type="translate">https://github.com/amikha1lov/rec_app/tree/master/po</url>
 </component>
