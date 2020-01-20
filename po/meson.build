@@ -1,1 +1,1 @@
-i18n.gettext('recapp', preset: 'glib')
+i18n.gettext('rec_app', preset: 'glib')

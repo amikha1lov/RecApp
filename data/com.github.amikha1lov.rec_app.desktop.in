@@ -1,6 +1,6 @@
 [Desktop Entry]
-Name=recapp
-Exec=recapp
+Name=rec_app
+Exec=rec_app
 Terminal=false
 Type=Application
 Categories=GTK;

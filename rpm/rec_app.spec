@@ -2,16 +2,16 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global date        20200118
 
-%global uuid    com.github.amikha1lov.recApp
+%global uuid    com.github.amikha1lov.rec_app
 
-Name:           rec-app
+Name:           rec_app
 Version:        0
 Release:        1.%{date}git%{shortcommit}%{?dist}
 Summary:        User friendly Open Source screencaster for Linux written in GTK
 BuildArch:      noarch
 
 License:        GPLv3+
-URL:            https://github.com/amikha1lov/recApp
+URL:            https://github.com/amikha1lov/rec_app
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}.%{date}git%{shortcommit}.tar.gz
 
 BuildRequires:  desktop-file-utils
@@ -31,7 +31,7 @@ Requires:       python3-pulsectl
 
 
 %prep
-%autosetup -n recApp-%{commit} -p1
+%autosetup -n rec_app-%{commit} -p1
 
 
 %build
@@ -52,11 +52,11 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %files
 %license COPYING
 #%%doc README.md
-%{_bindir}/recapp
+%{_bindir}/rec_app
 %{_datadir}/appdata/*.appdata.xml
 %{_datadir}/applications/*.desktop
 %{_datadir}/glib-2.0/schemas/*.gschema.xml
-%{_datadir}/recapp/
+%{_datadir}/rec_app/
 
 
 %changelog

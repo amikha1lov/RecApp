@@ -1,9 +1,9 @@
 pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
-moduledir = join_paths(pkgdatadir, 'recapp')
+moduledir = join_paths(pkgdatadir, 'rec_app')
 gnome = import('gnome')
 
-gnome.compile_resources('recapp',
-  'recapp.gresource.xml',
+gnome.compile_resources('rec_app',
+  'rec_app.gresource.xml',
   gresource_bundle: true,
   install: true,
   install_dir: pkgdatadir,
@@ -18,17 +18,17 @@ conf.set('localedir', join_paths(get_option('prefix'), get_option('localedir')))
 conf.set('pkgdatadir', pkgdatadir)
 
 configure_file(
-  input: 'recapp.in',
-  output: 'recapp',
+  input: 'rec_app.in',
+  output: 'rec_app',
   configuration: conf,
   install: true,
   install_dir: get_option('bindir')
 )
 
-recapp_sources = [
+rec_app_sources = [
   '__init__.py',
   'main.py',
   'window.py',
 ]
 
-install_data(recapp_sources, install_dir: moduledir)
+install_data(rec_app_sources, install_dir: moduledir)

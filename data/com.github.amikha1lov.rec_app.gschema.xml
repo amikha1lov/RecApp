@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schemalist gettext-domain="rec_app">
+	<schema id="com.github.amikha1lov.rec_app" path="/com/github/amikha1lov/rec_app/">
+	</schema>
+</schemalist>

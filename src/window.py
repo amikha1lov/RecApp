@@ -30,7 +30,7 @@ Gst.init(sys.argv)
 
 
 
-@Gtk.Template(resource_path='/com/github/amikha1lov/recApp/window.ui')
+@Gtk.Template(resource_path='/com/github/amikha1lov/rec_app/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
     video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
     soundOn = ""
