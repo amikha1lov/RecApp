@@ -19,33 +19,38 @@ import time
 import pulsectl
 import gi
 import os
+import sys
 gi.require_version('Gtk', '3.0')
-gi.require_version('Wnck', '3.0')
-from gi.repository import Gtk,GLib, Wnck
+gi.require_version('Gst', '1.0')
+from gi.repository import Gtk,Gst,GLib
+Gtk.init(sys.argv)
+# initialize GStreamer
+Gst.init(sys.argv)
+
 
 
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/recApp/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
-    video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
-    active_radio = "Fullscreen"
+    video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
     soundOn = ""
-    active_window_id = None
+    coordinateMode = False
+    coordinateArea = ""
     recordSoundOn = False
+    delayBeforeRecording = 0
+    videoFrames = 30
+    recordMouse = False
     quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2"
     __gtype_name__ = 'recAppWindow'
 
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
+    _frames_combobox = Gtk.Template.Child()
+    _delay_button = Gtk.Template.Child()
+    _select_area_button = Gtk.Template.Child()
     _sound_on_switch = Gtk.Template.Child()
     _sound_box = Gtk.Template.Child()
-    _radio_full = Gtk.Template.Child()
-    _radio_window = Gtk.Template.Child()
-    _recording_mode_box = Gtk.Template.Child()
-    _select_window_box = Gtk.Template.Child()
     _label_video_saved_box = Gtk.Template.Child()
-    _select_window_combobox = Gtk.Template.Child()
-    _window_research_button = Gtk.Template.Child()
     _quality_video_switcher = Gtk.Template.Child()
     _popover_about_button = Gtk.Template.Child()
 
@@ -53,9 +58,49 @@ class RecappWindow(Gtk.ApplicationWindow):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+
+    @Gtk.Template.Callback()
+    def on__frames_combobox_changed(self, box):
+        print("combo change")
+        self.videoFrames = box.get_active_text()
+        print(box.get_active_text())
+
+
+    @Gtk.Template.Callback()
+    def on__record_mouse_switcher_state_set(self, switch, gparam):
+        print("Active mouse")
+        if switch.get_active():
+            state = "on"
+            self.recordMouse = True
+        else:
+            state = "off"
+            self.recordMouse = False
+        print("Switch was turned", state)
+
+    @Gtk.Template.Callback()
+    def on__delay_button_change_value(self, spin):
+        self.delayBeforeRecording = spin.get_value_as_int()
+        print(spin.get_value_as_int())
+
+
+    @Gtk.Template.Callback()
+    def on__select_area_button_clicked(self, spin):
+        print("clicccc")
+        coordinate = Popen("slop -n -c 0.3,0.4,0.6,0.4 -l -t 0 -f '%w %h %x %y'",shell=True,stdout=PIPE).communicate()
+        print(coordinate)
+        listCoor = list(coordinate)
+        listCoor = listCoor[0].decode().split()
+
+        startx,starty,endx,endy=int(listCoor[2]),int(listCoor[3]),int(listCoor[2])+int(listCoor[0]),int(listCoor[1])+int(listCoor[3])
+        self.coordinateArea = "startx={} starty={} endx={} endy={}".format(startx,starty,endx,endy)
+        print(self.coordinateArea)
+        self.coordinateMode = True
+
+
+
     @Gtk.Template.Callback()
     def on__sound_on_switch_activate(self, switch, gparam):
-
+        print("Active sound")
         if switch.get_active():
             state = "on"
             with pulsectl.Pulse() as pulse:
@@ -84,100 +129,38 @@ class RecappWindow(Gtk.ApplicationWindow):
 
 
     @Gtk.Template.Callback()
-    def on_button_toggled(self, button):
-
-        if button.get_active():
-            activeRadioName = button.get_name()
-            if (activeRadioName == "Fullscreen"):
-                self._select_window_box.set_visible(False)
-                self._record_button.set_sensitive(True)
-                self.active_radio = "Fullscreen"
-                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
-            elif (activeRadioName == "Window"):
-                if (self.active_window_id is None):
-                    self._record_button.set_sensitive(False)
-                screen = Wnck.Screen.get_default()
-                screen.force_update()
-                screen.get_windows()
-
-                self._select_window_combobox.remove_all()
-                for window in screen.get_windows():
-                        self._select_window_combobox.insert(-1,str(window.get_xid()),window.get_name()[0:80])
-
-
-                self._select_window_box.set_visible(True)
-                self.active_radio = "Window"
-                self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
-
-    @Gtk.Template.Callback()
-    def on__window_research_button_clicked(self, button):
-        print("1")
-        screen = Wnck.Screen.get_default()
-        screen.force_update()
-        screen.get_windows()
-
-        self._select_window_combobox.remove_all()
-        for window in screen.get_windows():
-            self._select_window_combobox.insert(-1,str(window.get_xid()),window.get_name()[0:80])
-
-
-
-
-
-
-    @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
         fileNameTime ="Recording-from-" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
         fileName = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS),fileNameTime)
-        if (self.active_radio == "Fullscreen"):
+        time.sleep(self.delayBeforeRecording)
+        if self.coordinateMode == True:
+            video_str = "gst-launch-1.0 ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+            print(video_str)
             if self.recordSoundOn == True:
-                self.video = Popen(self.video_str.format(self.quality_video,fileName) + self.soundOn, shell=True)
+                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName) + self.soundOn, shell=True)
 
             else:
-                self.video = Popen(self.video_str.format(self.quality_video,fileName), shell=True)
-        elif (self.active_radio == "Window"):
-            print(self.active_window_id)
+                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName), shell=True)
+        else:
             if self.recordSoundOn == True:
-                 self.video_str = self.video_str.format(self.active_window_id,self.quality_video,fileName) + self.soundOn
-                 self.video = Popen(self.video_str, shell=True)
+                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName) + self.soundOn, shell=True)
 
             else:
-                self.video_str = self.video_str.format(self.active_window_id,self.quality_video,fileName)
-                self.video = Popen(self.video_str, shell=True)
+                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName), shell=True)
+
 
 
 
         self._record_button.set_visible(False)
-        self._recording_mode_box.set_visible(False)
-        self._select_window_box.set_visible(False)
-        self._label_video_saved_box.set_visible(True)
-        self._sound_box.set_visible(False)
         self._stop_record_button.set_visible(True)
-
-
 
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, button):
-        if (self.active_radio == "Window"):
-            self._select_window_box.set_visible(True)
-        self._label_video_saved_box.set_visible(False)
+
+        self.video.terminate()
         self._stop_record_button.set_visible(False)
-        self._recording_mode_box.set_visible(True)
         self._record_button.set_visible(True)
-        self._sound_box.set_visible(True)
-        self.video.kill()
-
-
-    @Gtk.Template.Callback()
-    def on__select_window_combobox_changed(self, box):
-        self.active_window_id = hex(int(box.get_active_id()))
-        print(self.active_window_id)
-        if (self.active_window_id is not None):
-            self._record_button.set_sensitive(True)
-        self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 num-buffers=-1 show-pointer=true xid={} ! video/x-raw,framerate=30/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
-        print(self.video_str)
-
 
 
 
@@ -187,7 +170,8 @@ class RecappWindow(Gtk.ApplicationWindow):
         about = Gtk.AboutDialog()
         about.set_program_name(_("RecApp"))
         about.set_version("0.0.1")
-        about.set_authors(["Alexey Mikhailov"])
+        about.set_authors(["Alexey Mikhailov","Artem Polishchuk","@Letalis (Telegram)", "@gasinvein (Telegram)", "@dead_mozay (Telegram)"])
+        about.set_artists(["Raxi Petrov"])
         about.set_copyright("GPLv3+")
         about.set_comments(_("Simple app for recording desktop"))
         about.set_website("https://github.com/amikha1lov/recApp")

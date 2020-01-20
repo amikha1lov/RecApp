@@ -42,6 +42,11 @@
       </object>
     </child>
   </object>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="upper">100</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
+  </object>
   <object class="GtkImage" id="image1">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
@@ -54,7 +59,8 @@
   </object>
   <template class="recAppWindow" parent="GtkApplicationWindow">
     <property name="can_focus">False</property>
-    <property name="default_width">800</property>
+    <property name="resizable">False</property>
+    <property name="default_width">480</property>
     <property name="default_height">150</property>
     <property name="icon">icons/appIcons.png</property>
     <signal name="destroy" handler="onQuit" swapped="no"/>
@@ -62,7 +68,7 @@
       <object class="GtkHeaderBar" id="headerbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="title" translatable="yes">RecGTK</property>
+        <property name="title" translatable="yes">recApp</property>
         <property name="subtitle" translatable="yes">Simple app for recording desktop</property>
         <property name="show_close_button">True</property>
         <child>
@@ -87,41 +93,6 @@
           </object>
           <packing>
             <property name="position">2</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkBox" id="_sound_box">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="margin_left">6</property>
-            <child>
-              <object class="GtkImage">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">audio-x-generic</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkSwitch" id="_sound_on_switch">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="margin_left">6</property>
-                <signal name="state-set" handler="on__sound_on_switch_activate" swapped="no"/>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-          <packing>
-            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -166,7 +137,7 @@
         <property name="margin_bottom">6</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="GtkBox" id="_recording_mode_box">
+          <object class="GtkBox" id="_recording_box">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="margin_left">10</property>
@@ -178,38 +149,22 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
-                <child>
-                  <object class="GtkLabel" id="_label_recording_mode">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="label" translatable="yes">Recording mode</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
                 <child>
                   <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
+                    <property name="margin_left">10</property>
+                    <property name="margin_right">5</property>
                     <child>
-                      <object class="GtkRadioButton" id="_radio_full">
-                        <property name="label" translatable="yes">Fullscreen</property>
-                        <property name="name">Fullscreen</property>
+                      <object class="GtkLabel">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                        <signal name="toggled" handler="on_button_toggled" swapped="no"/>
+                        <property name="can_focus">False</property>
+                        <property name="margin_right">6</property>
+                        <property name="label" translatable="yes">Frames</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -218,15 +173,17 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkRadioButton" id="_radio_window">
-                        <property name="label" translatable="yes">Window</property>
-                        <property name="name">Window</property>
+                      <object class="GtkComboBoxText" id="_frames_combobox">
                         <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">_radio_full</property>
-                        <signal name="toggled" handler="on_button_toggled" swapped="no"/>
+                        <property name="can_focus">False</property>
+                        <property name="valign">center</property>
+                        <property name="active_id">1</property>
+                        <items>
+                          <item id="0" translatable="yes">15</item>
+                          <item id="1" translatable="yes">30</item>
+                          <item id="2" translatable="yes">60</item>
+                        </items>
+                        <signal name="changed" handler="on__frames_combobox_changed" swapped="no"/>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -238,14 +195,83 @@
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
-                    <property name="pack_type">end</property>
+                    <property name="position">0</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
+                    <property name="margin_right">5</property>
+                    <child>
+                      <object class="GtkLabel">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="margin_right">6</property>
+                        <property name="label" translatable="yes">Delay</property>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkSpinButton" id="_delay_button">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="text" translatable="yes">0</property>
+                        <property name="xalign">2.2351741291171123e-10</property>
+                        <property name="input_purpose">number</property>
+                        <property name="adjustment">adjustment1</property>
+                        <property name="numeric">True</property>
+                        <signal name="value-changed" handler="on__delay_button_change_value" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="margin_left">5</property>
+                    <property name="margin_right">10</property>
+                    <child>
+                      <object class="GtkButton" id="_select_area_button">
+                        <property name="label" translatable="yes">Select an area</property>
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <signal name="clicked" handler="on__select_area_button_clicked" swapped="no"/>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">2</property>
                   </packing>
                 </child>
               </object>
               <packing>
                 <property name="expand">False</property>
-                <property name="fill">True</property>
+                <property name="fill">False</property>
                 <property name="position">0</property>
               </packing>
             </child>
@@ -254,12 +280,11 @@
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="margin_top">5</property>
-                <property name="margin_bottom">5</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
-                    <property name="label" translatable="yes">High quality. (for recording sports events, etc)</property>
+                    <property name="label" translatable="yes">High quality (for recording sports events, etc)</property>
                     <property name="justify">center</property>
                   </object>
                   <packing>
@@ -272,8 +297,6 @@
                   <object class="GtkSwitch" id="_quality_video_switcher">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
-                    <property name="margin_left">10</property>
-                    <property name="margin_right">10</property>
                     <signal name="state-set" handler="on__quality_video_switcher_state_set" swapped="no"/>
                   </object>
                   <packing>
@@ -301,6 +324,7 @@
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_bottom">8</property>
           </object>
           <packing>
             <property name="expand">False</property>
@@ -309,16 +333,17 @@
           </packing>
         </child>
         <child>
-          <object class="GtkBox" id="_select_window_box">
+          <object class="GtkBox" id="_sound_box">
+            <property name="visible">True</property>
             <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
+            <property name="margin_bottom">5</property>
             <child>
-              <object class="GtkLabel" id="_select_window_label">
+              <object class="GtkLabel">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_top">10</property>
-                <property name="margin_bottom">10</property>
-                <property name="label" translatable="yes">Select a window before you start recording</property>
+                <property name="label" translatable="yes">Record audio</property>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -327,50 +352,16 @@
               </packing>
             </child>
             <child>
-              <object class="GtkComboBoxText" id="_select_window_combobox">
+              <object class="GtkSwitch" id="_sound_on_switch">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
-                <property name="active_id">0</property>
-                <items>
-                  <item id="0" translatable="yes">Select a window to record</item>
-                </items>
-                <signal name="changed" handler="on__select_window_combobox_changed" swapped="no"/>
+                <property name="can_focus">True</property>
+                <signal name="state-set" handler="on__sound_on_switch_activate" swapped="no"/>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
+                <property name="pack_type">end</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">center</property>
-                <property name="margin_top">5</property>
-                <property name="margin_bottom">5</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <object class="GtkButton" id="_window_research_button">
-                    <property name="label" translatable="yes">Find newly opened Windows</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <signal name="clicked" handler="on__window_research_button_clicked" swapped="no"/>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
               </packing>
             </child>
           </object>
@@ -378,6 +369,45 @@
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_left">10</property>
+            <property name="margin_right">10</property>
+            <property name="margin_bottom">5</property>
+            <child>
+              <object class="GtkLabel">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label" translatable="yes">Record mouse cursor</property>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkSwitch" id="_record_mouse_switcher">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <signal name="state-set" handler="on__record_mouse_switcher_state_set" swapped="no"/>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack_type">end</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
           </packing>
         </child>
         <child>
@@ -392,8 +422,8 @@
               <object class="GtkLabel" id="_label_video_saved">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="label" translatable="yes">The file will be saved in the Video folder
-Click Stop to End Recording</property>
+                <property name="label" translatable="yes">The file will be saved in the video folder.
+Click stop to end recording</property>
                 <property name="justify">center</property>
               </object>
               <packing>
@@ -406,10 +436,27 @@ Click Stop to End Recording</property>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
-            <property name="position">3</property>
+            <property name="position">4</property>
           </packing>
         </child>
       </object>
     </child>
   </template>
+  <object class="GtkListStore" id="liststore1">
+    <columns>
+      <!-- column-name frames -->
+      <column type="gint"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0">15</col>
+      </row>
+      <row>
+        <col id="0">30</col>
+      </row>
+      <row>
+        <col id="0">60</col>
+      </row>
+    </data>
+  </object>
 </interface>

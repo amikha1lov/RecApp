@@ -25,18 +25,54 @@
         "*.a"
     ],
     "modules" : [
+    "shared-modules/glu/glu-9.json",
+    		{
+			"name": "glew",
+			"no-autogen": true,
+			"make-args": [
+				"GLEW_PREFIX=/app",
+				"GLEW_DEST=/app",
+				"LIBDIR=/app/lib"
+			],
+			"make-install-args": [
+				"GLEW_PREFIX=/app",
+				"GLEW_DEST=/app",
+				"LIBDIR=/app/lib"
+			],
+			"sources": [
+				{
+					"type": "archive",
+					"url": "http://archive.ubuntu.com/ubuntu/pool/universe/g/glew/glew_2.1.0.orig.tar.xz",
+					"sha256": "bf02e906252b283135406791969bbb6a2a530d685c1b9402a8c14a102b244264"
+				}
+			]
+		},
 
         {
-            "name" : "libwnck",
-            "buildsystem" : "meson",
-            "sources" : [
-                {
-                    "type" : "archive",
-                    "url" : "https://download.gnome.org/sources/libwnck/3.32/libwnck-3.32.0.tar.xz",
-                    "sha256" : "9595835cf28d0fc6af5526a18f77f2fcf3ca8c09e36741bb33915b6e69b8e3ca"
-                }
-            ]
-        },
+      "name": "glm",
+      "cleanup": ["*"],
+      "buildsystem": "cmake-ninja",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/g-truc/glm/releases/download/0.9.9.2/glm-0.9.9.2.zip",
+          "sha256": "209b5943d393925e1a6ecb6734e7507b8f6add25e72a605b25d0d0d382e64fd4"
+        }
+      ]
+    },
+            {
+      "name": "slop",
+      "buildsystem": "cmake-ninja",
+      "sources": [
+        {
+          "type": "archive",
+          "url": "https://github.com/naelstrof/slop/archive/v7.4.zip",
+          "sha256": "bf7610fbb4e3de43ef7182969207476953109f1bf2066fb6e3b84f237e69912e"
+        }
+      ]
+    },
+
+
         {
 	"name" : "pulsectl",
             "buildsystem": "simple",
