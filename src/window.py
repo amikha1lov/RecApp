@@ -168,16 +168,16 @@ class RecappWindow(Gtk.ApplicationWindow):
                 video_str = "gst-launch-1.0 ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
                 print(video_str)
                 if self.recordSoundOn == True:
-                    self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName) + self.soundOn, shell=True)
+                    self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
 
                 else:
-                    self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName), shell=True)
+                    self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName), shell=True)
             else:
                 if self.recordSoundOn == True:
-                    self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName) + self.soundOn, shell=True)
+                    self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
 
                 else:
-                    self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName), shell=True)
+                    self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName), shell=True)
 
         self._record_button.set_visible(False)
         self._stop_record_button.set_visible(True)
