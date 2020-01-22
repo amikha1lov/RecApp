@@ -20,6 +20,7 @@ import pulsectl
 import gi
 import os
 import sys
+from pydbus import SessionBus
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 from gi.repository import Gtk,Gst,GLib
@@ -32,7 +33,7 @@ Gst.init(sys.argv)
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/rec_app/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
-    video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+
     soundOn = ""
     coordinateMode = False
     coordinateArea = ""
@@ -40,8 +41,11 @@ class RecappWindow(Gtk.ApplicationWindow):
     delayBeforeRecording = 0
     videoFrames = 30
     recordMouse = False
+
+
     quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2"
     __gtype_name__ = 'recAppWindow'
+
 
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
@@ -51,13 +55,29 @@ class RecappWindow(Gtk.ApplicationWindow):
     _sound_on_switch = Gtk.Template.Child()
     _sound_box = Gtk.Template.Child()
     _label_video_saved_box = Gtk.Template.Child()
+    _quality_video_box = Gtk.Template.Child()
     _quality_video_switcher = Gtk.Template.Child()
     _popover_about_button = Gtk.Template.Child()
 
 
+
+
+
+
+
+
+
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.displayServer = "x11"
 
+        if self.displayServer == "wayland":
+            self._select_area_button.set_visible(False)
+            self._quality_video_box.set_visible(False)
+            self.bus = SessionBus()
+            self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
+        else:
+            self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
     @Gtk.Template.Callback()
     def on__frames_combobox_changed(self, box):
@@ -98,22 +118,22 @@ class RecappWindow(Gtk.ApplicationWindow):
 
 
 
+
+
     @Gtk.Template.Callback()
     def on__sound_on_switch_activate(self, switch, gparam):
-        print("Active sound")
         if switch.get_active():
-            state = "on"
             with pulsectl.Pulse() as pulse:
-                print(pulse.sink_list())
-                soundOnSource = pulse.sink_list()[0].name
+                self.soundOnSource = pulse.sink_list()[0].name
                 self.recordSoundOn = True
-                print(soundOnSource)
-                self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux. -e".format(soundOnSource)
-                print(self.soundOn)
+
+                self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux. -e".format(self.soundOnSource)
+
         else:
-            state = "off"
             self.recordSoundOn = False
-        print("Switch was turned", state)
+
+
+
 
 
     @Gtk.Template.Callback()
@@ -131,25 +151,33 @@ class RecappWindow(Gtk.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
         fileNameTime ="Recording-from-" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
-        fileName = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS),fileNameTime)
+        self.fileName = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS),fileNameTime)
         time.sleep(self.delayBeforeRecording)
-        if self.coordinateMode == True:
-            video_str = "gst-launch-1.0 ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
-            print(video_str)
-            if self.recordSoundOn == True:
-                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName) + self.soundOn, shell=True)
 
+        if self.displayServer == "wayland":
+            if self.recordSoundOn == True:
+
+
+                RecorderPipeline = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=%T ! queue ! mux. pulsesrc buffer-time=20000000 device='{}.monitor' ! queue !  audioconvert ! vorbisenc ! queue ! mux. webmmux name=mux".format(self.soundOnSource)
+                self.GNOMEScreencast.Screencast(self.fileName, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
             else:
-                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName), shell=True)
+                RecorderPipeline = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=%T ! queue ! webmmux"
+                self.GNOMEScreencast.Screencast(self.fileName, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
         else:
-            if self.recordSoundOn == True:
-                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName) + self.soundOn, shell=True)
+            if self.coordinateMode == True:
+                video_str = "gst-launch-1.0 ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+                print(video_str)
+                if self.recordSoundOn == True:
+                    self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName) + self.soundOn, shell=True)
 
+                else:
+                    self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName), shell=True)
             else:
-                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName), shell=True)
+                if self.recordSoundOn == True:
+                    self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName) + self.soundOn, shell=True)
 
-
-
+                else:
+                    self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,fileName), shell=True)
 
         self._record_button.set_visible(False)
         self._stop_record_button.set_visible(True)
@@ -157,10 +185,14 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, button):
-
-        self.video.terminate()
         self._stop_record_button.set_visible(False)
         self._record_button.set_visible(True)
+        if self.displayServer == "wayland":
+            self.GNOMEScreencast.StopScreencast()
+
+        else:
+            self.video.terminate()
+
 
 
 
