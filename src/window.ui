@@ -62,7 +62,7 @@
     <property name="resizable">False</property>
     <property name="default_width">480</property>
     <property name="default_height">150</property>
-    <property name="icon_name">media-record</property>
+    <property name="icon">../data/icons/com.github.amikha1lov.rec_app.svg</property>
     <signal name="destroy" handler="onQuit" swapped="no"/>
     <child type="titlebar">
       <object class="GtkHeaderBar" id="headerbar">
