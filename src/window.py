@@ -150,7 +150,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
-        fileNameTime ="Recording-from-" + time.strftime("%Y-%m-%d-%H.%M.%S", time.localtime())
+        fileNameTime ="Recording-from-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
         self.fileName = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS),fileNameTime)
         time.sleep(self.delayBeforeRecording)
 
