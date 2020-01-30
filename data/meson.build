@@ -1,3 +1,5 @@
+subdir('icons')
+
 desktop_file = i18n.merge_file(
   input: 'com.github.amikha1lov.rec_app.desktop.in',
   output: 'com.github.amikha1lov.rec_app.desktop',
