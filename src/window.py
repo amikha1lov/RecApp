@@ -77,7 +77,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             self.bus = SessionBus()
             self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
-            self.video_str = "gst-launch-1.0 ximagesrc use-damage=0 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! webmmux name=mux ! queue ! filesink location='{}'.webm"
+            self.video_str = "gst-launch-1.0 ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
     @Gtk.Template.Callback()
     def on__frames_combobox_changed(self, box):
@@ -165,7 +165,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self.GNOMEScreencast.Screencast(self.fileName, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
         else:
             if self.coordinateMode == True:
-                video_str = "gst-launch-1.0 ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! webmmux name=mux ! queue ! filesink location='{}'.webm"
+                video_str = "gst-launch-1.0 ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
                 print(video_str)
                 if self.recordSoundOn == True:
                     self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
