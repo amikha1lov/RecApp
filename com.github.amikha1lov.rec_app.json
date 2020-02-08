@@ -12,6 +12,7 @@
         "--socket=pulseaudio",
         "--device=dri",
         "--talk-name=org.gnome.Shell.Screencast",
+        "--talk-name=org.freedesktop.Notifications",
         "--filesystem=xdg-videos"
     ],
     "cleanup" : [

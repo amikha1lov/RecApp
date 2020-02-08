@@ -20,10 +20,12 @@ import pulsectl
 import gi
 import os
 import sys
+
 from pydbus import SessionBus
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-from gi.repository import Gtk,Gst,GLib
+gi.require_version('Notify', '0.7')
+from gi.repository import Gtk,Gst,GLib,Gio,Notify
 Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
@@ -37,10 +39,6 @@ class RecappWindow(Gtk.ApplicationWindow):
     soundOn = ""
     coordinateMode = False
     coordinateArea = ""
-    recordSoundOn = False
-    delayBeforeRecording = 0
-    videoFrames = 30
-    recordMouse = False
 
 
     quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2"
@@ -55,9 +53,13 @@ class RecappWindow(Gtk.ApplicationWindow):
     _sound_on_switch = Gtk.Template.Child()
     _sound_box = Gtk.Template.Child()
     _label_video_saved_box = Gtk.Template.Child()
+    _label_video_saved = Gtk.Template.Child()
     _quality_video_box = Gtk.Template.Child()
     _quality_video_switcher = Gtk.Template.Child()
     _popover_about_button = Gtk.Template.Child()
+    _recording_box = Gtk.Template.Child()
+    _video_folder_button = Gtk.Template.Child()
+    _record_mouse_switcher = Gtk.Template.Child()
 
 
 
@@ -69,6 +71,33 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        Notify.init('com.github.amikha1lov.rec_app')
+        self.notification = None
+        self.settings = Gio.Settings.new('com.github.amikha1lov.rec_app')
+        self.recordSoundOn =  self.settings.get_boolean('record-audio-switch')
+        self.delayBeforeRecording = self.settings.get_int('delay')
+        self.videoFrames = self.settings.get_int('frames')
+        self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
+
+        self._sound_on_switch.set_active(self.recordSoundOn)
+        self._record_mouse_switcher.set_active(self.recordMouse)
+        self._quality_video_switcher.set_active(self.settings.get_boolean("high-quality-switch"))
+        self._delay_button.set_value(self.delayBeforeRecording)
+        if self.videoFrames == 15:
+            self._frames_combobox.set_active(0)
+        elif self.videoFrames == 30:
+            self._frames_combobox.set_active(1)
+        else:
+            self._frames_combobox.set_active(2)
+
+        self.currentFolder = self.settings.get_string('path-to-save-video-folder')
+        print(self.currentFolder)
+
+        if self.currentFolder == "Default":
+            self.settings.set_string('path-to-save-video-folder',GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS))
+            self._video_folder_button.set_current_folder_uri(self.settings.get_string('path-to-save-video-folder'))
+        else:
+            self._video_folder_button.set_current_folder_uri(self.currentFolder)
         self.displayServer = "x11"
 
         if self.displayServer == "wayland":
@@ -79,11 +108,33 @@ class RecappWindow(Gtk.ApplicationWindow):
         else:
             self.video_str = "gst-launch-1.0 ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
+    def openFolder(self, notification, action, user_data = None):
+        videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
+        os.system("xdg-open "+ videoFolderForOpen)
+        print("open folder")
+
+    def openVideoFile(self, notification, action, user_data = None):
+        os.system("xdg-open "+ self.fileName+".mkv")
+        print("open file")
+
+
+    @Gtk.Template.Callback()
+    def on__video_folder_button_file_set(self, button):
+        print(self._video_folder_button.get_uri().split('file://')[1])
+        self.settings.set_string('path-to-save-video-folder',self._video_folder_button.get_uri().split('file://')[1])
+
+        self._video_folder_button.set_current_folder_uri(self.settings.get_string('path-to-save-video-folder'))
+
+
+
+
+
     @Gtk.Template.Callback()
     def on__frames_combobox_changed(self, box):
         print("combo change")
-        self.videoFrames = box.get_active_text()
         print(box.get_active_text())
+        print(type(box.get_active_text()))
+        self.settings.set_int('frames',int(box.get_active_text()))
 
 
     @Gtk.Template.Callback()
@@ -91,15 +142,16 @@ class RecappWindow(Gtk.ApplicationWindow):
         print("Active mouse")
         if switch.get_active():
             state = "on"
-            self.recordMouse = True
+            self.settings.set_boolean('record-mouse-cursor-switch',True )
         else:
             state = "off"
-            self.recordMouse = False
+            self.settings.set_boolean('record-mouse-cursor-switch',False)
         print("Switch was turned", state)
 
     @Gtk.Template.Callback()
     def on__delay_button_change_value(self, spin):
         self.delayBeforeRecording = spin.get_value_as_int()
+        self.settings.set_int('delay',spin.get_value_as_int())
         print(spin.get_value_as_int())
 
 
@@ -125,12 +177,12 @@ class RecappWindow(Gtk.ApplicationWindow):
         if switch.get_active():
             with pulsectl.Pulse() as pulse:
                 self.soundOnSource = pulse.sink_list()[0].name
-                self.recordSoundOn = True
+                self.settings.set_boolean('record-audio-switch',True)
 
                 self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux. -e".format(self.soundOnSource)
 
         else:
-            self.recordSoundOn = False
+            self.settings.set_boolean('record-audio-switch',False)
 
 
 
@@ -140,9 +192,11 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__quality_video_switcher_state_set(self, switch, gparam):
         if switch.get_active():
             state = "on"
+            self.settings.set_boolean('high-quality-switch',True)
             self.quality_video = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=8"
         else:
             state = "off"
+            self.settings.set_boolean('high-quality-switch',False)
             self.quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cq_level=13 cpu-used=2 deadline=1000000 threads=2"
         print("Switch was turned", state)
 
@@ -150,10 +204,19 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
+        self._recording_box.set_visible(False)
+        self._label_video_saved_box.set_visible(True)
         fileNameTime ="Recording-from-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
-        self.fileName = os.path.join(GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS),fileNameTime)
-        time.sleep(self.delayBeforeRecording)
+        videoFolder = self.settings.get_string('path-to-save-video-folder')
+        self._label_video_saved.set_label(videoFolder)
+        self.fileName = os.path.join(videoFolder,fileNameTime)
+        if self.delayBeforeRecording > 0:
+            self.notification = Notify.Notification.new('rec_app', "recording will start in " + str(self.delayBeforeRecording) + " seconds")
+            self.notification.show()
 
+        time.sleep(self.delayBeforeRecording)
+        self.notification = Notify.Notification.new('rec_app', "Recording started")
+        self.notification.show()
         if self.displayServer == "wayland":
             if self.recordSoundOn == True:
 
@@ -187,11 +250,20 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__stop_record_button_clicked(self, button):
         self._stop_record_button.set_visible(False)
         self._record_button.set_visible(True)
+        self._label_video_saved_box.set_visible(False)
+        self._recording_box.set_visible(True)
+
         if self.displayServer == "wayland":
             self.GNOMEScreencast.StopScreencast()
 
         else:
             self.video.terminate()
+
+        self.notification = Notify.Notification.new('rec_app', "Recording is complete")
+        self.notification.add_action("open_folder", "Open Folder",self.openFolder)
+        self.notification.add_action("open_file", "Open File",self.openVideoFile)
+        self.notification.show()
+
 
 
 
@@ -213,7 +285,4 @@ class RecappWindow(Gtk.ApplicationWindow):
         about.set_license_type(Gtk.License.GPL_3_0)
         about.run()
         about.destroy()
-
-
-
 

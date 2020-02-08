@@ -1,5 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="rec_app">
 	<schema id="com.github.amikha1lov.rec_app" path="/com/github/amikha1lov/rec_app/">
+	  <key type="i" name="frames">
+      <default>30</default>
+      <summary>Frames</summary>
+      <description>Number of frames per video.</description>
+    </key>
+	  <key type="i" name="delay">
+      <default>5</default>
+      <summary>Delay</summary>
+      <description>Delay before recording.</description>
+    </key>
+    <key type="b" name="high-quality-switch">
+      <default>false</default>
+      <summary>Enabling high quality mode</summary>
+      <description>Record video in high quality.</description>
+    </key>
+	  <key type="b" name="record-audio-switch">
+      <default>false</default>
+      <summary>Enabling audio recording</summary>
+      <description>The inclusion of audio recording.</description>
+    </key>
+	  <key type="b" name="record-mouse-cursor-switch">
+      <default>true</default>
+      <summary>Enabling record mouse cursor</summary>
+      <description>Recording the mouse cursor.</description>
+    </key>
+    <key type="s" name="path-to-save-video-folder">
+      <default>"Default"</default>
+      <summary>Path to the save folder</summary>
+      <description>Path to the folder where the file will be saved.</description>
+    </key>
 	</schema>
 </schemalist>
+ 
