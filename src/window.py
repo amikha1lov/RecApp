@@ -25,7 +25,8 @@ from pydbus import SessionBus
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('Notify', '0.7')
-from gi.repository import Gtk,Gst,GLib,Gio,Notify
+gi.require_version('GstPbutils', '1.0')
+from gi.repository import Gtk,Gst,GLib,Gio,Notify,GstPbutils
 Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
@@ -78,7 +79,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.delayBeforeRecording = self.settings.get_int('delay')
         self.videoFrames = self.settings.get_int('frames')
         self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
-
+        print(GstPbutils.install_plugins_supported())
         self._sound_on_switch.set_active(self.recordSoundOn)
         self._record_mouse_switcher.set_active(self.recordMouse)
         self._quality_video_switcher.set_active(self.settings.get_boolean("high-quality-switch"))
@@ -120,8 +121,8 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
-        print(self._video_folder_button.get_uri().split('file://')[1])
-        self.settings.set_string('path-to-save-video-folder',self._video_folder_button.get_uri().split('file://')[1])
+        print(self._video_folder_button.get_filename())
+        self.settings.set_string('path-to-save-video-folder',self._video_folder_button.get_filename())
 
         self._video_folder_button.set_current_folder_uri(self.settings.get_string('path-to-save-video-folder'))
 
