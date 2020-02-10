@@ -5,6 +5,7 @@ project('rec_app',
                    ],
 )
 
+appname = 'com.github.amikha1lov.rec_app'
 i18n = import('i18n')
 
 
