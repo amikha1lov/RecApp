@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-02-10 17:01+0600\n"
-"PO-Revision-Date: 2020-02-10 17:09+0600\n"
-"Last-Translator: Dead Mozay <dead_mozay@opensuse.org>\n"
+"POT-Creation-Date: 2020-02-09 22:13+0300\n"
+"PO-Revision-Date: 2020-02-09 22:20+0300\n"
+"Last-Translator: \n"
 "Language-Team: \n"
 "Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.3\n"
+"X-Generator: Poedit 2.2.4\n"
 "X-Poedit-Basepath: ..\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
@@ -21,7 +21,7 @@ msgstr "Кадров"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:7
 msgid "Number of frames per video."
-msgstr "Количество кадров на видео."
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:11 src/window.ui:213
 msgid "Delay"
@@ -29,43 +29,43 @@ msgstr "Задержка"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:12
 msgid "Delay before recording."
-msgstr "Задержка перед записью."
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:16
 msgid "Enabling high quality mode"
-msgstr "Включение режима высокого качества"
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:17
 msgid "Record video in high quality."
-msgstr "Запись видео в высоком качестве."
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:21
 msgid "Enabling audio recording"
-msgstr "Включение записи звука"
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:22
 msgid "The inclusion of audio recording."
-msgstr "Включение аудиозаписи."
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:26
 msgid "Enabling record mouse cursor"
-msgstr "Включение записи курсора мыши"
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:27
 msgid "Recording the mouse cursor."
-msgstr "Запись курсора мыши."
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:31
 msgid "Path to the save folder"
-msgstr "Путь к папке сохранения"
+msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:32
 msgid "Path to the folder where the file will be saved."
-msgstr "Путь к папке, в которой будет сохранен файл."
+msgstr ""
 
 #: src/window.py:276
 msgid "RecApp"
-msgstr "RecApp"
+msgstr ""
 
 #: src/window.py:281 src/window.ui:73
 msgid "Simple app for recording desktop"
@@ -73,7 +73,7 @@ msgstr "Простое приложение для записи рабочего
 
 #: src/window.py:283
 msgid "Website"
-msgstr "Интернет сайт"
+msgstr ""
 
 #: src/window.ui:20
 msgid "Preferences"
@@ -85,23 +85,23 @@ msgstr "О приложении"
 
 #: src/window.ui:72
 msgid "recApp"
-msgstr "recApp"
+msgstr ""
 
 #: src/window.ui:183
 msgid "15"
-msgstr "15"
+msgstr ""
 
 #: src/window.ui:184
 msgid "30"
-msgstr "30"
+msgstr ""
 
 #: src/window.ui:185
 msgid "60"
-msgstr "60"
+msgstr ""
 
 #: src/window.ui:225
 msgid "0"
-msgstr "0"
+msgstr ""
 
 #: src/window.ui:253
 msgid "Select an area"

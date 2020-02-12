@@ -20,6 +20,8 @@ import pulsectl
 import gi
 import os
 import sys
+from locale import gettext as _
+import locale
 
 from pydbus import SessionBus
 gi.require_version('Gtk', '3.0')
@@ -79,6 +81,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.delayBeforeRecording = self.settings.get_int('delay')
         self.videoFrames = self.settings.get_int('frames')
         self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
+        print("plugins")
         print(GstPbutils.install_plugins_supported())
         self._sound_on_switch.set_active(self.recordSoundOn)
         self._record_mouse_switcher.set_active(self.recordMouse)
@@ -207,17 +210,16 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__record_button_clicked(self, button):
         self._recording_box.set_visible(False)
         self._label_video_saved_box.set_visible(True)
-        fileNameTime ="Recording-from-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+        fileNameTime =_("Recording-from-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
         videoFolder = self.settings.get_string('path-to-save-video-folder')
         self._label_video_saved.set_label(videoFolder)
         self.fileName = os.path.join(videoFolder,fileNameTime)
         if self.delayBeforeRecording > 0:
-            self.notification = Notify.Notification.new('rec_app', "recording will start in " + str(self.delayBeforeRecording) + " seconds")
+            self.notification = Notify.Notification.new('rec_app', _("recording will start in ") + str(self.delayBeforeRecording) + _(" seconds"))
             self.notification.show()
 
         time.sleep(self.delayBeforeRecording)
-        self.notification = Notify.Notification.new('rec_app', "Recording started")
-        self.notification.show()
+
         if self.displayServer == "wayland":
             if self.recordSoundOn == True:
 
@@ -260,9 +262,9 @@ class RecappWindow(Gtk.ApplicationWindow):
         else:
             self.video.terminate()
 
-        self.notification = Notify.Notification.new('rec_app', "Recording is complete")
-        self.notification.add_action("open_folder", "Open Folder",self.openFolder)
-        self.notification.add_action("open_file", "Open File",self.openVideoFile)
+        self.notification = Notify.Notification.new('rec_app', _("Recording is complete"))
+        self.notification.add_action("open_folder", _("Open Folder"),self.openFolder)
+        self.notification.add_action("open_file", _("Open File"),self.openVideoFile)
         self.notification.show()
 
 
