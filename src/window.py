@@ -81,8 +81,6 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.delayBeforeRecording = self.settings.get_int('delay')
         self.videoFrames = self.settings.get_int('frames')
         self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
-        print("plugins")
-        print(GstPbutils.install_plugins_supported())
         self._sound_on_switch.set_active(self.recordSoundOn)
         self._record_mouse_switcher.set_active(self.recordMouse)
         self._quality_video_switcher.set_active(self.settings.get_boolean("high-quality-switch"))
@@ -95,7 +93,6 @@ class RecappWindow(Gtk.ApplicationWindow):
             self._frames_combobox.set_active(2)
 
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
-        print(self.currentFolder)
 
         if self.currentFolder == "Default":
             self.settings.set_string('path-to-save-video-folder',GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS))
@@ -115,16 +112,16 @@ class RecappWindow(Gtk.ApplicationWindow):
     def openFolder(self, notification, action, user_data = None):
         videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
         os.system("xdg-open "+ videoFolderForOpen)
-        print("open folder")
+
 
     def openVideoFile(self, notification, action, user_data = None):
         os.system("xdg-open "+ self.fileName+".mkv")
-        print("open file")
+
 
 
     @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
-        print(self._video_folder_button.get_filename())
+
         self.settings.set_string('path-to-save-video-folder',self._video_folder_button.get_filename())
 
         self._video_folder_button.set_current_folder_uri(self.settings.get_string('path-to-save-video-folder'))
@@ -135,41 +132,36 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__frames_combobox_changed(self, box):
-        print("combo change")
-        print(box.get_active_text())
-        print(type(box.get_active_text()))
+
         self.settings.set_int('frames',int(box.get_active_text()))
 
 
     @Gtk.Template.Callback()
     def on__record_mouse_switcher_state_set(self, switch, gparam):
-        print("Active mouse")
+
         if switch.get_active():
             state = "on"
             self.settings.set_boolean('record-mouse-cursor-switch',True )
         else:
             state = "off"
             self.settings.set_boolean('record-mouse-cursor-switch',False)
-        print("Switch was turned", state)
+
 
     @Gtk.Template.Callback()
     def on__delay_button_change_value(self, spin):
         self.delayBeforeRecording = spin.get_value_as_int()
         self.settings.set_int('delay',spin.get_value_as_int())
-        print(spin.get_value_as_int())
+
 
 
     @Gtk.Template.Callback()
     def on__select_area_button_clicked(self, spin):
-        print("clicccc")
         coordinate = Popen("slop -n -c 0.3,0.4,0.6,0.4 -l -t 0 -f '%w %h %x %y'",shell=True,stdout=PIPE).communicate()
-        print(coordinate)
         listCoor = list(coordinate)
         listCoor = listCoor[0].decode().split()
 
         startx,starty,endx,endy=int(listCoor[2]),int(listCoor[3]),int(listCoor[2])+int(listCoor[0]),int(listCoor[1])+int(listCoor[3])
         self.coordinateArea = "startx={} starty={} endx={} endy={}".format(startx,starty,endx,endy)
-        print(self.coordinateArea)
         self.coordinateMode = True
 
 
@@ -202,7 +194,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             state = "off"
             self.settings.set_boolean('high-quality-switch',False)
             self.quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cq_level=13 cpu-used=2 deadline=1000000 threads=2"
-        print("Switch was turned", state)
+
 
 
 
@@ -232,7 +224,6 @@ class RecappWindow(Gtk.ApplicationWindow):
         else:
             if self.coordinateMode == True:
                 video_str = "gst-launch-1.0 ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
-                print(video_str)
                 if self.recordSoundOn == True:
                     self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
 
@@ -273,7 +264,6 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__popover_about_button_clicked(self, button):
-        print("About")
         about = Gtk.AboutDialog()
         about.set_program_name(_("RecApp"))
         about.set_version("0.1.0")

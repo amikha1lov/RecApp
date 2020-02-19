@@ -16,7 +16,7 @@ msgstr ""
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:6 src/window.ui:168
 msgid "Frames"
-msgstr "Кадров"
+msgstr "Кадров / сек."
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:7
 msgid "Number of frames per video."
@@ -64,7 +64,7 @@ msgstr "Путь до папки, где будет сохранен файл"
 
 #: src/window.py:213
 msgid "Recording-from-"
-msgstr "Запись от"
+msgstr "Recording-from-"
 
 #: src/window.py:218
 msgid "recording will start in "
@@ -88,7 +88,7 @@ msgstr "Открыть файл"
 
 #: src/window.py:278
 msgid "RecApp"
-msgstr "Рекапп"
+msgstr "RecApp"
 
 #: src/window.py:283 src/window.ui:73
 msgid "Simple app for recording desktop"
@@ -108,7 +108,7 @@ msgstr "О приложении"
 
 #: src/window.ui:72
 msgid "recApp"
-msgstr "Рекапп"
+msgstr "recApp"
 
 #: src/window.ui:183
 msgid "15"
@@ -136,15 +136,15 @@ msgstr "Высокое качество записи"
 
 #: src/window.ui:331
 msgid "Record audio"
-msgstr "Запись аудио"
+msgstr "Записать аудио"
 
 #: src/window.ui:370
 msgid "Record mouse cursor"
-msgstr "Запись курсора мыши"
+msgstr "Записать курсора мыши"
 
 #: src/window.ui:410
 msgid "Folder for saving the file"
-msgstr "Папка сохранения файла"
+msgstr "Сохранить файл в"
 
 #: src/window.ui:471
 msgid "The file will be saved in "
