@@ -1,18 +1,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-02-09 22:13+0300\n"
-"PO-Revision-Date: 2020-02-09 22:40+0300\n"
+"POT-Creation-Date: 2020-02-19 22:50+0300\n"
+"PO-Revision-Date: 2020-02-19 22:53+0300\n"
 "Last-Translator: \n"
 "Language-Team: \n"
-"Language: \n"
+"Language: en\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.2.4\n"
-"X-Poedit-Basepath: ..\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:6 src/window.ui:168
@@ -63,15 +62,39 @@ msgstr ""
 msgid "Path to the folder where the file will be saved."
 msgstr ""
 
-#: src/window.py:276
+#: src/window.py:213
+msgid "Recording-from-"
+msgstr ""
+
+#: src/window.py:218
+msgid "recording will start in "
+msgstr ""
+
+#: src/window.py:218
+msgid " seconds"
+msgstr ""
+
+#: src/window.py:265
+msgid "Recording is complete"
+msgstr ""
+
+#: src/window.py:266
+msgid "Open Folder"
+msgstr ""
+
+#: src/window.py:267
+msgid "Open File"
+msgstr ""
+
+#: src/window.py:278
 msgid "RecApp"
 msgstr ""
 
-#: src/window.py:281 src/window.ui:73
+#: src/window.py:283 src/window.ui:73
 msgid "Simple app for recording desktop"
 msgstr ""
 
-#: src/window.py:283
+#: src/window.py:285
 msgid "Website"
 msgstr ""
 

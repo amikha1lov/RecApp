@@ -1,18 +1,17 @@
 msgid ""
 msgstr ""
 "Project-Id-Version: \n"
-"POT-Creation-Date: 2020-02-09 22:13+0300\n"
-"PO-Revision-Date: 2020-02-09 22:20+0300\n"
-"Last-Translator: \n"
+"POT-Creation-Date: 2020-02-19 22:50+0300\n"
+"PO-Revision-Date: 2020-02-19 23:02+0300\n"
 "Language-Team: \n"
-"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.2.4\n"
-"X-Poedit-Basepath: ..\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"X-Poedit-Basepath: .\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
+"Last-Translator: \n"
+"Language: ru\n"
 "X-Poedit-SearchPath-0: .\n"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:6 src/window.ui:168
@@ -21,7 +20,7 @@ msgstr "Кадров"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:7
 msgid "Number of frames per video."
-msgstr ""
+msgstr "Количество кадров в видео"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:11 src/window.ui:213
 msgid "Delay"
@@ -29,51 +28,75 @@ msgstr "Задержка"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:12
 msgid "Delay before recording."
-msgstr ""
+msgstr "Задержка перед записью"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:16
 msgid "Enabling high quality mode"
-msgstr ""
+msgstr "Включить макс качество"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:17
 msgid "Record video in high quality."
-msgstr ""
+msgstr "Запись видео в чудо качестве"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:21
 msgid "Enabling audio recording"
-msgstr ""
+msgstr "Включить запись звука"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:22
 msgid "The inclusion of audio recording."
-msgstr ""
+msgstr "Включение записи звука"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:26
 msgid "Enabling record mouse cursor"
-msgstr ""
+msgstr "Запись курсора мыши"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:27
 msgid "Recording the mouse cursor."
-msgstr ""
+msgstr "Записывать курсор мыши "
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:31
 msgid "Path to the save folder"
-msgstr ""
+msgstr "Путь сохранения файла"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:32
 msgid "Path to the folder where the file will be saved."
-msgstr ""
+msgstr "Путь до папки, где будет сохранен файл"
 
-#: src/window.py:276
+#: src/window.py:213
+msgid "Recording-from-"
+msgstr "Запись от"
+
+#: src/window.py:218
+msgid "recording will start in "
+msgstr "Запись начнется через"
+
+#: src/window.py:218
+msgid " seconds"
+msgstr "секунд"
+
+#: src/window.py:265
+msgid "Recording is complete"
+msgstr "Запись успешно завершена"
+
+#: src/window.py:266
+msgid "Open Folder"
+msgstr "Открыть папку"
+
+#: src/window.py:267
+msgid "Open File"
+msgstr "Открыть файл"
+
+#: src/window.py:278
 msgid "RecApp"
-msgstr ""
+msgstr "Рекапп"
 
-#: src/window.py:281 src/window.ui:73
+#: src/window.py:283 src/window.ui:73
 msgid "Simple app for recording desktop"
-msgstr "Простое приложение для записи рабочего стола"
+msgstr "Простая программа для записи рабочего стола"
 
-#: src/window.py:283
+#: src/window.py:285
 msgid "Website"
-msgstr ""
+msgstr "Вебсайт"
 
 #: src/window.ui:20
 msgid "Preferences"
@@ -85,39 +108,39 @@ msgstr "О приложении"
 
 #: src/window.ui:72
 msgid "recApp"
-msgstr ""
+msgstr "Рекапп"
 
 #: src/window.ui:183
 msgid "15"
-msgstr ""
+msgstr "15"
 
 #: src/window.ui:184
 msgid "30"
-msgstr ""
+msgstr "30"
 
 #: src/window.ui:185
 msgid "60"
-msgstr ""
+msgstr "60"
 
 #: src/window.ui:225
 msgid "0"
-msgstr ""
+msgstr "0"
 
 #: src/window.ui:253
 msgid "Select an area"
-msgstr "Выбор области"
+msgstr "Выбрать область"
 
 #: src/window.ui:290
 msgid "High quality (for recording sports events, etc)"
-msgstr "Лучшее качество (для записи спорта и д.р)"
+msgstr "Высокое качество записи"
 
 #: src/window.ui:331
 msgid "Record audio"
-msgstr "Записывать аудио"
+msgstr "Запись аудио"
 
 #: src/window.ui:370
 msgid "Record mouse cursor"
-msgstr "Записывать курсор"
+msgstr "Запись курсора мыши"
 
 #: src/window.ui:410
 msgid "Folder for saving the file"
@@ -125,4 +148,4 @@ msgstr "Папка сохранения файла"
 
 #: src/window.ui:471
 msgid "The file will be saved in "
-msgstr "Файл будет сохранен в "
+msgstr "Файл будет сохранен в"
