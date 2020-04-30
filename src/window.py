@@ -183,12 +183,12 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__record_button_clicked(self, button):
         self._recording_box.set_visible(False)
         self._label_video_saved_box.set_visible(True)
-        fileNameTime =_("Recording-from-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+        fileNameTime =_("RecApp-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
         videoFolder = self.settings.get_string('path-to-save-video-folder')
         self._label_video_saved.set_label(videoFolder)
         self.fileName = os.path.join(videoFolder,fileNameTime)
         if self.delayBeforeRecording > 0:
-            self.notification = Notify.Notification.new('rec_app', _("recording will start in ") + str(self.delayBeforeRecording) + _(" seconds"))
+            self.notification = Notify.Notification.new('rec_app', _("recording will start in ") + " " + str(self.delayBeforeRecording) + " "+ _(" seconds"))
             self.notification.show()
 
         time.sleep(self.delayBeforeRecording)
