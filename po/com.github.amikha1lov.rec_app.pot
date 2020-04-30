@@ -131,7 +131,7 @@ msgid "Select an area"
 msgstr ""
 
 #: src/window.ui:290
-msgid "High quality (for recording sports events, etc)"
+msgid "High quality"
 msgstr ""
 
 #: src/window.ui:331
