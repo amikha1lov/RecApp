@@ -68,6 +68,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.connect("delete-event", self.on_delete_event)
         Notify.init('com.github.amikha1lov.rec_app')
         self.notification = None
         self.settings = Gio.Settings.new('com.github.amikha1lov.rec_app')
@@ -260,3 +261,16 @@ class RecappWindow(Gtk.ApplicationWindow):
         about.run()
         about.destroy()
 
+
+
+    def on_delete_event(self,w,h):
+        if self.displayServer == "wayland":
+            self.GNOMEScreencast.StopScreencast()
+
+        else:
+            self.video.send_signal(signal.SIGINT)
+
+        self.notification = Notify.Notification.new('rec_app', _("Recording is complete"))
+        self.notification.add_action("open_folder", _("Open Folder"),self.openFolder)
+        self.notification.add_action("open_file", _("Open File"),self.openVideoFile)
+        self.notification.show()
