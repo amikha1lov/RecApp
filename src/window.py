@@ -20,6 +20,7 @@ import pulsectl
 import gi
 import os
 import sys
+import signal
 from locale import gettext as _
 import locale
 
@@ -65,13 +66,6 @@ class RecappWindow(Gtk.ApplicationWindow):
     _record_mouse_switcher = Gtk.Template.Child()
 
 
-
-
-
-
-
-
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         Notify.init('com.github.amikha1lov.rec_app')
@@ -107,7 +101,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             self.bus = SessionBus()
             self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
-            self.video_str = "gst-launch-1.0 ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
     def openFolder(self, notification, action, user_data = None):
         videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
@@ -117,22 +111,14 @@ class RecappWindow(Gtk.ApplicationWindow):
     def openVideoFile(self, notification, action, user_data = None):
         os.system("xdg-open "+ self.fileName+".mkv")
 
-
-
     @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
-
         self.settings.set_string('path-to-save-video-folder',self._video_folder_button.get_filename())
-
         self._video_folder_button.set_current_folder_uri(self.settings.get_string('path-to-save-video-folder'))
-
-
-
-
 
     @Gtk.Template.Callback()
     def on__frames_combobox_changed(self, box):
-
+        self.videoFrames = int(box.get_active_text())
         self.settings.set_int('frames',int(box.get_active_text()))
 
 
@@ -141,9 +127,11 @@ class RecappWindow(Gtk.ApplicationWindow):
 
         if switch.get_active():
             state = "on"
+            self.recordMouse = True
             self.settings.set_boolean('record-mouse-cursor-switch',True )
         else:
             state = "off"
+            self.recordMouse = False
             self.settings.set_boolean('record-mouse-cursor-switch',False)
 
 
@@ -151,8 +139,6 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__delay_button_change_value(self, spin):
         self.delayBeforeRecording = spin.get_value_as_int()
         self.settings.set_int('delay',spin.get_value_as_int())
-
-
 
     @Gtk.Template.Callback()
     def on__select_area_button_clicked(self, spin):
@@ -165,12 +151,10 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.coordinateMode = True
 
 
-
-
-
     @Gtk.Template.Callback()
     def on__sound_on_switch_activate(self, switch, gparam):
         if switch.get_active():
+            self.recordSoundOn = True
             with pulsectl.Pulse() as pulse:
                 self.soundOnSource = pulse.sink_list()[0].name
                 self.settings.set_boolean('record-audio-switch',True)
@@ -178,10 +162,8 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux. -e".format(self.soundOnSource)
 
         else:
+            self.recordSoundOn = False
             self.settings.set_boolean('record-audio-switch',False)
-
-
-
 
 
     @Gtk.Template.Callback()
@@ -194,7 +176,6 @@ class RecappWindow(Gtk.ApplicationWindow):
             state = "off"
             self.settings.set_boolean('high-quality-switch',False)
             self.quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cq_level=13 cpu-used=2 deadline=1000000 threads=2"
-
 
 
 
@@ -223,7 +204,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self.GNOMEScreencast.Screencast(self.fileName, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
         else:
             if self.coordinateMode == True:
-                video_str = "gst-launch-1.0 ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+                video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
                 if self.recordSoundOn == True:
                     self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
 
@@ -251,7 +232,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             self.GNOMEScreencast.StopScreencast()
 
         else:
-            self.video.terminate()
+            self.video.send_signal(signal.SIGINT)
 
         self.notification = Notify.Notification.new('rec_app', _("Recording is complete"))
         self.notification.add_action("open_folder", _("Open Folder"),self.openFolder)
@@ -267,7 +248,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         about = Gtk.AboutDialog()
         about.set_program_name(_("RecApp"))
         about.set_version("0.1.0")
-        about.set_authors(["Alexey Mikhailov", "Artem Polishchuk <ego.cordatus@gmail.com>", "Stanislav Skipa <skipastas@gmail.com>", "@gasinvein (Telegram)", "@dead_mozay (Telegram) <dead_mozay@opensuse.org>", "and contributors of Telegram chat https://t.me/gnome_rus"])
+        about.set_authors(["Alexey Mikhailov <mikha1lov@yahoo.com>", "Artem Polishchuk <ego.cordatus@gmail.com>", "@lateseal (Telegram)", "@gasinvein (Telegram)", "@dead_mozay (Telegram) <dead_mozay@opensuse.org>", "and contributors of Telegram chat https://t.me/gnome_rus"])
         about.set_artists(["Raxi Petrov <raxi2012@gmail.com>"])
         about.set_copyright("GPLv3+")
         about.set_comments(_("Simple app for recording desktop"))
