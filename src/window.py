@@ -29,7 +29,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
-from gi.repository import Gtk,Gst,GLib,Gio,Notify,GstPbutils
+from gi.repository import Gtk,Gst,GLib,Gio,Notify,GstPbutils, Gdk
 Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
@@ -43,7 +43,7 @@ class RecappWindow(Gtk.ApplicationWindow):
     soundOn = ""
     coordinateMode = False
     coordinateArea = ""
-
+    isrecording = False
 
     quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2"
     __gtype_name__ = 'recAppWindow'
@@ -68,6 +68,12 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        accel = Gtk.AccelGroup()
+        accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
+        accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_audio)
+        accel.connect(Gdk.keyval_from_name('h'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_high_quality)
+        accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_record)
+        self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
         Notify.init('com.github.amikha1lov.rec_app')
         self.notification = None
@@ -87,14 +93,32 @@ class RecappWindow(Gtk.ApplicationWindow):
         else:
             self._frames_combobox.set_active(2)
 
+
+
+
+
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
         if self.currentFolder == "Default":
-            self.settings.set_string('path-to-save-video-folder',GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS))
+            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) == None:
+
+                directory = "/RecAppVideo"
+                parent_dir = Popen("xdg-user-dir",shell=True,stdout=PIPE).communicate()
+                parent_dir = list(parent_dir)
+                parent_dir = parent_dir[0].decode().split()[0]
+                path = parent_dir + directory
+
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                self.settings.set_string('path-to-save-video-folder',path)
+            else:
+                 self.settings.set_string('path-to-save-video-folder',GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS))
             self._video_folder_button.set_current_folder_uri(self.settings.get_string('path-to-save-video-folder'))
         else:
             self._video_folder_button.set_current_folder_uri(self.currentFolder)
-        self.displayServer = "x11"
+
+
+        self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
             self._select_area_button.set_visible(False)
@@ -182,6 +206,57 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, button):
+        self.start_recording()
+
+
+    @Gtk.Template.Callback()
+    def on__stop_record_button_clicked(self, button):
+        self.stop_recording()
+
+
+
+
+    @Gtk.Template.Callback()
+    def on__popover_about_button_clicked(self, button):
+        about = Gtk.AboutDialog()
+        about.set_program_name(_("RecApp"))
+        about.set_version("0.1.0")
+        about.set_authors(["Alexey Mikhailov <mikha1lov@yahoo.com>", "Artem Polishchuk <ego.cordatus@gmail.com>", "@lateseal (Telegram)", "@gasinvein (Telegram)", "@dead_mozay (Telegram) <dead_mozay@opensuse.org>", "and contributors of Telegram chat https://t.me/gnome_rus"])
+        about.set_artists(["Raxi Petrov <raxi2012@gmail.com>"])
+        about.set_copyright("GPLv3+")
+        about.set_comments(_("Simple app for recording desktop"))
+        about.set_website("https://github.com/amikha1lov/rec_app")
+        about.set_website_label(_("Website"))
+        about.set_logo_icon_name("com.github.amikha1lov.rec_app")
+        about.set_wrap_license(True)
+        about.set_license_type(Gtk.License.GPL_3_0)
+        about.run()
+        about.destroy()
+
+
+
+    def on_delete_event(self,w,h):
+        if self.isrecording:
+            self.stop_recording()
+
+
+
+    def on_toggle_audio(self,*args):
+        if self._sound_on_switch.get_active():
+            self._sound_on_switch.set_active(False)
+        else:
+            self._sound_on_switch.set_active(True)
+
+
+    def on_toggle_high_quality(self,*args):
+        if self._quality_video_switcher.get_active():
+            self._quality_video_switcher.set_active(False)
+        else:
+            self._quality_video_switcher.set_active(True)
+
+
+
+    def start_recording(self,*args):
         self._recording_box.set_visible(False)
         self._label_video_saved_box.set_visible(True)
         fileNameTime =_("RecApp-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
@@ -220,10 +295,10 @@ class RecappWindow(Gtk.ApplicationWindow):
 
         self._record_button.set_visible(False)
         self._stop_record_button.set_visible(True)
+        self.isrecording = True
 
 
-    @Gtk.Template.Callback()
-    def on__stop_record_button_clicked(self, button):
+    def stop_recording(self,*args):
         self._stop_record_button.set_visible(False)
         self._record_button.set_visible(True)
         self._label_video_saved_box.set_visible(False)
@@ -239,38 +314,20 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.notification.add_action("open_folder", _("Open Folder"),self.openFolder)
         self.notification.add_action("open_file", _("Open File"),self.openVideoFile)
         self.notification.show()
+        self.isrecording = False
 
 
 
-
-
-    @Gtk.Template.Callback()
-    def on__popover_about_button_clicked(self, button):
-        about = Gtk.AboutDialog()
-        about.set_program_name(_("RecApp"))
-        about.set_version("0.1.0")
-        about.set_authors(["Alexey Mikhailov <mikha1lov@yahoo.com>", "Artem Polishchuk <ego.cordatus@gmail.com>", "@lateseal (Telegram)", "@gasinvein (Telegram)", "@dead_mozay (Telegram) <dead_mozay@opensuse.org>", "and contributors of Telegram chat https://t.me/gnome_rus"])
-        about.set_artists(["Raxi Petrov <raxi2012@gmail.com>"])
-        about.set_copyright("GPLv3+")
-        about.set_comments(_("Simple app for recording desktop"))
-        about.set_website("https://github.com/amikha1lov/rec_app")
-        about.set_website_label(_("Website"))
-        about.set_logo_icon_name("com.github.amikha1lov.rec_app")
-        about.set_wrap_license(True)
-        about.set_license_type(Gtk.License.GPL_3_0)
-        about.run()
-        about.destroy()
-
-
-
-    def on_delete_event(self,w,h):
-        if self.displayServer == "wayland":
-            self.GNOMEScreencast.StopScreencast()
-
+    def on_toggle_record(self,*args):
+        if self.isrecording:
+            self.stop_recording()
         else:
-            self.video.send_signal(signal.SIGINT)
+            self.start_recording()
 
-        self.notification = Notify.Notification.new('rec_app', _("Recording is complete"))
-        self.notification.add_action("open_folder", _("Open Folder"),self.openFolder)
-        self.notification.add_action("open_file", _("Open File"),self.openVideoFile)
-        self.notification.show()
+    def on_quit_app(self,*args):
+        if self.isrecording:
+            self.stop_recording()
+
+        self.destroy()
+
+        

@@ -60,7 +60,7 @@ msgstr "Путь сохранения файла"
 
 #: data/com.github.amikha1lov.rec_app.gschema.xml:32
 msgid "Path to the folder where the file will be saved."
-msgstr "Путь до папки, где будет сохранен файл"
+msgstr "Путь до папки, где будет сохранен файл."
 
 #: src/window.py:213
 msgid "Recording-from-"
@@ -68,7 +68,7 @@ msgstr "Recording-from-"
 
 #: src/window.py:218
 msgid "recording will start in "
-msgstr "Запись начнется через"
+msgstr "Запись начнется через "
 
 #: src/window.py:218
 msgid " seconds"
@@ -135,8 +135,8 @@ msgid "High quality"
 msgstr "Высокое качество записи"
 
 #: src/window.ui:331
-msgid "Record audio"
-msgstr "Записать аудио"
+msgid "Record audio from apps"
+msgstr "Записать аудио из приложений"
 
 #: src/window.ui:370
 msgid "Record mouse cursor"
@@ -148,4 +148,4 @@ msgstr "Сохранить файл в"
 
 #: src/window.ui:471
 msgid "The file will be saved in "
-msgstr "Файл будет сохранен в"
+msgstr "Файл будет сохранен в "

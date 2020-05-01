@@ -135,7 +135,7 @@ msgid "High quality"
 msgstr ""
 
 #: src/window.ui:331
-msgid "Record audio"
+msgid "Record audio from apps"
 msgstr ""
 
 #: src/window.ui:370
