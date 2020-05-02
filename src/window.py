@@ -123,6 +123,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         if self.displayServer == "wayland":
             self._select_area_button.set_visible(False)
             self._quality_video_box.set_visible(False)
+            self._sound_box.set_visible(False)
             self.bus = SessionBus()
             self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
