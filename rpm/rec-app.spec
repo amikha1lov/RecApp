@@ -2,7 +2,7 @@
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
 %global date    20200424
 
-%global sysname rec_app
+%global sysname recapp
 %global uuid    com.github.amikha1lov.%{sysname}
 
 Name:           rec-app
@@ -12,7 +12,7 @@ Summary:        User friendly Open Source screencaster for Linux written in GTK
 BuildArch:      noarch
 
 License:        GPLv3+
-URL:            https://github.com/amikha1lov/rec_app
+URL:            https://github.com/amikha1lov/recapp
 Source0:        %{url}/archive/%{commit}/%{name}-%{version}.%{date}git%{shortcommit}.tar.gz
 
 BuildRequires:  desktop-file-utils

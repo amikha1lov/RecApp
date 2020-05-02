@@ -2,7 +2,7 @@
 <!-- 2020 Alexey Mikhailov -->
 <!-- 2020 Artem Polishchuk <ego.cordatus@gmail.com> -->
 <component type="desktop">
-    <id>com.github.amikha1lov.rec_app.desktop</id>
+    <id>com.github.amikha1lov.RecApp.desktop</id>
     <metadata_license>CC0-1.0</metadata_license>
     <project_license>GPL-3.0-or-later</project_license>
     <name>recApp</name>
@@ -17,7 +17,7 @@
     <binary>rec-app</binary>
     </provides>
     <developer_name>Alexey Mikhailov</developer_name>
-    <url type="homepage">https://github.com/amikha1lov/rec_app</url>
-    <url type="bugtracker">https://github.com/amikha1lov/rec_app/issues</url>
-    <url type="translate">https://github.com/amikha1lov/rec_app/tree/master/po</url>
+    <url type="homepage">https://github.com/amikha1lov/RecApp</url>
+    <url type="bugtracker">https://github.com/amikha1lov/RecApp/issues</url>
+    <url type="translate">https://github.com/amikha1lov/RecApp/tree/master/po</url>
 </component>

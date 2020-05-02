@@ -14,51 +14,51 @@ msgstr ""
 "Language: ru\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:6 src/window.ui:168
+#: data/com.github.amikha1lov.RecApp.gschema.xml:6 src/window.ui:168
 msgid "Frames"
 msgstr "Кадров / сек."
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:7
+#: data/com.github.amikha1lov.RecApp.gschema.xml:7
 msgid "Number of frames per video."
 msgstr "Количество кадров в видео"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:11 src/window.ui:213
+#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:213
 msgid "Delay"
 msgstr "Задержка"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:12
+#: data/com.github.amikha1lov.RecApp.gschema.xml:12
 msgid "Delay before recording."
 msgstr "Задержка перед записью"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:16
+#: data/com.github.amikha1lov.RecApp.gschema.xml:16
 msgid "Enabling high quality mode"
 msgstr "Включить макс качество"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:17
+#: data/com.github.amikha1lov.RecApp.gschema.xml:17
 msgid "Record video in high quality."
 msgstr "Запись видео в чудо качестве"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:21
+#: data/com.github.amikha1lov.RecApp.gschema.xml:21
 msgid "Enabling audio recording"
 msgstr "Включить запись звука"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:22
+#: data/com.github.amikha1lov.RecApp.gschema.xml:22
 msgid "The inclusion of audio recording."
 msgstr "Включение записи звука"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:26
+#: data/com.github.amikha1lov.RecApp.gschema.xml:26
 msgid "Enabling record mouse cursor"
 msgstr "Запись курсора мыши"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:27
+#: data/com.github.amikha1lov.RecApp.gschema.xml:27
 msgid "Recording the mouse cursor."
 msgstr "Записывать курсор мыши "
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:31
+#: data/com.github.amikha1lov.RecApp.gschema.xml:31
 msgid "Path to the save folder"
 msgstr "Путь сохранения файла"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:32
+#: data/com.github.amikha1lov.RecApp.gschema.xml:32
 msgid "Path to the folder where the file will be saved."
 msgstr "Путь до папки, где будет сохранен файл."
 

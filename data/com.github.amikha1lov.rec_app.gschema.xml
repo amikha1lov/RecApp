@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schemalist gettext-domain="rec_app">
-	<schema id="com.github.amikha1lov.rec_app" path="/com/github/amikha1lov/rec_app/">
+<schemalist gettext-domain="recapp">
+	<schema id="com.github.amikha1lov.RecApp" path="/com/github/amikha1lov/recapp/">
 	  <key type="i" name="frames">
       <default>30</default>
       <summary>Frames</summary>

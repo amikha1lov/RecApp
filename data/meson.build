@@ -1,8 +1,8 @@
 subdir('icons')
 
 desktop_file = i18n.merge_file(
-  input: 'com.github.amikha1lov.rec_app.desktop.in',
-  output: 'com.github.amikha1lov.rec_app.desktop',
+  input: 'com.github.amikha1lov.RecApp.desktop.in',
+  output: 'com.github.amikha1lov.RecApp.desktop',
   type: 'desktop',
   po_dir: '../po',
   install: true,
@@ -17,8 +17,8 @@ if desktop_utils.found()
 endif
 
 appstream_file = i18n.merge_file(
-  input: 'com.github.amikha1lov.rec_app.appdata.xml.in',
-  output: 'com.github.amikha1lov.rec_app.appdata.xml',
+  input: 'com.github.amikha1lov.RecApp.appdata.xml.in',
+  output: 'com.github.amikha1lov.RecApp.appdata.xml',
   po_dir: '../po',
   install: true,
   install_dir: join_paths(get_option('datadir'), 'metainfo')
@@ -31,7 +31,7 @@ if appstream_util.found()
   )
 endif
 
-install_data('com.github.amikha1lov.rec_app.gschema.xml',
+install_data('com.github.amikha1lov.RecApp.gschema.xml',
   install_dir: join_paths(get_option('datadir'), 'glib-2.0/schemas')
 )
 

@@ -37,7 +37,7 @@ Gst.init(sys.argv)
 
 
 
-@Gtk.Template(resource_path='/com/github/amikha1lov/rec_app/window.ui')
+@Gtk.Template(resource_path='/com.github.amikha1lov.RecApp/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
 
     soundOn = ""
@@ -75,9 +75,9 @@ class RecappWindow(Gtk.ApplicationWindow):
         accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_record)
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
-        Notify.init('com.github.amikha1lov.rec_app')
+        Notify.init('com.github.amikha1lov.RecApp')
         self.notification = None
-        self.settings = Gio.Settings.new('com.github.amikha1lov.rec_app')
+        self.settings = Gio.Settings.new('com.github.amikha1lov.RecApp')
         self.recordSoundOn =  self.settings.get_boolean('record-audio-switch')
         self.delayBeforeRecording = self.settings.get_int('delay')
         self.videoFrames = self.settings.get_int('frames')
@@ -225,9 +225,9 @@ class RecappWindow(Gtk.ApplicationWindow):
         about.set_artists(["Raxi Petrov <raxi2012@gmail.com>"])
         about.set_copyright("GPLv3+")
         about.set_comments(_("Simple app for recording desktop"))
-        about.set_website("https://github.com/amikha1lov/rec_app")
+        about.set_website("https://github.com/amikha1lov/RecApp")
         about.set_website_label(_("Website"))
-        about.set_logo_icon_name("com.github.amikha1lov.rec_app")
+        about.set_logo_icon_name("com.github.amikha1lov.RecApp")
         about.set_wrap_license(True)
         about.set_license_type(Gtk.License.GPL_3_0)
         about.run()
@@ -264,7 +264,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         self._label_video_saved.set_label(videoFolder)
         self.fileName = os.path.join(videoFolder,fileNameTime)
         if self.delayBeforeRecording > 0:
-            self.notification = Notify.Notification.new('rec_app', _("recording will start in ") + " " + str(self.delayBeforeRecording) + " "+ _(" seconds"))
+            self.notification = Notify.Notification.new('RecApp', _("recording will start in ") + " " + str(self.delayBeforeRecording) + " "+ _(" seconds"))
             self.notification.show()
 
         time.sleep(self.delayBeforeRecording)
@@ -310,7 +310,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         else:
             self.video.send_signal(signal.SIGINT)
 
-        self.notification = Notify.Notification.new('rec_app', _("Recording is complete"))
+        self.notification = Notify.Notification.new('RecApp', _("Recording is complete"))
         self.notification.add_action("open_folder", _("Open Folder"),self.openFolder)
         self.notification.add_action("open_file", _("Open File"),self.openVideoFile)
         self.notification.show()

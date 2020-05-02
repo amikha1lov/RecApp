@@ -14,51 +14,51 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "X-Poedit-SearchPath-0: .\n"
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:6 src/window.ui:168
+#: data/com.github.amikha1lov.RecApp.gschema.xml:6 src/window.ui:168
 msgid "Frames"
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:7
+#: data/com.github.amikha1lov.RecApp.gschema.xml:7
 msgid "Number of frames per video."
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:11 src/window.ui:213
+#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:213
 msgid "Delay"
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:12
+#: data/com.github.amikha1lov.RecApp.gschema.xml:12
 msgid "Delay before recording."
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:16
+#: data/com.github.amikha1lov.RecApp.gschema.xml:16
 msgid "Enabling high quality mode"
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:17
+#: data/com.github.amikha1lov.RecApp.gschema.xml:17
 msgid "Record video in high quality."
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:21
+#: data/com.github.amikha1lov.RecApp.gschema.xml:21
 msgid "Enabling audio recording"
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:22
+#: data/com.github.amikha1lov.RecApp.gschema.xml:22
 msgid "The inclusion of audio recording."
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:26
+#: data/com.github.amikha1lov.RecApp.gschema.xml:26
 msgid "Enabling record mouse cursor"
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:27
+#: data/com.github.amikha1lov.RecApp.gschema.xml:27
 msgid "Recording the mouse cursor."
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:31
+#: data/com.github.amikha1lov.RecApp.gschema.xml:31
 msgid "Path to the save folder"
 msgstr ""
 
-#: data/com.github.amikha1lov.rec_app.gschema.xml:32
+#: data/com.github.amikha1lov.RecApp.gschema.xml:32
 msgid "Path to the folder where the file will be saved."
 msgstr ""
 

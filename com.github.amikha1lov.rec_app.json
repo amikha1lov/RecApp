@@ -1,9 +1,9 @@
 {
-    "app-id" : "com.github.amikha1lov.rec_app",
+    "app-id" : "com.github.amikha1lov.RecApp",
     "runtime" : "org.gnome.Platform",
     "runtime-version" : "3.36",
     "sdk" : "org.gnome.Sdk",
-    "command" : "rec_app",
+    "command" : "recapp",
     "finish-args" : [
         "--share=network",
         "--share=ipc",
@@ -99,7 +99,7 @@
             ]
         },
         {
-            "name" : "rec_app",
+            "name" : "recapp",
             "builddir" : true,
             "buildsystem" : "meson",
             "sources" : [
