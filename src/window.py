@@ -37,7 +37,7 @@ Gst.init(sys.argv)
 
 
 
-@Gtk.Template(resource_path='/com.github.amikha1lov.RecApp/window.ui')
+@Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
 
     soundOn = ""

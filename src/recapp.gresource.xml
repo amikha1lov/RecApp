@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <gresources>
-  <gresource prefix="/com/github/amikha1lov/recapp">
+  <gresource prefix="/com/github/amikha1lov/RecApp">
     <file>window.ui</file>
   </gresource>
 </gresources>
