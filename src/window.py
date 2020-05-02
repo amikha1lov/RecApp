@@ -46,7 +46,7 @@ class RecappWindow(Gtk.ApplicationWindow):
     isrecording = False
 
     quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2"
-    __gtype_name__ = 'recAppWindow'
+    __gtype_name__ = 'RecAppWindow'
 
 
     _record_button = Gtk.Template.Child()

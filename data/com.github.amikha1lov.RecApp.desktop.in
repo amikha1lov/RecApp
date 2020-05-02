@@ -1,5 +1,5 @@
 [Desktop Entry]
-Name=recApp
+Name=RecApp
 Exec=recapp
 Icon=com.github.amikha1lov.RecApp
 Terminal=false
