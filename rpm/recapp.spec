@@ -1,11 +1,11 @@
-%global commit  7afef69a2c097323c828f87287bb47bc4c5e71eb
+%global commit  1aaec32cb56a60d6149c334fe00781b1999d1f1f
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date    20200424
+%global date    20200502
 
-%global sysname recapp
-%global uuid    com.github.amikha1lov.%{sysname}
+%global appname RecApp
+%global uuid    com.github.amikha1lov.%{appname}
 
-Name:           rec-app
+Name:           recapp
 Version:        0.1.0
 Release:        1.%{date}git%{shortcommit}%{?dist}
 Summary:        User friendly Open Source screencaster for Linux written in GTK
@@ -37,7 +37,7 @@ GStreamer modules and not depend on FFmpeg.
 
 
 %prep
-%autosetup -n %{sysname}-%{commit} -p1
+%autosetup -n %{appname}-%{commit} -p1
 
 
 %build
@@ -48,10 +48,6 @@ GStreamer modules and not depend on FFmpeg.
 %install
 %meson_install
 %find_lang %{uuid}
-install -m 0644 -Dp data/icons/%{uuid}.png \
-    %{buildroot}%{_datadir}/icons/hicolor/512x512/apps/%{uuid}.png
-install -m 0644 -Dp data/icons/%{uuid}-symbolic.png \
-    %{buildroot}%{_datadir}/icons/hicolor/symbolic/apps/%{uuid}-symbolic.png
 
 
 %check
@@ -62,8 +58,8 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 %files -f %{uuid}.lang
 %license COPYING
 %doc README.md CREDITS
-%{_bindir}/%{sysname}
-%{_datadir}/%{sysname}/
+%{_bindir}/%{name}
+%{_datadir}/%{name}/
 %{_datadir}/applications/*.desktop
 %{_datadir}/glib-2.0/schemas/*.gschema.xml
 %{_datadir}/icons/hicolor/*/*/*.png
@@ -71,6 +67,15 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 
 
 %changelog
+* Sat May 02 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200502git1aaec32
+- Update to latest git snapshot
+
+* Fri May 01 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200502git454cd87
+- Update to latest git snapshot
+
+* Thu Apr 30 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200501gitbbe43eb
+- Update to latest git snapshot
+
 * Fri Apr 24 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200424git7afef69
 - Update to latest git snapshot
 - Add missing dep
