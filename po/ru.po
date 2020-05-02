@@ -63,8 +63,8 @@ msgid "Path to the folder where the file will be saved."
 msgstr "Путь до папки, где будет сохранен файл."
 
 #: src/window.py:213
-msgid "Recording-from-"
-msgstr "Recording-from-"
+msgid "RecApp-"
+msgstr "RecApp-"
 
 #: src/window.py:218
 msgid "recording will start in "

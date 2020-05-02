@@ -63,7 +63,7 @@ msgid "Path to the folder where the file will be saved."
 msgstr ""
 
 #: src/window.py:213
-msgid "Recording-from-"
+msgid "RecApp-"
 msgstr ""
 
 #: src/window.py:218
