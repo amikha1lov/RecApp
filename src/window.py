@@ -124,6 +124,8 @@ class RecappWindow(Gtk.ApplicationWindow):
             self._select_area_button.set_visible(False)
             self._quality_video_box.set_visible(False)
             self._sound_box.set_visible(False)
+            self._sound_on_switch.set_active(False)
+            self._quality_video_switcher.set_active(False)
             self.bus = SessionBus()
             self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
@@ -246,7 +248,10 @@ class RecappWindow(Gtk.ApplicationWindow):
         if self._sound_on_switch.get_active():
             self._sound_on_switch.set_active(False)
         else:
-            self._sound_on_switch.set_active(True)
+            if self.displayServer == "wayland":
+                self._sound_on_switch.set_active(False)
+            else:
+                self._sound_on_switch.set_active(True)
 
 
     def on_toggle_high_quality(self,*args):
