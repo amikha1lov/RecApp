@@ -1,7 +1,7 @@
 #!/bin/bash
 
-base=com.github.amikha1lov.rec_app.svg
-endname=com.github.amikha1lov.rec_app
+base=com.github.amikha1lov.RecApp.svg
+endname=com.github.amikha1lov.RecApp
 convert "$base" -resize '24x24'     -unsharp 1x4 "$endname-24.png"
 convert "$base" -resize '32x32'     -unsharp 1x4 "$endname-32.png"
 convert "$base" -resize '48x48'     -unsharp 1x4 "$endname-48.png"

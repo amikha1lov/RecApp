@@ -25,12 +25,12 @@ from gi.repository import Gtk, Gio
 
 from .window import RecappWindow
 
-locale.textdomain('com.github.amikha1lov.rec_app')
+locale.textdomain('com.github.amikha1lov.RecApp')
 
 
 class Application(Gtk.Application):
     def __init__(self):
-        super().__init__(application_id='com.github.amikha1lov.rec_app',
+        super().__init__(application_id='com.github.amikha1lov.RecApp',
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     def do_activate(self):
