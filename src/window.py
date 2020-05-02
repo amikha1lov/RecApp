@@ -120,6 +120,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
+
         if self.displayServer == "wayland":
             self._select_area_button.set_visible(False)
             self._quality_video_box.set_visible(False)
@@ -127,7 +128,12 @@ class RecappWindow(Gtk.ApplicationWindow):
             self._sound_on_switch.set_active(False)
             self._quality_video_switcher.set_active(False)
             self.bus = SessionBus()
-            self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
+            if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
+                self._record_button.set_sensitive(False)
+                self.notification = Notify.Notification.new('RecApp', _("Sorry, Wayland session is unsupported right now (WIP)"))
+                self.notification.show()
+            else:
+                self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
             self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
 
