@@ -18,19 +18,19 @@
 import locale
 import sys
 import gi
-
+from .recapp_constants import recapp_constants as constants
 gi.require_version('Gtk', '3.0')
 
 from gi.repository import Gtk, Gio
 
 from .window import RecappWindow
 
-locale.textdomain('com.github.amikha1lov.RecApp')
+locale.textdomain(constants["APPID"])
 
 
 class Application(Gtk.Application):
     def __init__(self):
-        super().__init__(application_id='com.github.amikha1lov.RecApp',
+        super().__init__(application_id=constants["APPID"],
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
 
     def do_activate(self):

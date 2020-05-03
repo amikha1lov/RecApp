@@ -23,6 +23,7 @@ import sys
 import signal
 from locale import gettext as _
 import locale
+from .recapp_constants import recapp_constants as constants
 
 from pydbus import SessionBus
 gi.require_version('Gtk', '3.0')
@@ -75,9 +76,9 @@ class RecappWindow(Gtk.ApplicationWindow):
         accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_record)
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
-        Notify.init('com.github.amikha1lov.RecApp')
+        Notify.init(constants["APPID"])
         self.notification = None
-        self.settings = Gio.Settings.new('com.github.amikha1lov.RecApp')
+        self.settings = Gio.Settings.new(constants["APPID"])
         self.recordSoundOn =  self.settings.get_boolean('record-audio-switch')
         self.delayBeforeRecording = self.settings.get_int('delay')
         self.videoFrames = self.settings.get_int('frames')
@@ -130,7 +131,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
-                self.notification = Notify.Notification.new('RecApp', _("Sorry, Wayland session is unsupported right now (WIP)"))
+                self.notification = Notify.Notification.new(constants["APPNAME"], _("Sorry, Wayland session is unsupported right now (WIP)"))
                 self.notification.show()
             else:
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
@@ -228,7 +229,7 @@ class RecappWindow(Gtk.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__popover_about_button_clicked(self, button):
         about = Gtk.AboutDialog()
-        about.set_program_name(_("RecApp"))
+        about.set_program_name(_(constants["APPNAME"]))
         about.set_version("0.1.0")
         about.set_authors(["Alexey Mikhailov <mikha1lov@yahoo.com>", "Artem Polishchuk <ego.cordatus@gmail.com>", "@lateseal (Telegram)", "@gasinvein (Telegram)", "@dead_mozay (Telegram) <dead_mozay@opensuse.org>", "and contributors of Telegram chat https://t.me/gnome_rus"])
         about.set_artists(["Raxi Petrov <raxi2012@gmail.com>"])
@@ -236,7 +237,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         about.set_comments(_("Simple app for recording desktop"))
         about.set_website("https://github.com/amikha1lov/RecApp")
         about.set_website_label(_("Website"))
-        about.set_logo_icon_name("com.github.amikha1lov.RecApp")
+        about.set_logo_icon_name(constants["APPID"])
         about.set_wrap_license(True)
         about.set_license_type(Gtk.License.GPL_3_0)
         about.run()
@@ -276,7 +277,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         self._label_video_saved.set_label(videoFolder)
         self.fileName = os.path.join(videoFolder,fileNameTime)
         if self.delayBeforeRecording > 0:
-            self.notification = Notify.Notification.new('RecApp', _("recording will start in ") + " " + str(self.delayBeforeRecording) + " "+ _(" seconds"))
+            self.notification = Notify.Notification.new(constants["APPNAME"], _("recording will start in ") + " " + str(self.delayBeforeRecording) + " "+ _(" seconds"))
             self.notification.show()
 
         time.sleep(self.delayBeforeRecording)
@@ -322,7 +323,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         else:
             self.video.send_signal(signal.SIGINT)
 
-        self.notification = Notify.Notification.new('RecApp', _("Recording is complete"))
+        self.notification = Notify.Notification.new(constants["APPNAME"], _("Recording is complete"))
         self.notification.add_action("open_folder", _("Open Folder"),self.openFolder)
         self.notification.add_action("open_file", _("Open File"),self.openVideoFile)
         self.notification.show()
