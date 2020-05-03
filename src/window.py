@@ -71,8 +71,9 @@ class RecappWindow(Gtk.ApplicationWindow):
         super().__init__(**kwargs)
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
-        accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_audio)
         accel.connect(Gdk.keyval_from_name('h'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_high_quality)
+        accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_audio)
+        accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_mouse_record)
         accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_record)
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
@@ -343,4 +344,10 @@ class RecappWindow(Gtk.ApplicationWindow):
 
         self.destroy()
 
-        
+
+
+    def on_toggle_mouse_record(self,*args):
+        if self._record_mouse_switcher.get_active():
+            self._record_mouse_switcher.set_active(False)
+        else:
+            self._record_mouse_switcher.set_active(True)
