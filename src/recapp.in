@@ -29,7 +29,11 @@ localedir = '@localedir@'
 
 sys.path.insert(1, pkgdatadir)
 signal.signal(signal.SIGINT, signal.SIG_DFL)
-gettext.install('recapp', localedir)
+
+locale.bindtextdomain('com.github.amikha1lov.RecApp', localedir)
+locale.textdomain('com.github.amikha1lov.RecApp')
+gettext.bindtextdomain('com.github.amikha1lov.RecApp', localedir)
+gettext.textdomain('com.github.amikha1lov.RecApp')
 
 if __name__ == '__main__':
     import gi
