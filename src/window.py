@@ -179,10 +179,12 @@ class RecappWindow(Gtk.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__select_area_button_clicked(self, spin):
         coordinate = Popen("slop -n -c 0.3,0.4,0.6,0.4 -l -t 0 -f '%w %h %x %y'",shell=True,stdout=PIPE).communicate()
-        listCoor = list(coordinate)
-        listCoor = listCoor[0].decode().split()
-
-        startx,starty,endx,endy=int(listCoor[2]),int(listCoor[3]),int(listCoor[2])+int(listCoor[0]),int(listCoor[1])+int(listCoor[3])
+        listCoor = [int(i) for i in coordinate[0].decode().split()]
+        if not listCoor[0] or not listCoor[1]:
+            self.notification = Notify.Notification.new(constants["APPNAME"], _("Please re-select the area"))
+            self.notification.show()
+            return
+        startx,starty,endx,endy = listCoor[2],listCoor[3],listCoor[2]+listCoor[0]-1, listCoor[1]+listCoor[3]-1
         self.coordinateArea = "startx={} starty={} endx={} endy={}".format(startx,starty,endx,endy)
         self.coordinateMode = True
 
