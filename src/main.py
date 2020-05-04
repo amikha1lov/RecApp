@@ -25,8 +25,6 @@ from gi.repository import Gtk, Gio
 
 from .window import RecappWindow
 
-locale.textdomain(constants["APPID"])
-
 
 class Application(Gtk.Application):
     def __init__(self):
