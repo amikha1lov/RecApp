@@ -7,15 +7,31 @@
     <project_license>GPL-3.0-or-later</project_license>
     <name>RecApp</name>
     <summary>User friendly Open Source screencaster for Linux written in GTK</summary>
+
     <description>
         <p>
         User friendly Open Source screencaster for Linux written in GTK. Using
         free GStreamer modules and not depend on FFmpeg.
         </p>
     </description>
+
     <provides>
-    <binary>rec-app</binary>
+    <binary>recapp</binary>
     </provides>
+
+    <screenshots>
+        <screenshot type="default">
+            <image>https://raw.githubusercontent.com/amikha1lov/RecApp/master/RecApp-screenshot.png</image>
+        </screenshot>
+    </screenshots>
+
+    <content_rating type="oars-1.0">
+    </content_rating>
+
+    <releases>
+        <release date="2020-05-04" version="0.1.0"></release>
+    </releases>
+    
     <developer_name>Alexey Mikhailov</developer_name>
     <url type="homepage">https://github.com/amikha1lov/RecApp</url>
     <url type="bugtracker">https://github.com/amikha1lov/RecApp/issues</url>
