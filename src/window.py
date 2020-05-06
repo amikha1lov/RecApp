@@ -21,6 +21,7 @@ import gi
 import os
 import sys
 import signal
+import multiprocessing
 from locale import gettext as _
 import locale
 from .recapp_constants import recapp_constants as constants
@@ -45,8 +46,6 @@ class RecappWindow(Gtk.ApplicationWindow):
     coordinateMode = False
     coordinateArea = ""
     isrecording = False
-
-    quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cpu-used=2 deadline=1000000 threads=2"
     __gtype_name__ = 'RecAppWindow'
 
 
@@ -75,6 +74,8 @@ class RecappWindow(Gtk.ApplicationWindow):
         accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_audio)
         accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_mouse_record)
         accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_record)
+        self.cpus = multiprocessing.cpu_count() - 1
+        self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1 threads={0}".format(self.cpus)
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
         Notify.init(constants["APPID"])
@@ -94,10 +95,6 @@ class RecappWindow(Gtk.ApplicationWindow):
             self._frames_combobox.set_active(1)
         else:
             self._frames_combobox.set_active(2)
-
-
-
-
 
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
@@ -138,6 +135,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
             self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+
 
     def openFolder(self, notification, action, user_data = None):
         videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
@@ -209,11 +207,11 @@ class RecappWindow(Gtk.ApplicationWindow):
         if switch.get_active():
             state = "on"
             self.settings.set_boolean('high-quality-switch',True)
-            self.quality_video = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=8"
+            self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
         else:
             state = "off"
             self.settings.set_boolean('high-quality-switch',False)
-            self.quality_video = "vp8enc min_quantizer=20 max_quantizer=20 cq_level=13 cpu-used=2 deadline=1000000 threads=2"
+            self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
 
 
 
