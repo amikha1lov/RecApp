@@ -5,7 +5,7 @@ User friendly Open Source screencaster for Linux written in GTK. Using free GStr
 
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/amikha1lov/RecApp/master/RecApp-screenshot.png" style="max-width:480px;">
+  <img src="https://raw.githubusercontent.com/amikha1lov/RecApp/master/RecApp-screenshot.png" style="max-width:100%;">
 </p>
 
 
