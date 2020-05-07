@@ -46,6 +46,7 @@ class RecappWindow(Gtk.ApplicationWindow):
     coordinateMode = False
     coordinateArea = ""
     isrecording = False
+    fileFormat = ".webm"
     __gtype_name__ = 'RecAppWindow'
 
 
@@ -134,7 +135,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             else:
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
-            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! webmmux name=mux ! queue ! filesink location='{}'.webm"
 
 
     def openFolder(self, notification, action, user_data = None):
@@ -143,7 +144,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
 
     def openVideoFile(self, notification, action, user_data = None):
-        os.system("xdg-open "+ self.fileName+".mkv")
+        os.system("xdg-open "+ self.fileName+".webm")
 
     @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
@@ -287,17 +288,11 @@ class RecappWindow(Gtk.ApplicationWindow):
         time.sleep(self.delayBeforeRecording)
 
         if self.displayServer == "wayland":
-            if self.recordSoundOn == True:
-
-
-                RecorderPipeline = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=%T ! queue ! mux. pulsesrc buffer-time=20000000 device='{}.monitor' ! queue !  audioconvert ! vorbisenc ! queue ! mux. webmmux name=mux".format(self.soundOnSource)
-                self.GNOMEScreencast.Screencast(self.fileName, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
-            else:
-                RecorderPipeline = "vp8enc min_quantizer=10 max_quantizer=50 cq_level=13 cpu-used=5 deadline=1000000 threads=%T ! queue ! webmmux"
-                self.GNOMEScreencast.Screencast(self.fileName, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
+                RecorderPipeline = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0} ! queue ! webmmux".format(self.cpus)
+                self.GNOMEScreencast.Screencast(self.fileName  + ".webm", {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
         else:
             if self.coordinateMode == True:
-                video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! matroskamux name=mux ! queue ! filesink location='{}'.mkv"
+                video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! webmmux name=mux ! queue ! filesink location='{}'.webm"
                 if self.recordSoundOn == True:
                     self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
 
