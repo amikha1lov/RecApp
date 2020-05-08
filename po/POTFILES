@@ -4,4 +4,5 @@ data/com.github.amikha1lov.RecApp.gschema.xml
 src/window.ui
 src/main.py
 src/window.py
+src/rec.py
 

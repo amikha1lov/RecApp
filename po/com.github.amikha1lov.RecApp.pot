@@ -1,20 +1,40 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: \n"
-"POT-Creation-Date: 2020-02-19 22:50+0300\n"
-"PO-Revision-Date: 2020-02-19 22:53+0300\n"
-"Last-Translator: \n"
-"Language-Team: \n"
-"Language: en\n"
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-09 02:11+0300\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=CHARSET\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.2.4\n"
-"X-Poedit-Basepath: .\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Poedit-SearchPath-0: .\n"
 
-#: data/com.github.amikha1lov.RecApp.gschema.xml:6 src/window.ui:168
+#: data/com.github.amikha1lov.RecApp.desktop.in:3
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:8 src/window.ui:71
+msgid "RecApp"
+msgstr ""
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:9
+msgid "User friendly Open Source screencaster for Linux written in GTK"
+msgstr ""
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:12
+msgid "User friendly Open Source screencaster for Linux written in GTK. Using free GStreamer modules and not depend on FFmpeg."
+msgstr ""
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:35
+msgid "Alexey Mikhailov"
+msgstr ""
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:6
 msgid "Frames"
 msgstr ""
 
@@ -22,7 +42,7 @@ msgstr ""
 msgid "Number of frames per video."
 msgstr ""
 
-#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:213
+#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:219
 msgid "Delay"
 msgstr ""
 
@@ -62,42 +82,6 @@ msgstr ""
 msgid "Path to the folder where the file will be saved."
 msgstr ""
 
-#: src/window.py:213
-msgid "RecApp-"
-msgstr ""
-
-#: src/window.py:218
-msgid "recording will start in "
-msgstr ""
-
-#: src/window.py:218
-msgid " seconds"
-msgstr ""
-
-#: src/window.py:265
-msgid "Recording is complete"
-msgstr ""
-
-#: src/window.py:266
-msgid "Open Folder"
-msgstr ""
-
-#: src/window.py:267
-msgid "Open File"
-msgstr ""
-
-#: src/window.py:278
-msgid "RecApp"
-msgstr ""
-
-#: src/window.py:283 src/window.ui:73
-msgid "Simple app for recording desktop"
-msgstr ""
-
-#: src/window.py:285
-msgid "Website"
-msgstr ""
-
 #: src/window.ui:20
 msgid "Preferences"
 msgstr ""
@@ -106,46 +90,90 @@ msgstr ""
 msgid "About"
 msgstr ""
 
-#: src/window.ui:72
-msgid "recApp"
+#: src/window.ui:72 src/rec.py:160
+msgid "Simple app for recording desktop"
 msgstr ""
 
-#: src/window.ui:183
+#: src/window.ui:100
+msgid "[    ]"
+msgstr ""
+
+#: src/window.ui:104
+msgid "Select Area"
+msgstr ""
+
+#: src/window.ui:173
+msgid "Frames per second"
+msgstr ""
+
+#: src/window.ui:188
 msgid "15"
 msgstr ""
 
-#: src/window.ui:184
+#: src/window.ui:189
 msgid "30"
 msgstr ""
 
-#: src/window.ui:185
+#: src/window.ui:190
 msgid "60"
 msgstr ""
 
-#: src/window.ui:225
+#: src/window.ui:231
 msgid "0"
 msgstr ""
 
-#: src/window.ui:253
-msgid "Select an area"
-msgstr ""
-
-#: src/window.ui:290
+#: src/window.ui:263
 msgid "High quality"
 msgstr ""
 
-#: src/window.ui:331
+#: src/window.ui:304
 msgid "Record audio from apps"
 msgstr ""
 
-#: src/window.ui:370
+#: src/window.ui:343
 msgid "Record mouse cursor"
 msgstr ""
 
-#: src/window.ui:410
+#: src/window.ui:382
 msgid "Folder for saving the file"
 msgstr ""
 
-#: src/window.ui:471
+#: src/window.ui:431
 msgid "The file will be saved in "
+msgstr ""
+
+#: src/window.py:150
+msgid "Sorry, Wayland session is not supported yet"
+msgstr ""
+
+#: src/rec.py:76
+msgid "Please re-select the area"
+msgstr ""
+
+#: src/rec.py:102
+msgid "RecApp-"
+msgstr ""
+
+#: src/rec.py:107
+msgid "recording will start in "
+msgstr ""
+
+#: src/rec.py:107
+msgid " seconds"
+msgstr ""
+
+#: src/rec.py:147
+msgid "Recording is complete"
+msgstr ""
+
+#: src/rec.py:148
+msgid "Open Folder"
+msgstr ""
+
+#: src/rec.py:149
+msgid "Open File"
+msgstr ""
+
+#: src/rec.py:162
+msgid "Website"
 msgstr ""
