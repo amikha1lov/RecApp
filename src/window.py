@@ -46,7 +46,6 @@ class RecappWindow(Gtk.ApplicationWindow):
     coordinateMode = False
     coordinateArea = ""
     isrecording = False
-    fileFormat = ".webm"
     __gtype_name__ = 'RecAppWindow'
 
 
