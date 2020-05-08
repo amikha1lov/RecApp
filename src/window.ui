@@ -101,6 +101,7 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">True</property>
+            <property name="tooltip_text" translatable="yes">Select Area</property>
             <signal name="clicked" handler="on__select_area_button_clicked" swapped="no"/>
           </object>
           <packing>
@@ -143,8 +144,6 @@
       <object class="GtkBox" id="_main_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">6</property>
-        <property name="margin_right">6</property>
         <property name="margin_top">6</property>
         <property name="margin_bottom">6</property>
         <property name="orientation">vertical</property>
@@ -161,8 +160,6 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
                 <property name="margin_bottom">5</property>
                 <child>
                   <object class="GtkLabel">
@@ -208,8 +205,6 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
@@ -252,8 +247,6 @@
               <object class="GtkBox" id="_quality_video_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
                 <property name="margin_top">5</property>
                 <child>
                   <object class="GtkLabel">
@@ -292,8 +285,6 @@
               <object class="GtkBox" id="_sound_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
                 <property name="margin_top">5</property>
                 <property name="margin_bottom">5</property>
                 <child>
@@ -332,8 +323,6 @@
               <object class="GtkBox" id="_record_mouse_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
                 <property name="margin_bottom">5</property>
                 <child>
                   <object class="GtkLabel">
@@ -371,13 +360,12 @@
               <object class="GtkBox" id="_general_settings_box">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">10</property>
-                <property name="margin_right">10</property>
                 <property name="margin_bottom">5</property>
                 <child>
                   <object class="GtkLabel">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
+                    <property name="margin_right">5</property>
                     <property name="label" translatable="yes">Folder for saving the file</property>
                   </object>
                   <packing>

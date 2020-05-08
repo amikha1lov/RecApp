@@ -171,7 +171,7 @@ def popover_init():
 
 def delete_event(self,w,h):
     if self.isrecording:
-        self.stop_recording()
+        stop_recording(self)
 
 def toggle_audio(self,*args):
     if not self.isrecording:
@@ -194,13 +194,13 @@ def toggle_high_quality(self,*args):
 
 def toggle_record(self,*args):
     if self.isrecording:
-        self.stop_recording()
+        stop_recording(self)
     else:
-        self.start_recording()
+        start_recording(self)
 
 def quit_app(self,*args):
     if self.isrecording:
-        self.stop_recording()
+        stop_recording(self)
 
     self.destroy()
 

@@ -69,6 +69,23 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self._record_button.set_name('record_button')
+        style_provider = Gtk.CssProvider()
+
+        css = b'''
+
+        #record_button {
+        text-shadow:none;
+        box-shadow:none;
+        -gtk-icon-shadow:none;
+        outline:none;
+        border:none;
+        background: #2668c8;
+        color:#ffffff;
+        }
+        '''
+        style_provider.load_from_data(css)
+        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), style_provider,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
         accel.connect(Gdk.keyval_from_name('h'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_high_quality)
@@ -130,7 +147,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
-                self.notification = Notify.Notification.new(constants["APPNAME"], _("Sorry, Wayland session is unsupported right now (WIP)"))
+                self.notification = Notify.Notification.new(constants["APPNAME"], _("Sorry, Wayland session is not supported yet"))
                 self.notification.show()
             else:
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
@@ -202,4 +219,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     def on_toggle_mouse_record(self,*args):
         toggle_mouse_record(self,*args)
+
+
+
 
