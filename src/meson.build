@@ -30,6 +30,7 @@ recapp_sources = [
   'main.py',
   'window.py',
   'recapp_constants.py',
+  'rec.py',
 ]
 
 install_data(recapp_sources, install_dir: moduledir)
