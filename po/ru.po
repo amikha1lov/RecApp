@@ -8,13 +8,13 @@ msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2020-05-09 02:11+0300\n"
-"PO-Revision-Date: 2020-05-09 02:33+0300\n"
+"PO-Revision-Date: 2020-05-09 13:51+0300\n"
 "Language-Team: \n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.3\n"
-"Last-Translator: \n"
+"Last-Translator: Artem Polishchuk <ego.cordatus@gmail.com>\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
 "%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 "Language: ru\n"
@@ -45,7 +45,7 @@ msgstr "Алексей Михайлов"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:6
 msgid "Frames"
-msgstr "Кадров / сек"
+msgstr "Кадровая частота"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:7
 msgid "Number of frames per video."
@@ -61,7 +61,7 @@ msgstr "Задержка перед записью."
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:16
 msgid "Enabling high quality mode"
-msgstr "Включить макс качество"
+msgstr "Включить высокое качество"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:17
 msgid "Record video in high quality."
@@ -113,7 +113,7 @@ msgstr "Выбрать область"
 
 #: src/window.ui:173
 msgid "Frames per second"
-msgstr "Кадров / сек"
+msgstr "Кадровая частота"
 
 #: src/window.ui:188
 msgid "15"
@@ -157,7 +157,7 @@ msgstr "К сожалению, сеанс Wayland пока не поддержи
 
 #: src/rec.py:76
 msgid "Please re-select the area"
-msgstr "Пожалуйста, выберите область заново"
+msgstr "Выберите область заново"
 
 #: src/rec.py:102
 msgid "RecApp-"
@@ -185,4 +185,4 @@ msgstr "Открыть файл"
 
 #: src/rec.py:162
 msgid "Website"
-msgstr "Вебсайт"
+msgstr "Веб-сайт"
