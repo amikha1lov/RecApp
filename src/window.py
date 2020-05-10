@@ -69,23 +69,6 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        self._record_button.set_name('record_button')
-        style_provider = Gtk.CssProvider()
-
-        css = b'''
-
-        #record_button {
-        text-shadow:none;
-        box-shadow:none;
-        -gtk-icon-shadow:none;
-        outline:none;
-        border:none;
-        background: #2668c8;
-        color:#ffffff;
-        }
-        '''
-        style_provider.load_from_data(css)
-        Gtk.StyleContext.add_provider_for_screen(Gdk.Screen.get_default(), style_provider,Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
         accel.connect(Gdk.keyval_from_name('h'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_high_quality)
