@@ -1,12 +1,12 @@
-%global commit  1aaec32cb56a60d6149c334fe00781b1999d1f1f
+%global commit  f655eda163e197a518e1573b6968038f771d3b1f
 %global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date    20200502
+%global date    20200512
 
 %global appname RecApp
 %global uuid    com.github.amikha1lov.%{appname}
 
 Name:           recapp
-Version:        0.1.0
+Version:        1.0.0
 Release:        1.%{date}git%{shortcommit}%{?dist}
 Summary:        User friendly Open Source screencaster for Linux written in GTK
 BuildArch:      noarch
@@ -67,6 +67,12 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 
 
 %changelog
+* Tue May 12 2020 Alexey Mikhailov <mikha1lov@yahoo.com> - 1.0.0.20200512gitf655eda
+- First stable release
+
+* Mon May 11 2020 Alexey Mikhailov <mikha1lov@yahoo.com> - 0.1.0-1.20200511git7f007f6
+- Update to latest git snapshot
+
 * Sat May 02 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200502git1aaec32
 - Update to latest git snapshot
 
