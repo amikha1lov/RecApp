@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- 2020 Alexey Mikhailov -->
+<!-- 2020 Alexey Mikhailov <mikha1lov@yahoo.com> -->
 <!-- 2020 Artem Polishchuk <ego.cordatus@gmail.com> -->
 <component type="desktop">
     <id>com.github.amikha1lov.RecApp.desktop</id>
@@ -30,6 +30,7 @@
 
     <releases>
         <release date="2020-05-04" version="0.1.0"></release>
+        <release date="2020-05-11" version="1.0.0"></release>
     </releases>
     
     <developer_name>Alexey Mikhailov</developer_name>
