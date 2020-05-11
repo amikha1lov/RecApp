@@ -65,6 +65,8 @@ class RecappWindow(Gtk.ApplicationWindow):
     _recording_box = Gtk.Template.Child()
     _video_folder_button = Gtk.Template.Child()
     _record_mouse_switcher = Gtk.Template.Child()
+    _quality_rowbox = Gtk.Template.Child()
+    _audio_rowbox = Gtk.Template.Child()
 
 
     def __init__(self, **kwargs):
@@ -127,6 +129,8 @@ class RecappWindow(Gtk.ApplicationWindow):
             self._sound_box.set_visible(False)
             self._sound_on_switch.set_active(False)
             self._quality_video_switcher.set_active(False)
+            self._quality_rowbox.set_visible(False)
+            self._audio_rowbox.set_visible(False)
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
