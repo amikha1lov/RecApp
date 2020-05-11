@@ -29,8 +29,8 @@
     </content_rating>
 
     <releases>
-        <release date="2020-05-04" version="0.1.0"></release>
         <release date="2020-05-11" version="1.0.0"></release>
+        <release date="2020-05-04" version="0.1.0"></release>
     </releases>
     
     <developer_name>Alexey Mikhailov</developer_name>
