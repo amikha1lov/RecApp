@@ -154,7 +154,7 @@ def stop_recording(self,*args):
 def popover_init():
     about = Gtk.AboutDialog()
     about.set_program_name(_(constants["APPNAME"]))
-    about.set_version("1.0.1")
+    about.set_version("1.0.2")
     about.set_authors(["Alexey Mikhailov <mikha1lov@yahoo.com>", "Artem Polishchuk <ego.cordatus@gmail.com>", "@lateseal (Telegram)", "@gasinvein (Telegram)", "@dead_mozay (Telegram) <dead_mozay@opensuse.org>", "and contributors of Telegram chat https://t.me/gnome_rus"])
     about.set_artists(["Raxi Petrov <raxi2012@gmail.com>"])
     about.set_copyright("GPLv3+")
