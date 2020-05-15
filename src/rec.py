@@ -120,6 +120,7 @@ def start_recording(self,*args):
 
             else:
                 self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName), shell=True)
+            self.coordinateMode = False
         else:
             if self.recordSoundOn == True:
                 self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
