@@ -1,0 +1,178 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# ALBANO BATTISTELLA <albano_battistella@hotmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PACKAGE VERSION\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-09 02:11+0300\n"
+"PO-Revision-Date: 2020-05-16 11:12+0100\n"
+"Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
+"Language-Team: Italian <LL@li.org>\n"
+"Language: it\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: data/com.github.amikha1lov.RecApp.desktop.in:3
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:8 src/window.ui:71
+msgid "RecApp"
+msgstr "RecApp"
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:9
+msgid "User friendly Open Source screencaster for Linux written in GTK"
+msgstr "Screencaster Open Source user friendly per Linux scritto in GTK"
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:12
+msgid "User friendly Open Source screencaster for Linux written in GTK. Using free GStreamer modules and not depend on FFmpeg."
+msgstr "Screencaster Open Source user friendly per Linux scritto in GTK. Utilizza moduli GStreamer gratuiti e non dipende da FFmpeg."
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:35
+msgid "Alexey Mikhailov"
+msgstr "Alexey Mikhailov"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:6
+msgid "Frames"
+msgstr "Frame"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:7
+msgid "Number of frames per video."
+msgstr "Numero di frame per video."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:219
+msgid "Delay"
+msgstr "Ritardo"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:12
+msgid "Delay before recording."
+msgstr "Ritardo prima della registrazione."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:16
+msgid "Enabling high quality mode"
+msgstr "Abilitazione modalità in alta qualità"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:17
+msgid "Record video in high quality."
+msgstr "Registra video in alta qualità."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:21
+msgid "Enabling audio recording"
+msgstr "Abilitazione registrazione audio"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:22
+msgid "The inclusion of audio recording."
+msgstr "Inclusione della registrazione audio."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:26
+msgid "Enabling record mouse cursor"
+msgstr "Abilitazione regitrazione cursore del mouse"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:27
+msgid "Recording the mouse cursor."
+msgstr "Registrazione del cursore del mouse."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:31
+msgid "Path to the save folder"
+msgstr "Percorso della cartella di salvataggio"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:32
+msgid "Path to the folder where the file will be saved."
+msgstr "Percorso della cartella in cui verrà salvato il file."
+
+#: src/window.ui:20
+msgid "Preferences"
+msgstr "Preferenze"
+
+#: src/window.ui:34
+msgid "About"
+msgstr "Informazioni"
+
+#: src/window.ui:72 src/rec.py:160
+msgid "Simple app for recording desktop"
+msgstr "Semplice App per la registrazione del desktop"
+
+#: src/window.ui:100
+msgid "[    ]"
+msgstr "[    ]"
+
+#: src/window.ui:104
+msgid "Select Area"
+msgstr "Seleziona Area"
+
+#: src/window.ui:173
+msgid "Frames per second"
+msgstr "Frame per secondo"
+
+#: src/window.ui:188
+msgid "15"
+msgstr "15"
+
+#: src/window.ui:189
+msgid "30"
+msgstr "30"
+
+#: src/window.ui:190
+msgid "60"
+msgstr "60"
+
+#: src/window.ui:231
+msgid "0"
+msgstr "0"
+
+#: src/window.ui:263
+msgid "High quality"
+msgstr "Alta qualità"
+
+#: src/window.ui:304
+msgid "Record audio from apps"
+msgstr "Registra l'audio dalle app"
+
+#: src/window.ui:343
+msgid "Record mouse cursor"
+msgstr "Registra il cursore del mouse"
+
+#: src/window.ui:382
+msgid "Folder for saving the file"
+msgstr "Cartella per il salvataggio del file"
+
+#: src/window.ui:431
+msgid "The file will be saved in "
+msgstr "Il file verrà salvato in "
+
+#: src/window.py:150
+msgid "Sorry, Wayland session is not supported yet"
+msgstr "Siamo spiacenti, la sessione Wayland non è ancora supportata"
+
+#: src/rec.py:76
+msgid "Please re-select the area"
+msgstr "Seleziona nuovamente l'area"
+
+#: src/rec.py:102
+msgid "RecApp-"
+msgstr "RecApp-"
+
+#: src/rec.py:107
+msgid "recording will start in "
+msgstr "la registrazione inizierà fra "
+
+#: src/rec.py:107
+msgid " seconds"
+msgstr " secondi"
+
+#: src/rec.py:147
+msgid "Recording is complete"
+msgstr "La registrazione è completa"
+
+#: src/rec.py:148
+msgid "Open Folder"
+msgstr "Apri Cartella"
+
+#: src/rec.py:149
+msgid "Open File"
+msgstr "Apri File"
+
+#: src/rec.py:162
+msgid "Website"
+msgstr "Sito Web"
