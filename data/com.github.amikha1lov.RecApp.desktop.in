@@ -4,5 +4,5 @@ Exec=recapp
 Icon=com.github.amikha1lov.RecApp
 Terminal=false
 Type=Application
-Categories=GTK;
+Categories=AudioVideo;GNOME;GTK;Recorder
 StartupNotify=true
