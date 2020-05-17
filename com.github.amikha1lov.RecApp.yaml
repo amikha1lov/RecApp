@@ -26,7 +26,8 @@ cleanup:
   - /share/pkgconfig
 modules:
   - shared-modules/glu/glu-9.json
-
+  - shared-modules/glew/glew.json
+  
   - name: recapp
     builddir: true
     buildsystem: meson
@@ -35,34 +36,21 @@ modules:
         path: .
 
     modules:
-      - name: glew
-        no-autogen: true
-        make-args:
-          - GLEW_PREFIX=/app
-          - GLEW_DEST=/app
-          - LIBDIR=/app/lib
-        make-install-args:
-          - GLEW_PREFIX=/app
-          - GLEW_DEST=/app
-          - LIBDIR=/app/lib
-        sources:
-          - type: archive
-            url: http://archive.ubuntu.com/ubuntu/pool/universe/g/glew/glew_2.1.0.orig.tar.xz
-            sha256: bf02e906252b283135406791969bbb6a2a530d685c1b9402a8c14a102b244264
-
       - name: glm
         buildsystem: cmake-ninja
+        config-options:
+          - --DBUILD_STATIC_LIBS=OFF
         sources:
           - type: archive
-            url: https://github.com/g-truc/glm/releases/download/0.9.9.2/glm-0.9.9.2.zip
-            sha256: 209b5943d393925e1a6ecb6734e7507b8f6add25e72a605b25d0d0d382e64fd4
+            url: https://github.com/g-truc/glm/releases/download/0.9.9.5/glm-0.9.9.5.zip
+            sha256: 4fe34860ce69156f63eea6c3d84c91cadfc330353cf275ff394aef4e163cafee
 
       - name: slop
         buildsystem: cmake-ninja
         sources:
           - type: archive
-            url: https://github.com/naelstrof/slop/archive/v7.4.zip
-            sha256: bf7610fbb4e3de43ef7182969207476953109f1bf2066fb6e3b84f237e69912e
+            url: https://github.com/naelstrof/slop/archive/v7.5.tar.gz
+            sha256: 94d8b6270217cd7f56ce7d4a9a75069025262830a2f91c3239b7fc07da5ea8da
 
       - name: pydbus
         buildsystem: simple
@@ -79,5 +67,5 @@ modules:
           - python3 ./setup.py install --prefix=/app --root=/
         sources:
           - type: archive
-            url: https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-20.1.2.tar.gz
-            sha256: 4a97a4f7fcd8dbe56380980e8c9519ff4e26552604776cbc7555e6a14ff0202f
+            url: https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-20.4.3.tar.gz
+            sha256: f5fffd7db08aba0bb90ea2af8e777c272a6882d574598d511433930cc8f9aed4
