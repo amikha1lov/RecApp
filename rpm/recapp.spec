@@ -1,19 +1,15 @@
-%global commit  1aaec32cb56a60d6149c334fe00781b1999d1f1f
-%global shortcommit %(c=%{commit}; echo ${c:0:7})
-%global date    20200502
-
 %global appname RecApp
 %global uuid    com.github.amikha1lov.%{appname}
 
 Name:           recapp
-Version:        0.1.0
-Release:        1.%{date}git%{shortcommit}%{?dist}
+Version:        1.0.2
+Release:        1%{?dist}
 Summary:        User friendly Open Source screencaster for Linux written in GTK
 BuildArch:      noarch
 
 License:        GPLv3+
 URL:            https://github.com/amikha1lov/recapp
-Source0:        %{url}/archive/%{commit}/%{name}-%{version}.%{date}git%{shortcommit}.tar.gz
+Source0:        %{url}/archive/v%{version}/%{name}-%{version}.tar.gz
 
 BuildRequires:  desktop-file-utils
 BuildRequires:  intltool
@@ -24,11 +20,13 @@ BuildRequires:  pkgconfig(glib-2.0)
 
 Requires:       gstreamer1-plugins-base
 Requires:       gstreamer1-plugins-good
+Requires:       gtk3
 Requires:       hicolor-icon-theme
 Requires:       python3-pulsectl
 Requires:       python3-pydbus
 Requires:       slop
 
+# For future
 #Recommends:     gstreamer1-plugins-ugly
 
 %description
@@ -37,7 +35,7 @@ GStreamer modules and not depend on FFmpeg.
 
 
 %prep
-%autosetup -n %{appname}-%{commit} -p1
+%autosetup -n %{appname}-%{version} -p1
 
 
 %build
@@ -67,6 +65,30 @@ desktop-file-validate %{buildroot}%{_datadir}/applications/*.desktop
 
 
 %changelog
+* Fri May 15 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 1.0.2-1
+- Update to 1.0.2
+
+* Wed May 13 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 1.0.1-2
+- Update to 1.0.1
+
+* Mon May 11 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 1.0.0-1
+- Update to 1.0.0
+
+* Sat May 09 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200509gitcee6555
+- Update to latest git snapshot
+
+* Fri May 08 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200508gitd7429a7
+- Update to latest git snapshot
+
+* Wed May 06 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200506gitfba20ea
+- Update to latest git snapshot
+
+* Mon May 04 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200505git61c6ee7
+- Update to latest git snapshot
+
+* Mon May 04 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200504gitfa5858f
+- Update to latest git snapshot
+
 * Sat May 02 2020 Artem Polishchuk <ego.cordatus@gmail.com> - 0.1.0-1.20200502git1aaec32
 - Update to latest git snapshot
 
