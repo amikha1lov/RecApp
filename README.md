@@ -11,12 +11,7 @@ User friendly Open Source screencaster for Linux written in GTK. Using free GStr
 
 ## Packaging status
 
-Fedora [COPR](https://copr.fedorainfracloud.org/coprs/atim/rec-app/):
-
-```
-sudo dnf copr enable atim/rec-app -y
-sudo dnf install recapp
-```
+[Fedora](https://src.fedoraproject.org/rpms/recapp): `sudo dnf install recapp`
 
 ## Build from source
 
