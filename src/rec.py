@@ -36,20 +36,32 @@ Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
 
+
+def formats_combobox_changed(self,box):
+    self.recordFormat = box.get_active_text()
+    print(self.recordFormat)
+
 def video_folder_button(self, button):
     self.settings.set_string('path-to-save-video-folder',self._video_folder_button.get_filename())
     self._video_folder_button.set_current_folder_uri(self.settings.get_string('path-to-save-video-folder'))
 
-def quality_video_switcher(self, switch, gparam):
-    if switch.get_active():
+def quality_video_switcher(self, *args):
+    if self._quality_video_switcher.get_active():
         state = "on"
         self.settings.set_boolean('high-quality-switch',True)
-        self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
+        if self.recordFormat == "webm" or self.recordFormat == "mkv":
+            self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
+        elif self.recordFormat == "mp4":
+            self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse".format(self.cpus)
+        return self.quality_video
     else:
         state = "off"
         self.settings.set_boolean('high-quality-switch',False)
-        self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
-
+        if self.recordFormat == "webm" or self.recordFormat == "mkv":
+            self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
+        elif self.recordFormat == "mp4":
+            self.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse".format(self.cpus)
+        return self.quality_video
 
 def delay_button_change(self, spin):
     self.delayBeforeRecording = spin.get_value_as_int()
@@ -81,15 +93,18 @@ def on__select_area(self):
     self.coordinateMode = True
 
 
-def on__sound_switch(self, switch, gparam):
-    if switch.get_active():
+def on__sound_switch(self, *args):
+    if self._sound_on_switch.get_active():
         self.recordSoundOn = True
         with pulsectl.Pulse() as pulse:
             self.soundOnSource = pulse.sink_list()[0].name
             self.settings.set_boolean('record-audio-switch',True)
+            if self.recordFormat == "webm" or self.recordFormat == "mkv":
+                self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux.".format(self.soundOnSource)
 
-            self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux. -e".format(self.soundOnSource)
-
+            elif self.recordFormat == "mp4":
+                self.soundOn = " pulsesrc buffer-time=20000000 device='{}.monitor' ! 'audio/x-raw,channels=2,rate=48000' ! queue ! audioconvert ! queue ! opusenc bitrate=512000 ! queue ! mux.".format(self.soundOnSource)
+        return self.soundOn
     else:
         self.recordSoundOn = False
         self.settings.set_boolean('record-audio-switch',False)
@@ -99,6 +114,8 @@ def on__sound_switch(self, switch, gparam):
 def start_recording(self,*args):
     self._recording_box.set_visible(False)
     self._label_video_saved_box.set_visible(True)
+    self.quality_video = quality_video_switcher(self, *args)
+    self.soundOn = on__sound_switch(self, *args)
     fileNameTime =_("RecApp-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
     videoFolder = self.settings.get_string('path-to-save-video-folder')
     self._label_video_saved.set_label(videoFolder)
@@ -109,24 +126,41 @@ def start_recording(self,*args):
 
     time.sleep(self.delayBeforeRecording)
 
+
+    if self.recordFormat == "webm":
+        mux = "webmmux"
+        extension = ".webm"
+
+    elif self.recordFormat == "mkv":
+        mux = "matroskamux"
+        extension = ".mkv"
+
+    elif self.recordFormat == "mp4":
+        mux = "mp4mux"
+        extension = ".mp4"
+
     if self.displayServer == "wayland":
-            RecorderPipeline = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0} ! queue ! webmmux".format(self.cpus)
-            self.GNOMEScreencast.Screencast(self.fileName  + ".webm", {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
+        RecorderPipeline = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0} ! queue ! {1}".format(self.cpus, mux)
+        self.GNOMEScreencast.Screencast(self.fileName  + extension, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
     else:
         if self.coordinateMode == True:
-            video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={} " +self.coordinateArea +" ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! webmmux name=mux ! queue ! filesink location='{}'.webm"
+            video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " +self.coordinateArea +" ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
             if self.recordSoundOn == True:
-                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
+                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension) + self.soundOn, shell=True)
 
             else:
-                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName), shell=True)
+                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension), shell=True)
             self.coordinateMode = False
         else:
             if self.recordSoundOn == True:
-                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName) + self.soundOn, shell=True)
-
+                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension) + self.soundOn, shell=True)
+                print(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension) + self.soundOn)
             else:
-                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.fileName), shell=True)
+                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension), shell=True)
+
+
+
+
 
     self._record_button.set_visible(False)
     self._stop_record_button.set_visible(True)

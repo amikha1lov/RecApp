@@ -48,8 +48,8 @@ class RecappWindow(Gtk.ApplicationWindow):
     coordinateArea = ""
     isrecording = False
     __gtype_name__ = 'RecAppWindow'
-
-
+    encoders = ["vp8enc","x264enc"]
+    formats = []
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
     _frames_combobox = Gtk.Template.Child()
@@ -67,10 +67,30 @@ class RecappWindow(Gtk.ApplicationWindow):
     _record_mouse_switcher = Gtk.Template.Child()
     _quality_rowbox = Gtk.Template.Child()
     _audio_rowbox = Gtk.Template.Child()
-
+    _formats_combobox = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        for encoder in self.encoders:
+            plugin = Gst.ElementFactory.find(encoder)
+            if plugin:
+                print("плагин есть")
+                if(encoder == "vp8enc"):
+                    self.formats.append("webm")
+                    self.formats.append("mkv")
+                elif(encoder == "x264enc"):
+                    self.formats.append("mp4")
+
+
+            else:
+                print("плагина нет")
+        print(self.formats)
+        formats_store = Gtk.ListStore(str)
+        for format in self.formats:
+            formats_store.append([format])
+        self._formats_combobox.set_model(formats_store)
+        self._formats_combobox.set_active(0)
+        self.recordFormat = self._formats_combobox.get_active_text()
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
         accel.connect(Gdk.keyval_from_name('h'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_high_quality)
@@ -78,7 +98,6 @@ class RecappWindow(Gtk.ApplicationWindow):
         accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_mouse_record)
         accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_record)
         self.cpus = multiprocessing.cpu_count() - 1
-        self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1 threads={0}".format(self.cpus)
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
         Notify.init(constants["APPID"])
@@ -139,8 +158,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             else:
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
-            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={} ! video/x-raw,framerate={}/1 ! queue ! videoscale ! videoconvert ! {} ! queue ! webmmux name=mux ! queue ! filesink location='{}'.webm"
-
+            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
 
     def openFolder(self, notification, action, user_data = None):
         videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
@@ -189,6 +207,10 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__popover_about_button_clicked(self, button):
         popover_init()
 
+    @Gtk.Template.Callback()
+    def on__formats_combobox_changed(self,box):
+        formats_combobox_changed(self,box)
+
     def on_delete_event(self,w,h):
         delete_event(self,w,h)
 
@@ -209,4 +231,4 @@ class RecappWindow(Gtk.ApplicationWindow):
 
 
 
-
+    
