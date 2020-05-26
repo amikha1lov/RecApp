@@ -39,7 +39,6 @@ Gst.init(sys.argv)
 
 def formats_combobox_changed(self,box):
     self.recordFormat = box.get_active_text()
-    print(self.recordFormat)
 
 def video_folder_button(self, button):
     self.settings.set_string('path-to-save-video-folder',self._video_folder_button.get_filename())
