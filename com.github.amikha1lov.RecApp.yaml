@@ -36,9 +36,18 @@ modules:
         path: .
 
     modules:
+      - name: x264
+        config-opts:
+          - --disable-cli
+          - --enable-shared
+        sources:
+          - type: archive
+            url: https://download.videolan.org/pub/x264/snapshots/x264-snapshot-20191217-2245-stable.tar.bz2
+            sha256: b2495c8f2930167d470994b1ce02b0f4bfb24b3317ba36ba7f112e9809264160
+
       - name: glm
         buildsystem: cmake-ninja
-        config-options:
+        config-opts:
           - --DBUILD_STATIC_LIBS=OFF
         sources:
           - type: archive
