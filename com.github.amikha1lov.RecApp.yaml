@@ -47,6 +47,7 @@ modules:
             sha256: b2495c8f2930167d470994b1ce02b0f4bfb24b3317ba36ba7f112e9809264160
 
       - name: gstreamer1-plugins-ugly
+        buildsystem: meson
         config-opts:
           - -D=x264=enabled
         sources:
