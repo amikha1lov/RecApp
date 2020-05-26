@@ -7,51 +7,46 @@ msgid ""
 msgstr ""
 "Project-Id-Version: \n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-09 02:11+0300\n"
+"POT-Creation-Date: 2020-05-27 02:23+0300\n"
 "PO-Revision-Date: 2020-05-12 01:40+0300\n"
+"Last-Translator: Artem Polishchuk <ego.cordatus@gmail.com>\n"
 "Language-Team: \n"
+"Language: ru\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "X-Generator: Poedit 2.3\n"
-"Last-Translator: Artem Polishchuk <ego.cordatus@gmail.com>\n"
-"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n"
-"%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
-"Language: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<12 || n%100>14) ? 1 : 2);\n"
 
-#: data/com.github.amikha1lov.RecApp.desktop.in:3
-#: data/com.github.amikha1lov.RecApp.appdata.xml.in:8 src/window.ui:71
-msgid "RecApp"
-msgstr "RecApp"
+#: src/rec.py:123
+msgid " seconds"
+msgstr " секунд"
 
-#: data/com.github.amikha1lov.RecApp.appdata.xml.in:9
-msgid "User friendly Open Source screencaster for Linux written in GTK"
-msgstr ""
-"Удобный в использовании скринкастер с открытым исходным кодом для Linux,"
-"написанный на  GTK"
+#: src/window.ui:196
+msgid "0"
+msgstr "0"
 
-#: data/com.github.amikha1lov.RecApp.appdata.xml.in:12
-msgid ""
-"User friendly Open Source screencaster for Linux written in GTK. Using free "
-"GStreamer modules and not depend on FFmpeg."
-msgstr ""
-"Удобный в использовании скринкастер с открытым исходным кодом для Linux,"
-"написанный на  GTK. Использующий свободные модули GStreamer и не зависит от "
-"FFmpeg."
+#: src/window.ui:126
+msgid "15"
+msgstr "15"
 
-#: data/com.github.amikha1lov.RecApp.appdata.xml.in:35
+#: src/window.ui:127
+msgid "30"
+msgstr "30"
+
+#: src/window.ui:128
+msgid "60"
+msgstr "60"
+
+#: src/window.ui:34
+msgid "About"
+msgstr "О приложении"
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:38
 msgid "Alexey Mikhailov"
 msgstr "Алексей Михайлов"
 
-#: data/com.github.amikha1lov.RecApp.gschema.xml:6
-msgid "Frames"
-msgstr "Кадровая частота"
-
-#: data/com.github.amikha1lov.RecApp.gschema.xml:7
-msgid "Number of frames per video."
-msgstr "Количество кадров в видео."
-
-#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:219
+#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:184
 msgid "Delay"
 msgstr "Задержка"
 
@@ -59,130 +54,131 @@ msgstr "Задержка"
 msgid "Delay before recording."
 msgstr "Задержка перед записью."
 
-#: data/com.github.amikha1lov.RecApp.gschema.xml:16
-msgid "Enabling high quality mode"
-msgstr "Включить высокое качество"
-
-#: data/com.github.amikha1lov.RecApp.gschema.xml:17
-msgid "Record video in high quality."
-msgstr "Запись видео в макс качестве."
-
 #: data/com.github.amikha1lov.RecApp.gschema.xml:21
 msgid "Enabling audio recording"
 msgstr "Включить запись звука"
 
-#: data/com.github.amikha1lov.RecApp.gschema.xml:22
-msgid "The inclusion of audio recording."
-msgstr "Включение записи звука."
+#: data/com.github.amikha1lov.RecApp.gschema.xml:16
+msgid "Enabling high quality mode"
+msgstr "Включить высокое качество"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:26
 msgid "Enabling record mouse cursor"
 msgstr "Запись курсора мыши"
 
-#: data/com.github.amikha1lov.RecApp.gschema.xml:27
-msgid "Recording the mouse cursor."
-msgstr "Записывать курсор мыши."
+#: src/window.ui:518
+msgid "Folder for saving the file"
+msgstr "Сохранить файл в"
 
-#: data/com.github.amikha1lov.RecApp.gschema.xml:31
-msgid "Path to the save folder"
-msgstr "Путь сохранения файла"
+#: src/window.ui:253
+msgid "Format"
+msgstr "Формат"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:6
+msgid "Frames"
+msgstr "Кадровая частота"
+
+#: src/window.ui:111
+msgid "Frames per second"
+msgstr "Кадровая частота"
+
+#: src/window.ui:319
+msgid "High quality"
+msgstr "Высокое качество записи"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:7
+msgid "Number of frames per video."
+msgstr "Количество кадров в видео."
+
+#: src/rec.py:183
+msgid "Open File"
+msgstr "Открыть файл"
+
+#: src/rec.py:182
+msgid "Open Folder"
+msgstr "Открыть папку"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:32
 msgid "Path to the folder where the file will be saved."
 msgstr "Путь до папки, где будет сохранен файл."
 
+#: data/com.github.amikha1lov.RecApp.gschema.xml:31
+msgid "Path to the save folder"
+msgstr "Путь сохранения файла"
+
+#: src/rec.py:87
+msgid "Please re-select the area"
+msgstr "Выберите область заново"
+
 #: src/window.ui:20
 msgid "Preferences"
 msgstr "Параметры"
 
-#: src/window.ui:34
-msgid "About"
-msgstr "О приложении"
+#: data/com.github.amikha1lov.RecApp.desktop.in:3
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:8 src/window.ui:632
+msgid "RecApp"
+msgstr "RecApp"
 
-#: src/window.ui:72 src/rec.py:160
-msgid "Simple app for recording desktop"
-msgstr "Простая программа для записи рабочего стола"
-
-#: src/window.ui:100
-msgid "[    ]"
-msgstr "[    ]"
-
-#: src/window.ui:104
-msgid "Select Area"
-msgstr "Выбрать область"
-
-#: src/window.ui:173
-msgid "Frames per second"
-msgstr "Кадровая частота"
-
-#: src/window.ui:188
-msgid "15"
-msgstr "15"
-
-#: src/window.ui:189
-msgid "30"
-msgstr "30"
-
-#: src/window.ui:190
-msgid "60"
-msgstr "60"
-
-#: src/window.ui:231
-msgid "0"
-msgstr "0"
-
-#: src/window.ui:263
-msgid "High quality"
-msgstr "Высокое качество записи"
-
-#: src/window.ui:304
-msgid "Record audio from apps"
-msgstr "Записывать аудио из приложений"
-
-#: src/window.ui:343
-msgid "Record mouse cursor"
-msgstr "Записывать курсор мыши"
-
-#: src/window.ui:382
-msgid "Folder for saving the file"
-msgstr "Сохранить файл в"
-
-#: src/window.ui:431
-msgid "The file will be saved in "
-msgstr "Файл будет сохранен в "
-
-#: src/window.py:150
-msgid "Sorry, Wayland session is not supported yet"
-msgstr "К сожалению, сеанс Wayland пока не поддерживается"
-
-#: src/rec.py:76
-msgid "Please re-select the area"
-msgstr "Выберите область заново"
-
-#: src/rec.py:102
+#: src/rec.py:118
 msgid "RecApp-"
 msgstr "RecApp-"
 
-#: src/rec.py:107
-msgid "recording will start in "
-msgstr "запись начнется через "
+#: src/window.ui:386
+msgid "Record audio from apps"
+msgstr "Записывать аудио из приложений"
 
-#: src/rec.py:107
-msgid " seconds"
-msgstr " секунд"
+#: src/window.ui:452
+msgid "Record mouse cursor"
+msgstr "Записывать курсор мыши"
 
-#: src/rec.py:147
+#: data/com.github.amikha1lov.RecApp.gschema.xml:17
+msgid "Record video in high quality."
+msgstr "Запись видео в макс качестве."
+
+#: src/rec.py:181
 msgid "Recording is complete"
 msgstr "Запись успешно завершена"
 
-#: src/rec.py:148
-msgid "Open Folder"
-msgstr "Открыть папку"
+#: data/com.github.amikha1lov.RecApp.gschema.xml:27
+msgid "Recording the mouse cursor."
+msgstr "Записывать курсор мыши."
 
-#: src/rec.py:149
-msgid "Open File"
-msgstr "Открыть файл"
+#: src/window.ui:695
+msgid "Select Area"
+msgstr "Выбрать область"
 
-#: src/rec.py:162
+#: src/window.ui:633 src/rec.py:194
+msgid "Simple app for recording desktop"
+msgstr "Простая программа для записи рабочего стола"
+
+#: src/window.py:136
+msgid "Sorry, Wayland session is not supported yet"
+msgstr "К сожалению, сеанс Wayland пока не поддерживается"
+
+#: src/window.ui:596
+msgid "The file will be saved in "
+msgstr "Файл будет сохранен в "
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:22
+msgid "The inclusion of audio recording."
+msgstr "Включение записи звука."
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:9
+msgid "User friendly Open Source screencaster for Linux written in GTK"
+msgstr "Удобный в использовании скринкастер с открытым исходным кодом для Linux,написанный на  GTK"
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:12
+msgid "User friendly Open Source screencaster for Linux written in GTK. Using free GStreamer modules and not depend on FFmpeg."
+msgstr "Удобный в использовании скринкастер с открытым исходным кодом для Linux,написанный на  GTK. Использующий свободные модули GStreamer и не зависит от FFmpeg."
+
+#: src/rec.py:196
 msgid "Website"
 msgstr "Веб-сайт"
+
+#: src/window.ui:691
+msgid "[    ]"
+msgstr "[    ]"
+
+#: src/rec.py:123
+msgid "recording will start in "
+msgstr "запись начнется через "
