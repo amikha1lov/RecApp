@@ -71,26 +71,6 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
-        for encoder in self.encoders:
-            plugin = Gst.ElementFactory.find(encoder)
-            if plugin:
-                print("плагин есть")
-                if(encoder == "vp8enc"):
-                    self.formats.append("webm")
-                    self.formats.append("mkv")
-                elif(encoder == "x264enc"):
-                    self.formats.append("mp4")
-
-
-            else:
-                print("плагина нет")
-        print(self.formats)
-        formats_store = Gtk.ListStore(str)
-        for format in self.formats:
-            formats_store.append([format])
-        self._formats_combobox.set_model(formats_store)
-        self._formats_combobox.set_active(0)
-        self.recordFormat = self._formats_combobox.get_active_text()
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
         accel.connect(Gdk.keyval_from_name('h'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_high_quality)
@@ -159,6 +139,24 @@ class RecappWindow(Gtk.ApplicationWindow):
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
         else:
             self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
+
+        for encoder in self.encoders:
+           plugin = Gst.ElementFactory.find(encoder)
+           if plugin:
+               if(encoder == "vp8enc"):
+                   self.formats.append("webm")
+                   self.formats.append("mkv")
+               elif(encoder == "x264enc"):
+                   if self.displayServer != "wayland":
+                       self.formats.append("mp4")
+           else:
+               pass
+        formats_store = Gtk.ListStore(str)
+        for format in self.formats:
+            formats_store.append([format])
+        self._formats_combobox.set_model(formats_store)
+        self._formats_combobox.set_active(0)
+        self.recordFormat = self._formats_combobox.get_active_text()
 
     def openFolder(self, notification, action, user_data = None):
         videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
