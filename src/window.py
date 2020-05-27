@@ -91,6 +91,8 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.delayBeforeRecording = self.settings.get_int('delay')
         self.videoFrames = self.settings.get_int('frames')
         self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
+        self.recordFormat = self.settings.get_string('format-video')
+        print(self.recordFormat)
         self._sound_on_switch.set_active(self.recordSoundOn)
         self._record_mouse_switcher.set_active(self.recordMouse)
         self._quality_video_switcher.set_active(self.settings.get_boolean("high-quality-switch"))
@@ -159,8 +161,10 @@ class RecappWindow(Gtk.ApplicationWindow):
         for format in self.formats:
             formats_store.append([format])
         self._formats_combobox.set_model(formats_store)
-        self._formats_combobox.set_active(0)
+        self._formats_combobox.set_active(self.formats.index(self.settings.get_string('format-video')))
         self.recordFormat = self._formats_combobox.get_active_text()
+
+
 
     def openFolder(self, notification, action, user_data = None):
         videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
