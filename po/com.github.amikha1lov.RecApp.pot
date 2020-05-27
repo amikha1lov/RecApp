@@ -8,7 +8,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-27 02:23+0300\n"
+"POT-Creation-Date: 2020-05-27 12:39+0300\n"
 "PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
 "Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
 "Language-Team: LANGUAGE <LL@li.org>\n"
@@ -84,6 +84,14 @@ msgstr ""
 msgid "Path to the folder where the file will be saved."
 msgstr ""
 
+#: data/com.github.amikha1lov.RecApp.gschema.xml:36
+msgid "Video recording format"
+msgstr ""
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:37
+msgid "The format in which the video will be recorded."
+msgstr ""
+
 #: src/window.ui:20
 msgid "Preferences"
 msgstr ""
@@ -148,23 +156,23 @@ msgstr ""
 msgid "Select Area"
 msgstr ""
 
-#: src/window.py:136
+#: src/window.py:142
 msgid "Sorry, Wayland session is not supported yet"
 msgstr ""
 
-#: src/rec.py:87
+#: src/rec.py:88
 msgid "Please re-select the area"
 msgstr ""
 
-#: src/rec.py:118
+#: src/rec.py:119
 msgid "RecApp-"
 msgstr ""
 
-#: src/rec.py:123
+#: src/rec.py:124
 msgid "recording will start in "
 msgstr ""
 
-#: src/rec.py:123
+#: src/rec.py:124
 msgid " seconds"
 msgstr ""
 

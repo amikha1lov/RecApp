@@ -7,7 +7,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: PACKAGE VERSION\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2020-05-27 02:23+0300\n"
+"POT-Creation-Date: 2020-05-27 12:39+0300\n"
 "PO-Revision-Date: 2020-05-16 11:12+0100\n"
 "Last-Translator: Albano Battistella <albano_battistella@hotmail.com>\n"
 "Language-Team: Italian <LL@li.org>\n"
@@ -16,7 +16,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: src/rec.py:123
+#: src/rec.py:124
 msgid " seconds"
 msgstr " secondi"
 
@@ -104,7 +104,7 @@ msgstr "Percorso della cartella in cui verrà salvato il file."
 msgid "Path to the save folder"
 msgstr "Percorso della cartella di salvataggio"
 
-#: src/rec.py:87
+#: src/rec.py:88
 msgid "Please re-select the area"
 msgstr "Seleziona nuovamente l'area"
 
@@ -117,7 +117,7 @@ msgstr "Preferenze"
 msgid "RecApp"
 msgstr "RecApp"
 
-#: src/rec.py:118
+#: src/rec.py:119
 msgid "RecApp-"
 msgstr "RecApp-"
 
@@ -149,13 +149,17 @@ msgstr "Seleziona Area"
 msgid "Simple app for recording desktop"
 msgstr "Semplice App per la registrazione del desktop"
 
-#: src/window.py:136
+#: src/window.py:142
 msgid "Sorry, Wayland session is not supported yet"
 msgstr "Siamo spiacenti, la sessione Wayland non è ancora supportata"
 
 #: src/window.ui:596
 msgid "The file will be saved in "
 msgstr "Il file verrà salvato in "
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:37
+msgid "The format in which the video will be recorded."
+msgstr ""
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:22
 msgid "The inclusion of audio recording."
@@ -169,6 +173,10 @@ msgstr "Screencaster Open Source user friendly per Linux scritto in GTK"
 msgid "User friendly Open Source screencaster for Linux written in GTK. Using free GStreamer modules and not depend on FFmpeg."
 msgstr "Screencaster Open Source user friendly per Linux scritto in GTK. Utilizza moduli GStreamer gratuiti e non dipende da FFmpeg."
 
+#: data/com.github.amikha1lov.RecApp.gschema.xml:36
+msgid "Video recording format"
+msgstr ""
+
 #: src/rec.py:196
 msgid "Website"
 msgstr "Sito Web"
@@ -177,6 +185,6 @@ msgstr "Sito Web"
 msgid "[    ]"
 msgstr "[    ]"
 
-#: src/rec.py:123
+#: src/rec.py:124
 msgid "recording will start in "
 msgstr "la registrazione inizierà fra "
