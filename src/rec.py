@@ -127,35 +127,34 @@ def start_recording(self,*args):
 
 
     if self.recordFormat == "webm":
-        mux = "webmmux"
-        extension = ".webm"
+        self.mux = "webmmux"
+        self.extension = ".webm"
 
     elif self.recordFormat == "mkv":
-        mux = "matroskamux"
-        extension = ".mkv"
+        self.mux = "matroskamux"
+        self.extension = ".mkv"
 
     elif self.recordFormat == "mp4":
-        mux = "mp4mux"
-        extension = ".mp4"
+        self.mux = "mp4mux"
+        self.extension = ".mp4"
 
     if self.displayServer == "wayland":
-        RecorderPipeline = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0} ! queue ! {1}".format(self.cpus, mux)
-        self.GNOMEScreencast.Screencast(self.fileName  + extension, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
+        RecorderPipeline = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0} ! queue ! {1}".format(self.cpus, self.mux)
+        self.GNOMEScreencast.Screencast(self.fileName  + self.extension, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
     else:
         if self.coordinateMode == True:
             video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " +self.coordinateArea +" ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
             if self.recordSoundOn == True:
-                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension) + self.soundOn, shell=True)
+                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension) + self.soundOn, shell=True)
 
             else:
-                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension), shell=True)
+                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension), shell=True)
             self.coordinateMode = False
         else:
             if self.recordSoundOn == True:
-                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension) + self.soundOn, shell=True)
-                print(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension) + self.soundOn)
+                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension) + self.soundOn, shell=True)
             else:
-                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,mux,self.fileName,extension), shell=True)
+                self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension), shell=True)
 
 
 
