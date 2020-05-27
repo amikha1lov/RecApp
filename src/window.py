@@ -44,9 +44,12 @@ Gst.init(sys.argv)
 class RecappWindow(Gtk.ApplicationWindow):
 
     soundOn = ""
+    mux = ""
+    extension = ""
     coordinateMode = False
     coordinateArea = ""
     isrecording = False
+    recordFormat = ""
     __gtype_name__ = 'RecAppWindow'
     encoders = ["vp8enc","x264enc"]
     formats = []
@@ -163,7 +166,8 @@ class RecappWindow(Gtk.ApplicationWindow):
         os.system("xdg-open "+ videoFolderForOpen)
 
     def openVideoFile(self, notification, action, user_data = None):
-        os.system("xdg-open "+ self.fileName+".webm")
+
+        os.system("xdg-open "+ self.fileName+self.extension)
 
     @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
