@@ -92,7 +92,6 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.videoFrames = self.settings.get_int('frames')
         self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
         self.recordFormat = self.settings.get_string('format-video')
-        print(self.recordFormat)
         self._sound_on_switch.set_active(self.recordSoundOn)
         self._record_mouse_switcher.set_active(self.recordMouse)
         self._quality_video_switcher.set_active(self.settings.get_boolean("high-quality-switch"))
