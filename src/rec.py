@@ -52,7 +52,7 @@ def quality_video_switcher(self, *args):
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
             self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
         elif self.recordFormat == "mp4":
-            self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse".format(self.cpus)
+            self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(self.cpus)
         return self.quality_video
     else:
         state = "off"
@@ -60,7 +60,7 @@ def quality_video_switcher(self, *args):
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
             self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
         elif self.recordFormat == "mp4":
-            self.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse".format(self.cpus)
+            self.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(self.cpus)
         return self.quality_video
 
 def delay_button_change(self, spin):
@@ -88,7 +88,21 @@ def on__select_area(self):
         self.notification = Notify.Notification.new(constants["APPNAME"], _("Please re-select the area"))
         self.notification.show()
         return
+
     startx,starty,endx,endy = listCoor[2],listCoor[3],listCoor[2]+listCoor[0]-1, listCoor[1]+listCoor[3]-1
+    if listCoor[0] % 2 == 0 and listCoor[1] % 2 == 0:
+        self.widthArea = endx -startx + 1
+        self.heightArea = endy - starty + 1
+    elif listCoor[0] % 2 == 0 and listCoor[1] % 2 == 1:
+        self.widthArea = endx -startx + 1
+        self.heightArea = endy - starty + 2
+    elif listCoor[0] % 2 == 1 and listCoor[1] % 2 == 1:
+        self.widthArea = endx -startx
+        self.heightArea = endy - starty
+    elif listCoor[0] % 2 == 1 and listCoor[1] % 2 == 0:
+        self.widthArea = endx -startx + 2
+        self.heightArea = endy - starty + 1
+
     self.coordinateArea = "startx={} starty={} endx={} endy={}".format(startx,starty,endx,endy)
     self.coordinateMode = True
 
@@ -144,19 +158,19 @@ def start_recording(self,*args):
         self.GNOMEScreencast.Screencast(self.fileName  + self.extension, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
     else:
         if self.coordinateMode == True:
-            video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " +self.coordinateArea +" ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
+            video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " +self.coordinateArea +" ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
             if self.recordSoundOn == True:
-                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension) + self.soundOn, shell=True)
-
+                self.video = Popen(video_str.format(self.recordMouse,self.widthArea,self.heightArea,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension) + self.soundOn, shell=True)
+                print(video_str.format(self.recordMouse,self.widthArea,self.heightArea,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension))
             else:
-                self.video = Popen(video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension), shell=True)
+                self.video = Popen(video_str.format(self.recordMouse,self.widthArea,self.heightArea,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension), shell=True)
+                print(video_str.format(self.recordMouse,self.widthArea,self.heightArea,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension))
             self.coordinateMode = False
         else:
             if self.recordSoundOn == True:
                 self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension) + self.soundOn, shell=True)
             else:
                 self.video = Popen(self.video_str.format(self.recordMouse,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension), shell=True)
-
 
 
 

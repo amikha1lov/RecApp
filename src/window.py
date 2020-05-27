@@ -49,6 +49,8 @@ class RecappWindow(Gtk.ApplicationWindow):
     quality_video = ""
     coordinateArea = ""
     recordFormat = ""
+    widthArea = 0
+    heightArea = 0
     coordinateMode = False
     isrecording = False
     __gtype_name__ = 'RecAppWindow'
