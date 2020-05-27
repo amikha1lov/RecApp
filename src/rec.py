@@ -127,6 +127,7 @@ def on__sound_switch(self, *args):
 
 def start_recording(self,*args):
     self._recording_box.set_visible(False)
+    self._select_area_button.set_visible(False)
     self._label_video_saved_box.set_visible(True)
     self.quality_video = quality_video_switcher(self, *args)
     self.soundOn = on__sound_switch(self, *args)
@@ -161,10 +162,10 @@ def start_recording(self,*args):
             video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " +self.coordinateArea +" ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
             if self.recordSoundOn == True:
                 self.video = Popen(video_str.format(self.recordMouse,self.widthArea,self.heightArea,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension) + self.soundOn, shell=True)
-                print(video_str.format(self.recordMouse,self.widthArea,self.heightArea,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension))
+
             else:
                 self.video = Popen(video_str.format(self.recordMouse,self.widthArea,self.heightArea,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension), shell=True)
-                print(video_str.format(self.recordMouse,self.widthArea,self.heightArea,self.videoFrames,self.quality_video,self.mux,self.fileName,self.extension))
+
             self.coordinateMode = False
         else:
             if self.recordSoundOn == True:
@@ -185,6 +186,7 @@ def stop_recording(self,*args):
     self._record_button.set_visible(True)
     self._label_video_saved_box.set_visible(False)
     self._recording_box.set_visible(True)
+    self._select_area_button.set_visible(True)
 
     if self.displayServer == "wayland":
         self.GNOMEScreencast.StopScreencast()
