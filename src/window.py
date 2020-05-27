@@ -46,10 +46,11 @@ class RecappWindow(Gtk.ApplicationWindow):
     soundOn = ""
     mux = ""
     extension = ""
-    coordinateMode = False
+    quality_video = ""
     coordinateArea = ""
-    isrecording = False
     recordFormat = ""
+    coordinateMode = False
+    isrecording = False
     __gtype_name__ = 'RecAppWindow'
     encoders = ["vp8enc","x264enc"]
     formats = []
