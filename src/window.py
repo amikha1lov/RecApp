@@ -131,11 +131,8 @@ class RecappWindow(Gtk.ApplicationWindow):
 
         if self.displayServer == "wayland":
             self._select_area_button.set_visible(False)
-            self._quality_video_box.set_visible(False)
             self._sound_box.set_visible(False)
             self._sound_on_switch.set_active(False)
-            self._quality_video_switcher.set_active(False)
-            self._quality_rowbox.set_visible(False)
             self._audio_rowbox.set_visible(False)
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
@@ -154,8 +151,7 @@ class RecappWindow(Gtk.ApplicationWindow):
                    self.formats.append("webm")
                    self.formats.append("mkv")
                elif(encoder == "x264enc"):
-                   if self.displayServer != "wayland":
-                       self.formats.append("mp4")
+                   self.formats.append("mp4")
            else:
                pass
         formats_store = Gtk.ListStore(str)
