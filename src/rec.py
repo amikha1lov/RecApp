@@ -155,7 +155,8 @@ def start_recording(self,*args):
         self.extension = ".mp4"
 
     if self.displayServer == "wayland":
-        RecorderPipeline = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0} ! queue ! {1}".format(self.cpus, self.mux)
+
+        RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
         self.GNOMEScreencast.Screencast(self.fileName  + self.extension, {'framerate': GLib.Variant('i', int(self.videoFrames)),'draw-cursor': GLib.Variant('b',self.recordMouse), 'pipeline': GLib.Variant('s', RecorderPipeline)})
     else:
         if self.coordinateMode == True:
