@@ -187,13 +187,14 @@ def stop_recording(self,*args):
     self._record_button.set_visible(True)
     self._label_video_saved_box.set_visible(False)
     self._recording_box.set_visible(True)
-    self._select_area_button.set_visible(True)
+
 
     if self.displayServer == "wayland":
         self.GNOMEScreencast.StopScreencast()
 
     else:
         self.video.send_signal(signal.SIGINT)
+        self._select_area_button.set_visible(True)
 
     self.notification = Notify.Notification.new(constants["APPNAME"], _("Recording is complete"))
     self.notification.add_action("open_folder", _("Open Folder"),self.openFolder)
