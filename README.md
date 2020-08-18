@@ -13,6 +13,8 @@ User friendly Open Source screencaster for Linux written in GTK. Using free GStr
 
 [Fedora](https://src.fedoraproject.org/rpms/recapp): `sudo dnf install recapp`
 
+[openSUSE Tumbleweed && openSUSE Leap 15.2 One-click installation](https://software.opensuse.org//download.html?project=GNOME%3AApps&package=recapp)
+
 ## Build from source
 
 ### Flatpak
