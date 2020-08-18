@@ -159,7 +159,7 @@ msgstr "Il file verrà salvato in "
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:37
 msgid "The format in which the video will be recorded."
-msgstr ""
+msgstr "Il formato in cui verrà registrato il video."
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:22
 msgid "The inclusion of audio recording."
@@ -175,7 +175,7 @@ msgstr "Screencaster Open Source user friendly per Linux scritto in GTK. Utilizz
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:36
 msgid "Video recording format"
-msgstr ""
+msgstr "Formato registrazione video"
 
 #: src/rec.py:196
 msgid "Website"
@@ -187,4 +187,4 @@ msgstr "[    ]"
 
 #: src/rec.py:124
 msgid "recording will start in "
-msgstr "la registrazione inizierà fra "
+msgstr "la registrazione inizierà tra "
