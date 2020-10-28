@@ -1,0 +1,198 @@
+# German transalation file for RecApp.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# Onno Giesmann <nutzer3105@gmail.com>, 2020.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-27 12:39+0300\n"
+"PO-Revision-Date: 2020-10-28 09:36+0100\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Last-Translator: Onno Giesmann <nutzer3105@gmail.com>\n"
+"Language-Team: \n"
+"X-Generator: Poedit 2.4.1\n"
+"Language: de\n"
+
+#: data/com.github.amikha1lov.RecApp.desktop.in:3
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:8 src/window.ui:632
+msgid "RecApp"
+msgstr "RecApp"
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:9
+msgid "User friendly Open Source screencaster for Linux written in GTK"
+msgstr ""
+"Benutzerfreundliches Programm für Linux zur Aufnahme eines "
+"Bildschirmvideos, geschrieben in GTK"
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:12
+msgid ""
+"User friendly Open Source screencaster for Linux written in GTK. Using free "
+"GStreamer modules and not depend on FFmpeg."
+msgstr ""
+"Benutzerfreundliches Programm für Linux zur Aufnahme eines "
+"Bildschirmvideos, geschrieben in GTK. Es nutzt die freien GStreamer-Module "
+"und hängt nicht von FFmpeg ab."
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:38
+msgid "Alexey Mikhailov"
+msgstr "Alexey Mikhailov"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:6
+msgid "Frames"
+msgstr "Frames"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:7
+msgid "Number of frames per video."
+msgstr "Anzahl der Frames pro Video."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:184
+msgid "Delay"
+msgstr "Verzögerung"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:12
+msgid "Delay before recording."
+msgstr "Verzögerung, bevor die Aufnahme beginnt."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:16
+msgid "Enabling high quality mode"
+msgstr "Modus für hohe Qualität aktivieren"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:17
+msgid "Record video in high quality."
+msgstr "Videos in hoher Qualität aufnehmen."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:21
+msgid "Enabling audio recording"
+msgstr "Tonaufnahme aktivieren"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:22
+msgid "The inclusion of audio recording."
+msgstr "Der Ton wird ebenfalls aufgenommen."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:26
+msgid "Enabling record mouse cursor"
+msgstr "Aufnahme des Mauszeigers aktivieren"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:27
+msgid "Recording the mouse cursor."
+msgstr "Mauszeiger wird aufgenommen."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:31
+msgid "Path to the save folder"
+msgstr "Pfad zum Speicherort"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:32
+msgid "Path to the folder where the file will be saved."
+msgstr "Pfad zum Ordner, in dem die Datei gespeichert wird."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:36
+msgid "Video recording format"
+msgstr "Videoaufnahmeformat"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:37
+msgid "The format in which the video will be recorded."
+msgstr "Das Format, in dem das Video aufgenommen wird."
+
+#: src/window.ui:20
+msgid "Preferences"
+msgstr "Einstellungen"
+
+#: src/window.ui:34
+msgid "About"
+msgstr "Info"
+
+#: src/window.ui:111
+msgid "Frames per second"
+msgstr "Bilder pro Sekunde"
+
+#: src/window.ui:126
+msgid "15"
+msgstr "15"
+
+#: src/window.ui:127
+msgid "30"
+msgstr "30"
+
+#: src/window.ui:128
+msgid "60"
+msgstr "60"
+
+#: src/window.ui:196
+msgid "0"
+msgstr "0"
+
+#: src/window.ui:253
+msgid "Format"
+msgstr "Format"
+
+#: src/window.ui:319
+msgid "High quality"
+msgstr "Hohe Qualität"
+
+#: src/window.ui:386
+msgid "Record audio from apps"
+msgstr "Ton aus Anwendungen aufnehmen"
+
+#: src/window.ui:452
+msgid "Record mouse cursor"
+msgstr "Mauszeiger aufnehmen"
+
+#: src/window.ui:518
+msgid "Folder for saving the file"
+msgstr "Ordner zum Speichern der Datei"
+
+#: src/window.ui:596
+msgid "The file will be saved in "
+msgstr "Die Datei wird gespeichert in "
+
+#: src/window.ui:633 src/rec.py:194
+msgid "Simple app for recording desktop"
+msgstr "Einfache Anwendung zum Aufnehmen des Bildschirms"
+
+#: src/window.ui:691
+msgid "[    ]"
+msgstr "[    ]"
+
+#: src/window.ui:695
+msgid "Select Area"
+msgstr "Bereich auswählen"
+
+#: src/window.py:142
+msgid "Sorry, Wayland session is not supported yet"
+msgstr "Die Wayland-Sitzung wird leider noch nicht unterstützt"
+
+#: src/rec.py:88
+msgid "Please re-select the area"
+msgstr "Bitte den Bereich erneut auswählen"
+
+#: src/rec.py:119
+msgid "RecApp-"
+msgstr "RecApp-"
+
+#: src/rec.py:124
+msgid "recording will start in "
+msgstr "Die Aufnahme startet in "
+
+#: src/rec.py:124
+msgid " seconds"
+msgstr " Sekunden"
+
+#: src/rec.py:181
+msgid "Recording is complete"
+msgstr "Die Aufnahme ist fertig"
+
+#: src/rec.py:182
+msgid "Open Folder"
+msgstr "Ordner öffnen"
+
+#: src/rec.py:183
+msgid "Open File"
+msgstr "Datei öffnen"
+
+#: src/rec.py:196
+msgid "Website"
+msgstr "Internetseite"
