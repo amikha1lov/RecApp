@@ -1,5 +1,3 @@
-# This project is in the archive, it is no longer in development. As the original developer, it took me too much time to maintain and update this program, perhaps in the future I will continue development when I settle my personal affairs. If you would like to continue developing, feel free to fork the project under the GPL license. I will be glad to help with development in the future.
-
 # RecApp
 
 
