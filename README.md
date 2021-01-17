@@ -1,7 +1,6 @@
 # RecApp
 
-
-User friendly Open Source screencaster for Linux written in GTK. Using free GStreamer modules and not depend on FFmpeg.
+An open-source and user-friendly screencasting app for Linux written in GTK using free GStreamers modules and does not depend on FFmpeg.
 
 
 <p align="center">
