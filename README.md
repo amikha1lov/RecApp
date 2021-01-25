@@ -14,6 +14,7 @@ User friendly Open Source screencaster for Linux written in GTK. Using free GStr
 
 You can install it from flathub.org using the instructions on
 [this page](https://flathub.org/apps/details/com.github.amikha1lov.RecApp).
+[<img alt="" height="100" src="https://flathub.org/assets/badges/flathub-badge-en.png">](https://flathub.org/apps/details/com.github.amikha1lov.RecApp).
 
 ## Packaging status
 
