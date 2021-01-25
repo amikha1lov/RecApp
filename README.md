@@ -1,13 +1,19 @@
 # RecApp
 
-
 User friendly Open Source screencaster for Linux written in GTK. Using free GStreamer modules and not depend on FFmpeg.
-
 
 <p align="center">
   <img src="https://raw.githubusercontent.com/amikha1lov/RecApp/master/RecApp-screenshot.png" style="max-width:100%;">
 </p>
 
+## Installation
+
+### Last stable version
+
+> **Recommended**
+
+You can install it from flathub.org using the instructions on
+[this page](https://flathub.org/apps/details/com.github.amikha1lov.RecApp).
 
 ## Packaging status
 
