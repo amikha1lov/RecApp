@@ -49,7 +49,7 @@ def formats_combobox_changed(self, box):
 def video_folder_button(self, button):
     self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_filename())
     self._video_folder_button.set_current_folder_uri(
-        self.settings.get_string('path-to-save-video-folder'))
+        self.settings.get_string('path-to-save-video-folder')) #TODO needs work so that it will not increase window width
 
 
 def quality_video_switcher(self, *args):
@@ -145,14 +145,11 @@ def on__sound_switch(self, *args):
 
 
 def start_recording(self, *args):
-    self._recording_box.set_visible(False)
-    self._select_area_button.set_visible(False)
-    self._label_video_saved_box.set_visible(True)
     self.quality_video = quality_video_switcher(self, *args)
     self.soundOn = on__sound_switch(self, *args)
     fileNameTime = _("RecApp-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
     videoFolder = self.settings.get_string('path-to-save-video-folder')
-    self._label_video_saved.set_label(videoFolder)
+    #self._label_video_saved.set_label(videoFolder)  #TODO needs work
     self.fileName = os.path.join(videoFolder, fileNameTime)
     if self.delayBeforeRecording > 0:
         self.notification = Notify.Notification.new(constants["APPNAME"],
@@ -209,51 +206,22 @@ def start_recording(self, *args):
                     self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
                                           self.mux, self.fileName, self.extension), shell=True)
 
-    self._record_button.set_visible(False)
-    self._stop_record_button.set_visible(True)
     self.isrecording = True
 
 
 def stop_recording(self, *args):
-    self._stop_record_button.set_visible(False)
-    self._record_button.set_visible(True)
-    self._label_video_saved_box.set_visible(False)
-    self._recording_box.set_visible(True)
 
     if self.displayServer == "wayland":
         self.GNOMEScreencast.StopScreencast()
 
     else:
         self.video.send_signal(signal.SIGINT)
-        self._select_area_button.set_visible(True)
 
     self.notification = Notify.Notification.new(constants["APPNAME"], _("Recording is complete"))
     self.notification.add_action("open_folder", _("Open Folder"), self.openFolder)
     self.notification.add_action("open_file", _("Open File"), self.openVideoFile)
     self.notification.show()
     self.isrecording = False
-
-
-def popover_init():
-    about = Gtk.AboutDialog()
-    about.set_program_name(_(constants["APPNAME"]))
-    about.set_version("1.1.0")
-    about.set_authors(
-        ["Alexey Mikhailov <mikha1lov@yahoo.com>", "Artem Polishchuk <ego.cordatus@gmail.com>",
-         "@lateseal (Telegram)", "@gasinvein (Telegram)",
-         "@dead_mozay (Telegram) <dead_mozay@opensuse.org>",
-         "and contributors of Telegram chat https://t.me/gnome_rus"])
-    about.set_artists(["Raxi Petrov <raxi2012@gmail.com>"])
-    about.set_copyright("GPLv3+")
-    about.set_comments(_("Simple app for recording desktop"))
-    about.set_website("https://github.com/amikha1lov/RecApp")
-    about.set_website_label(_("Website"))
-    about.set_logo_icon_name(constants["APPID"])
-    about.set_wrap_license(True)
-    about.set_license_type(Gtk.License.GPL_3_0)
-    about.run()
-    about.destroy()
-
 
 def delete_event(self, w, h):
     if self.isrecording:
