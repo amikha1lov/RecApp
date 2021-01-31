@@ -1,36 +1,15 @@
-pkgdatadir = join_paths(get_option('prefix'), get_option('datadir'), meson.project_name())
-moduledir = join_paths(pkgdatadir, 'recapp')
-gnome = import('gnome')
-
-gnome.compile_resources('recapp',
-  'recapp.gresource.xml',
-  gresource_bundle: true,
-  install: true,
-  install_dir: pkgdatadir,
+project('recapp',
+          version: '1.1.0',
+    meson_version: '>= 0.50.0',
+  default_options: [ 'warning_level=2',
+                   ],
 )
 
-python = import('python')
+i18n = import('i18n')
 
-conf = configuration_data()
-conf.set('PYTHON', python.find_installation('python3').path())
-conf.set('VERSION', meson.project_version())
-conf.set('localedir', join_paths(get_option('prefix'), get_option('localedir')))
-conf.set('pkgdatadir', pkgdatadir)
 
-configure_file(
-  input: 'recapp.in',
-  output: 'recapp',
-  configuration: conf,
-  install: true,
-  install_dir: get_option('bindir')
-)
+subdir('data')
+subdir('src')
+subdir('po')
 
-recapp_sources = [
-  '__init__.py',
-  'main.py',
-  'window.py',
-  'recapp_constants.py',
-  'rec.py',
-]
-
-install_data(recapp_sources, install_dir: moduledir)
+meson.add_install_script('build-aux/meson/postinstall.py')
