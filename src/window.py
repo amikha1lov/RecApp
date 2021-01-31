@@ -350,6 +350,8 @@ class RecappWindow(Gtk.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__about_button_clicked(self, widget):
         dialog = AboutDialog(self)
+        dialog.set_program_name(_(constants["APPNAME"]))
+        dialog.set_logo_icon_name(constants["APPID"])
         response = dialog.run()
         dialog.destroy()
 
