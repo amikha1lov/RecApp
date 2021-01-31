@@ -35,5 +35,5 @@ git submodule update --init --recursive
 mkdir -p $HOME/Projects/flatpak/repo
 flatpak-builder --repo=$HOME/Projects/flatpak/repo --force-clean --ccache build-dir com.github.amikha1lov.RecApp.yaml
 flatpak remote-add --no-gpg-verify local-repo $HOME/Projects/flatpak/repo
-flatpak install com.github.amikha1lov.RecApp
+flatpak install local-repo com.github.amikha1lov.RecApp
 ```
