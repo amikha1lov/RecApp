@@ -969,6 +969,9 @@
                 <property name="transition-type">crossfade</property>
                 <child>
                   <object class="GtkButton" id="_record_button">
+                    <style>
+                      <class name="suggested-action"/>
+                    </style>
                     <property name="label" translatable="yes">Start Recording</property>
                     <property name="name">_record_button</property>
                     <property name="visible">True</property>
@@ -983,6 +986,9 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="_stop_record_button">
+                    <style>
+                      <class name="destructive-action"/>
+                    </style>
                     <property name="label" translatable="yes">Stop Recording</property>
                     <property name="name">_stop_record_button</property>
                     <property name="visible">True</property>

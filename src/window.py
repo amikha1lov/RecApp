@@ -111,32 +111,6 @@ class RecappWindow(Gtk.ApplicationWindow):
             border-bottom-right-radius: 8px;
         }
 
-        #_record_button {
-            background: #15519b;
-            color: white;
-        }
-
-        #_record_button:hover {
-            background: #1655a2;
-        }
-
-        #_record_button:active {
-            background: #103e75;
-        }
-
-        #_stop_record_button {
-            background: #af151c;
-            color: white;
-        }
-
-        #_stop_record_button:hover {
-            background: #b7161d;
-        }
-
-        #_stop_record_button:active {
-            background: #8a1116;
-        }
-
         #_main_settings_box,
         #_secondary_settings_box {
             border-radius: 8px;
