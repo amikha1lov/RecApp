@@ -3,5 +3,9 @@
   <gresource prefix="/com/github/amikha1lov/RecApp">
     <file>window.ui</file>
     <file>about.ui</file>
+
+    <file preprocess="xml-stripblanks">data_icons_display-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">data_icons_selection-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">data_icons_window-symbolic.svg</file>
   </gresource>
 </gresources>
