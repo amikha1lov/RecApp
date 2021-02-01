@@ -482,84 +482,126 @@
               </packing>
             </child>
             <child>
-              <object class="GtkStack" id="_paused_start_stack">
+              <object class="GtkBox" id="_paused_start_stack_box">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="transition-duration">150</property>
-                <property name="transition-type">crossfade</property>
+                <property name="halign">center</property>
+                <property name="valign">center</property>
+                <property name="margin-bottom">6</property>
+                <property name="orientation">vertical</property>
                 <child>
-                  <object class="GtkBox" id="_recording_box">
+                  <object class="GtkStack" id="_paused_start_stack">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="margin-bottom">6</property>
-                    <property name="orientation">vertical</property>
+                    <property name="transition-duration">150</property>
+                    <property name="transition-type">crossfade</property>
                     <child>
-                      <object class="GtkImage">
+                      <object class="GtkBox" id="_recording_box">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="pixel-size">100</property>
-                        <property name="icon-name">video-x-generic-symbolic</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="margin-bottom">6</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="pixel-size">100</property>
+                            <property name="icon-name">video-x-generic-symbolic</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Recording</property>
+                            <property name="single-line-mode">True</property>
+                            <attributes>
+                              <attribute name="weight" value="ultrabold"/>
+                              <attribute name="scale" value="1"/>
+                              <attribute name="size" value="30000"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
+                        <property name="name">page0</property>
+                        <property name="title" translatable="yes">page0</property>
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label\">
+                      <object class="GtkBox" id="_paused_box">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Recording</property>
-                        <property name="single-line-mode">True</property>
-                        <attributes>
-                          <attribute name="weight" value="ultrabold"/>
-                          <attribute name="scale" value="1"/>
-                          <attribute name="size" value="30000"/>
-                        </attributes>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="margin-bottom">6</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="pixel-size">100</property>
+                            <property name="icon-name">media-playback-pause-symbolic</property>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Paused</property>
+                            <attributes>
+                              <attribute name="weight" value="ultrabold"/>
+                              <attribute name="scale" value="1"/>
+                              <attribute name="size" value="30000"/>
+                            </attributes>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
+                        <property name="name">page1</property>
+                        <property name="title" translatable="yes">page1</property>
                         <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="xpad">0</property>
-                        <property name="ypad">10</property>
-                        <property name="label" translatable="yes">The file will be saved in your Videos folder.</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="name">page0</property>
-                    <property name="title" translatable="yes">page0</property>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkBox" id="_paused_box">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="margin-bottom">6</property>
-                    <property name="orientation">vertical</property>
                     <child>
-                      <object class="GtkImage">
+                      <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="pixel-size">100</property>
-                        <property name="icon-name">media-playback-pause-symbolic</property>
+                        <property name="ypad">10</property>
+                        <property name="label" translatable="yes">The file will be saved in your </property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -568,15 +610,21 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label">
+                      <object class="GtkBox" id="_label_video_saved_box">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Paused</property>
-                        <attributes>
-                          <attribute name="weight" value="ultrabold"/>
-                          <attribute name="scale" value="1"/>
-                          <attribute name="size" value="30000"/>
-                        </attributes>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="_label_video_saved">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                          </object>
+                          <packing>
+                            <property name="expand">True</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -588,8 +636,7 @@
                       <object class="GtkLabel">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="ypad">10</property>
-                        <property name="label" translatable="yes">The file will be saved in your Videos folder.</property>
+                        <property name="label" translatable="yes"> folder.</property>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -599,8 +646,8 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="name">page1</property>
-                    <property name="title" translatable="yes">page1</property>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -969,15 +1016,15 @@
                 <property name="transition-type">crossfade</property>
                 <child>
                   <object class="GtkButton" id="_record_button">
-                    <style>
-                      <class name="suggested-action"/>
-                    </style>
                     <property name="label" translatable="yes">Start Recording</property>
                     <property name="name">_record_button</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <signal name="clicked" handler="on__record_button_clicked" swapped="no"/>
+                    <style>
+                      <class name="suggested-action"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="name">page0</property>
@@ -986,15 +1033,15 @@
                 </child>
                 <child>
                   <object class="GtkButton" id="_stop_record_button">
-                    <style>
-                      <class name="destructive-action"/>
-                    </style>
                     <property name="label" translatable="yes">Stop Recording</property>
                     <property name="name">_stop_record_button</property>
                     <property name="visible">True</property>
                     <property name="can-focus">True</property>
                     <property name="receives-default">True</property>
                     <signal name="clicked" handler="on__stop_record_button_clicked" swapped="no"/>
+                    <style>
+                      <class name="destructive-action"/>
+                    </style>
                   </object>
                   <packing>
                     <property name="name">page1</property>
