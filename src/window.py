@@ -88,8 +88,11 @@ class RecappWindow(Gtk.ApplicationWindow):
     _recording_box = Gtk.Template.Child() # the original _recording_box is renamed to _main_settings_box and _secondary_settings_box
     _paused_box = Gtk.Template.Child()
     _main_screen_box = Gtk.Template.Child()
+    _capture_mode_box = Gtk.Template.Child()
+    _sound_rowbox = Gtk.Template.Child()
     _preferences_box = Gtk.Template.Child()
     _preferences_button = Gtk.Template.Child()
+    _menu_button = Gtk.Template.Child()
     _about_button = Gtk.Template.Child()
     _paused_start_stack_box = Gtk.Template.Child()
     _paused_start_stack = Gtk.Template.Child()
@@ -196,9 +199,10 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
-            # TODO
-            # Hide things when wayland is True (Capture Mode, Record Audio)
-            # deactivate _sound_on_switch
+            # TODO reactivate these
+            #self._capture_mode_box.set_visible(False)
+            #self._sound_rowbox.set_visible(False)
+            #self._sound_on_switch.set_active(False)
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
@@ -320,15 +324,14 @@ class RecappWindow(Gtk.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__fullscreen_mode_pressed(self, widget):
-        self._showpointer_rowbox.set_sensitive(True)
+        pass
 
     @Gtk.Template.Callback()
     def on__window_mode_pressed(self, widget):
-        self._showpointer_rowbox.set_sensitive(True)
+        pass
 
     @Gtk.Template.Callback()
     def on__selection_mode_pressed(self, widget):
-        self._showpointer_rowbox.set_sensitive(False)
         on__select_area(self)
 
 # Preferences box
@@ -344,7 +347,7 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__back_button_clicked(self, widget):
         self._main_stack.set_visible_child(self._main_screen_box)
         self._record_stop_record_button_stack.set_visible_child(self._record_button)
-        self._preferences_back_stack.set_visible_child(self._preferences_button)
+        self._preferences_back_stack.set_visible_child(self._menu_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(True)
         self.set_size_request(460, 300)
 
