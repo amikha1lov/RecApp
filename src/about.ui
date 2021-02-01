@@ -5,7 +5,6 @@
   <template class="AboutDialog" parent="GtkAboutDialog">
     <property name="can-focus">False</property>
     <property name="type-hint">dialog</property>
-    <property name="version">2.0.0</property>
     <property name="copyright" translatable="yes">© 2021 Alexey Mikhailov</property>
     <property name="comments" translatable="yes">Simple screencasting application</property>
     <property name="website">https://github.com/amikha1lov/RecApp</property>
@@ -17,7 +16,7 @@ Artem Polishchuk &lt;ego.cordatus@gmail.com&gt;
 @dead_mozay (Telegram) &lt;dead_mozay@opensuse.org&gt;
 and contributors of Telegram chat https://t.me/gnome_rus</property>
     <property name="artists">Raxi Petrov &lt;raxi2012@gmail.com&gt;</property>
-    <property name="logo"/>
+    <property name="logo-icon-name"/>
     <property name="license-type">gpl-3-0</property>
     <child internal-child="vbox">
       <object class="GtkBox">
