@@ -73,7 +73,7 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="margin-top">6</property>
-                                <property name="margin-bottom">10</property>
+                                <property name="margin-bottom">11</property>
                                 <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkImage">
@@ -125,7 +125,7 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="margin-top">6</property>
-                                <property name="margin-bottom">10</property>
+                                <property name="margin-bottom">11</property>
                                 <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkImage">
@@ -176,7 +176,7 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="margin-top">6</property>
-                                <property name="margin-bottom">10</property>
+                                <property name="margin-bottom">11</property>
                                 <property name="orientation">vertical</property>
                                 <child>
                                   <object class="GtkImage">
