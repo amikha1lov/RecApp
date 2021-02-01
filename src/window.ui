@@ -902,7 +902,7 @@
                                       <object class="GtkLabel">
                                         <property name="visible">True</property>
                                         <property name="can-focus">False</property>
-                                        <property name="label" translatable="yes">Folder for saving the video</property>
+                                        <property name="label" translatable="yes">Folder for saving the video      </property>
                                       </object>
                                       <packing>
                                         <property name="expand">False</property>

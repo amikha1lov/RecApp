@@ -49,7 +49,7 @@ def formats_combobox_changed(self, box):
 def video_folder_button(self, button):
     self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_filename())
     self._video_folder_button.set_current_folder_uri(
-        self.settings.get_string('path-to-save-video-folder')) #TODO needs work so that it will not increase window width
+        self.settings.get_string('path-to-save-video-folder'))
 
 
 def quality_video_switcher(self, *args):
@@ -149,7 +149,12 @@ def start_recording(self, *args):
     self.soundOn = on__sound_switch(self, *args)
     fileNameTime = _("RecApp-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
     videoFolder = self.settings.get_string('path-to-save-video-folder')
-    self._label_video_saved.set_label(videoFolder) #TODO this should only show the folder name instead of the whole directory
+    homeDirectory = os.getenv("HOME")
+    if homeDirectory == videoFolder:
+        self._label_video_saved.set_label("home")
+    else:
+        self._label_video_saved.set_label(videoFolder.split('/')[-1])
+
     self.fileName = os.path.join(videoFolder, fileNameTime)
     if self.delayBeforeRecording > 0:
         self.notification = Notify.Notification.new(constants["APPNAME"],
