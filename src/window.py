@@ -199,10 +199,9 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
-            # TODO reactivate these
-            #self._capture_mode_box.set_visible(False)
-            #self._sound_rowbox.set_visible(False)
-            #self._sound_on_switch.set_active(False)
+            self._capture_mode_box.set_visible(False)
+            self._sound_rowbox.set_visible(False)
+            self._sound_on_switch.set_active(False)
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
