@@ -203,7 +203,7 @@ class RecappWindow(Gtk.ApplicationWindow):
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
                 self.notification = Notify.Notification.new(constants["APPNAME"], _(
-                    "Sorry, Wayland session is not supported yet"))
+                    "Sorry, Wayland session is not supported yet."))
                 self.notification.show()
             else:
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast',
@@ -234,8 +234,25 @@ class RecappWindow(Gtk.ApplicationWindow):
         os.system("xdg-open " + videoFolderForOpen)
 
     def openVideoFile(self, notification, action, user_data=None):
-
         os.system("xdg-open " + self.fileName + self.extension)
+
+    def on_delete_event(self, w, h):
+        delete_event(self, w, h)
+
+    def on_toggle_audio(self, *args):
+        toggle_audio(self, *args)
+
+    def on_toggle_high_quality(self, *args):
+        toggle_high_quality(self, *args)
+
+    def on_toggle_record(self, *args):
+        toggle_record(self, *args)
+
+    def on_quit_app(self, *args):
+        quit_app(self, *args)
+
+    def on_toggle_mouse_record(self, *args):
+        toggle_mouse_record(self, *args)
 
     @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
@@ -264,24 +281,6 @@ class RecappWindow(Gtk.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__formats_combobox_changed(self, box):
         formats_combobox_changed(self, box)
-
-    def on_delete_event(self, w, h):
-        delete_event(self, w, h)
-
-    def on_toggle_audio(self, *args):
-        toggle_audio(self, *args)
-
-    def on_toggle_high_quality(self, *args):
-        toggle_high_quality(self, *args)
-
-    def on_toggle_record(self, *args):
-        toggle_record(self, *args)
-
-    def on_quit_app(self, *args):
-        quit_app(self, *args)
-
-    def on_toggle_mouse_record(self, *args):
-        toggle_mouse_record(self, *args)
 
 # Headerbar buttons, if will be visible or not
 
