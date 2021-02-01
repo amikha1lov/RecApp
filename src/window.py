@@ -41,6 +41,8 @@ Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
 
+# TODO (window.ui: fix icons on capture mode button)
+# TODO Not working yet: record computer sounds
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
 class RecappWindow(Gtk.ApplicationWindow):
@@ -353,6 +355,7 @@ class RecappWindow(Gtk.ApplicationWindow):
         dialog = AboutDialog(self)
         dialog.set_program_name(_(constants["APPNAME"]))
         dialog.set_logo_icon_name(constants["APPID"])
+        dialog.set_version(constants["APPVERSION"])
         response = dialog.run()
         dialog.destroy()
 

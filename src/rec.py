@@ -149,7 +149,7 @@ def start_recording(self, *args):
     self.soundOn = on__sound_switch(self, *args)
     fileNameTime = _("RecApp-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
     videoFolder = self.settings.get_string('path-to-save-video-folder')
-    self._label_video_saved.set_label(videoFolder) ### TEST
+    self._label_video_saved.set_label(videoFolder) #TODO this should only show the folder name instead of the whole directory
     self.fileName = os.path.join(videoFolder, fileNameTime)
     if self.delayBeforeRecording > 0:
         self.notification = Notify.Notification.new(constants["APPNAME"],
