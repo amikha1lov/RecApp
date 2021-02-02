@@ -35,17 +35,19 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify
+from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify, Handy
 
 Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
 
-# TODO (window.ui: fix icons on capture mode button)
 # TODO Not working yet: record computer sounds
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
-class RecappWindow(Gtk.ApplicationWindow):
+class RecappWindow(Handy.ApplicationWindow):
+
+    Handy.init()
+
     soundOn = ""
     mux = ""
     extension = ""
@@ -64,15 +66,11 @@ class RecappWindow(Gtk.ApplicationWindow):
     _frames_combobox = Gtk.Template.Child()
     _delay_button = Gtk.Template.Child()
     _sound_on_switch = Gtk.Template.Child()
-    _sound_box = Gtk.Template.Child()
     _label_video_saved_box = Gtk.Template.Child()
     _label_video_saved = Gtk.Template.Child()
-    _quality_video_box = Gtk.Template.Child()
     _quality_video_switcher = Gtk.Template.Child()
     _video_folder_button = Gtk.Template.Child()
     _record_mouse_switcher = Gtk.Template.Child()
-    _quality_rowbox = Gtk.Template.Child()
-    _audio_rowbox = Gtk.Template.Child()
     _formats_combobox = Gtk.Template.Child()
 
     _record_stop_record_button_stack = Gtk.Template.Child()
@@ -289,6 +287,7 @@ class RecappWindow(Gtk.ApplicationWindow):
 # Disable show pointer option in selection mode
 # TODO
 # connect these two functions to something
+# incorrect behavior of on__selection_mode_pressed
 
     @Gtk.Template.Callback()
     def on__fullscreen_mode_pressed(self, widget):
