@@ -318,7 +318,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self._record_stop_record_button_stack.set_visible_child(self._record_button)
         self._preferences_back_stack.set_visible_child(self._menu_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(True)
-        self.set_size_request(460, 300)
+        self.set_size_request(462, 300)
 
 # Launch About Dialog
 
