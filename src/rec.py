@@ -147,7 +147,7 @@ def on__sound_switch(self, *args):
 def start_recording(self, *args):
     self.quality_video = quality_video_switcher(self, *args)
     self.soundOn = on__sound_switch(self, *args)
-    fileNameTime = _("RecApp-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+    fileNameTime = _(constants["APPNAME"]) + "-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
     videoFolder = self.settings.get_string('path-to-save-video-folder')
     homeDirectory = os.getenv("HOME")
     if homeDirectory == videoFolder:

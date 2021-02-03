@@ -35,6 +35,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
+gi.require_version('Handy', '1')
 from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify, Handy
 
 Gtk.init(sys.argv)
