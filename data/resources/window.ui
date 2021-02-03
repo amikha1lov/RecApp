@@ -3,7 +3,7 @@
 <interface>
   <requires lib="gtk+" version="3.24"/>
   <requires lib="libhandy" version="0.0"/>
-  <object class="GtkAdjustment" id="adjustment1">
+  <object class="GtkAdjustment" id="delay_adjustment">
     <property name="upper">100</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
@@ -471,14 +471,14 @@
                         <child>
                           <object class="HdyActionRow" id="_microphone_rowbox">
                             <property name="visible">True</property>
-                            <property name="can-focus">False</property>
+                            <property name="can-focus">True</property>
                             <property name="title" translatable="yes">Record from Microphone</property>
                             <property name="activatable-widget">_sound_on_microphone</property>
                             <property name="use-underline">True</property>
                             <child>
                               <object class="GtkSwitch" id="_sound_on_microphone">
                                 <property name="visible">True</property>
-                                <property name="can-focus">False</property>
+                                <property name="can-focus">True</property>
                                 <property name="valign">center</property>
                               </object>
                             </child>
@@ -487,14 +487,14 @@
                         <child>
                           <object class="HdyActionRow" id="_sound_rowbox">
                             <property name="visible">True</property>
-                            <property name="can-focus">False</property>
+                            <property name="can-focus">True</property>
                             <property name="title" translatable="yes">Record Computer Sounds</property>
                             <property name="activatable-widget">_sound_on_switch</property>
                             <property name="use-underline">True</property>
                             <child>
                               <object class="GtkSwitch" id="_sound_on_switch">
                                 <property name="visible">True</property>
-                                <property name="can-focus">False</property>
+                                <property name="can-focus">True</property>
                                 <property name="valign">center</property>
                                 <signal name="state-set" handler="on__sound_on_switch_activate" swapped="no"/>
                               </object>
@@ -504,14 +504,14 @@
                         <child>
                           <object class="HdyActionRow" id="_showpointer_rowbox">
                             <property name="visible">True</property>
-                            <property name="can-focus">False</property>
+                            <property name="can-focus">True</property>
                             <property name="title" translatable="yes">Show Pointer</property>
                             <property name="activatable-widget">_record_mouse_switcher</property>
                             <property name="use-underline">True</property>
                             <child>
                               <object class="GtkSwitch" id="_record_mouse_switcher">
                                 <property name="visible">True</property>
-                                <property name="can-focus">False</property>
+                                <property name="can-focus">True</property>
                                 <property name="valign">center</property>
                                 <signal name="state-set" handler="on__record_mouse_switcher_state_set" swapped="no"/>
                               </object>
@@ -521,7 +521,7 @@
                         <child>
                           <object class="HdyActionRow">
                             <property name="visible">True</property>
-                            <property name="can-focus">False</property>
+                            <property name="can-focus">True</property>
                             <property name="activatable">False</property>
                             <property name="selectable">False</property>
                             <property name="title" translatable="yes">Delay in Seconds</property>
@@ -529,11 +529,13 @@
                             <child>
                               <object class="GtkSpinButton" id="_delay_button">
                                 <property name="visible">True</property>
-                                <property name="can-focus">False</property>
+                                <property name="can-focus">True</property>
                                 <property name="valign">center</property>
                                 <property name="text" translatable="yes">0</property>
                                 <property name="input-purpose">number</property>
-                                <property name="adjustment">adjustment1</property>
+                                <property name="adjustment">delay_adjustment</property>
+                                <property name="climb_rate">1</property>
+                                <property name="snap_to_ticks">True</property>
                                 <property name="numeric">True</property>
                                 <signal name="value-changed" handler="on__delay_button_change_value" swapped="no"/>
                               </object>
