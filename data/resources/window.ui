@@ -298,7 +298,7 @@
                                 <property name="active">True</property>
                                 <property name="draw-indicator">False</property>
                                 <property name="group">_window_mode_button</property>
-                                <signal name="clicked" handler="on__fullscreen_mode_pressed" swapped="no"/>
+                                <signal name="toggled" handler="on__fullscreen_mode_pressed" swapped="no"/>
                                 <child>
                                   <object class="GtkBox">
                                     <property name="visible">True</property>
@@ -350,7 +350,7 @@
                                 <property name="active">True</property>
                                 <property name="draw-indicator">False</property>
                                 <property name="group">_fullscreen_mode_button</property>
-                                <signal name="clicked" handler="on__window_mode_pressed" swapped="no"/>
+                                <signal name="toggled" handler="on__window_mode_pressed" swapped="no"/>
                                 <child>
                                   <object class="GtkBox">
                                     <property name="visible">True</property>
@@ -401,7 +401,7 @@
                                 <property name="active">True</property>
                                 <property name="draw-indicator">False</property>
                                 <property name="group">_fullscreen_mode_button</property>
-                                <signal name="clicked" handler="on__selection_mode_pressed" swapped="no"/>
+                                <signal name="toggled" handler="on__selection_mode_pressed" swapped="no"/>
                                 <child>
                                   <object class="GtkBox">
                                     <property name="visible">True</property>

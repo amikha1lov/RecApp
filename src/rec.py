@@ -145,6 +145,15 @@ def on__sound_switch(self, *args):
 
 
 def start_recording(self, *args):
+    if self.isFullscreenMode:
+        record(self)
+    elif self.isWindowMode:
+        print('window mode')
+    else:
+        on__select_area(self)
+        record(self)
+
+def record(self, *args):
     self.quality_video = quality_video_switcher(self, *args)
     self.soundOn = on__sound_switch(self, *args)
     fileNameTime = _(constants["APPNAME"]) + "-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())

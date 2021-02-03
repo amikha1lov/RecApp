@@ -111,6 +111,7 @@ class RecappWindow(Handy.ApplicationWindow):
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         self._about_button.set_label("About " + constants["APPNAME"])
+        self.isFullscreenMode = True
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
@@ -294,15 +295,24 @@ class RecappWindow(Handy.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__fullscreen_mode_pressed(self, widget):
-        pass
+        if self._fullscreen_mode_button.get_active():
+            self.isFullscreenMode = True
+            self.isWindowMode = False
+            self.isSelectionMode = False
 
     @Gtk.Template.Callback()
     def on__window_mode_pressed(self, widget):
-        pass
+        if self._window_mode_button.get_active():
+            self.isWindowMode = True
+            self.isFullscreenMode = False
+            self.isSelectionMode = False
 
     @Gtk.Template.Callback()
     def on__selection_mode_pressed(self, widget):
-        on__select_area(self)
+        if self._selection_mode_button.get_active():
+            self.isSelectionMode = True
+            self.isFullscreenMode = False
+            self.isWindowMode = False
 
 # Preferences box
 
