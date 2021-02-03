@@ -38,7 +38,6 @@
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <property name="text" translatable="yes">About RecApp</property>
             <signal name="clicked" handler="on__about_button_clicked" swapped="no"/>
           </object>
           <packing>
