@@ -59,6 +59,7 @@ class RecappWindow(Handy.ApplicationWindow):
     heightArea = 0
     coordinateMode = False
     isrecording = False
+    iscancelled = False
     __gtype_name__ = 'RecAppWindow'
     encoders = ["vp8enc", "x264enc"]
     formats = []
@@ -67,8 +68,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _frames_combobox = Gtk.Template.Child()
     _delay_button = Gtk.Template.Child()
     _sound_on_switch = Gtk.Template.Child()
-    _label_video_saved_box = Gtk.Template.Child()
-    _label_video_saved = Gtk.Template.Child()
     _quality_video_switcher = Gtk.Template.Child()
     _video_folder_button = Gtk.Template.Child()
     _record_mouse_switcher = Gtk.Template.Child()
@@ -99,6 +98,10 @@ class RecappWindow(Handy.ApplicationWindow):
     _back_button = Gtk.Template.Child()
     _preferences_back_stack = Gtk.Template.Child()
     _record_stop_record_button_stack_revealer = Gtk.Template.Child()
+
+    _delay_box = Gtk.Template.Child()
+    _delay_label = Gtk.Template.Child()
+    _cancel_button = Gtk.Template.Child()
 
 
     def __init__(self, **kwargs):
@@ -276,6 +279,10 @@ class RecappWindow(Handy.ApplicationWindow):
     def on__continue_record_button_clicked(self, widget):
         self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
         self._paused_start_stack.set_visible_child(self._recording_box)
+
+    @Gtk.Template.Callback()
+    def on__cancel_button_clicked(self, widget):
+        cancel_delay(self)
 
 # TODO
 # Connect window mode to something

@@ -154,31 +154,31 @@ def start_recording(self, *args):
         record(self)
 
 def record(self, *args):
-    def record_logic(*args):
+    if self.delayBeforeRecording > 0:
+        self._main_stack.set_visible_child(self._delay_box)
+        self._record_stop_record_button_stack.set_visible_child(self._cancel_button)
+        self._preferences_back_stack_revealer.set_reveal_child(False)
+        delay(self, *args)
+    else:
+        self._preferences_back_stack_revealer.set_reveal_child(False)
+        record_logic(self, *args)
 
-        # Visual Stuffs
+def record_logic(self, *args):
+    if self.iscancelled:
+        self._main_stack.set_visible_child(self._main_screen_box)
+        self._record_stop_record_button_stack.set_visible_child(self._record_button)
+        self._preferences_back_stack_revealer.set_reveal_child(True)
+        self.iscancelled = False
+    else:
         self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
         self._pause_continue_record_button_stack_revealer.set_reveal_child(True)
         self._main_stack.set_visible_child(self._paused_start_stack_box)
-        self._preferences_back_stack_revealer.set_reveal_child(False)
 
         self.quality_video = quality_video_switcher(self, *args)
         self.soundOn = on__sound_switch(self, *args)
         fileNameTime = _(constants["APPNAME"]) + "-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
         videoFolder = self.settings.get_string('path-to-save-video-folder')
-        homeDirectory = os.getenv("HOME")
-        if homeDirectory == videoFolder:
-            self._label_video_saved.set_label("home")
-        else:
-            self._label_video_saved.set_label(videoFolder.split('/')[-1])
-
         self.fileName = os.path.join(videoFolder, fileNameTime)
-        if self.delayBeforeRecording > 0:
-        self.notification = Notify.Notification.new(constants["APPNAME"],
-                                                    _("recording will start in ") + " " + str(
-                                                        self.delayBeforeRecording) + " " + _(
-                                                        " seconds"))
-        self.notification.show()
 
         if self.recordFormat == "webm":
             self.mux = "webmmux"
@@ -228,10 +228,23 @@ def record(self, *args):
 
         self.isrecording = True
 
-    if self.delayBeforeRecording > 0:
-        GLib.timeout_add_seconds(self.delayBeforeRecording, record_logic)
-    else:
-        record_logic(*args)
+
+def delay(self, *args):
+    self.time_delay = self.delayBeforeRecording
+    def countdown(*args):
+        m, s = divmod(self.time_delay, 60)
+        self._delay_label.set_label(f'{m:02d}∶{s:02d}')
+        if self.time_delay > 0:
+            self.time_delay -=1
+            GLib.timeout_add_seconds(1, countdown)
+        else:
+            record_logic(self, *args)
+            self.time_delay = self.delayBeforeRecording
+    countdown(*args)
+
+def cancel_delay(self, *args):
+    self.time_delay = 0
+    self.iscancelled = True
 
 def stop_recording(self, *args):
 
@@ -247,7 +260,6 @@ def stop_recording(self, *args):
     self.notification.show()
     self.isrecording = False
 
-    # Visual Stuffs
     self._record_stop_record_button_stack.set_visible_child(self._record_button)
     self._pause_continue_record_button_stack_revealer.set_reveal_child(False)
     self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)

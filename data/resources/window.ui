@@ -113,6 +113,24 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <child>
+                      <object class="GtkButton" id="_cancel_button">
+                        <property name="label" translatable="yes">Cancel</property>
+                        <property name="name">_stop_record_button</property>
+                        <property name="visible">True</property>
+                        <property name="can-focus">True</property>
+                        <property name="receives-default">True</property>
+                        <signal name="clicked" handler="on__cancel_button_clicked" swapped="no"/>
+                        <style>
+                          <class name="destructive-action"/>
+                        </style>
+                      </object>
+                      <packing>
+                        <property name="name">page2</property>
+                        <property name="title" translatable="yes">page2</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
                   </object>
                 </child>
               </object>
@@ -533,8 +551,8 @@
                                 <property name="text" translatable="yes">0</property>
                                 <property name="input-purpose">number</property>
                                 <property name="adjustment">delay_adjustment</property>
-                                <property name="climb_rate">1</property>
-                                <property name="snap_to_ticks">True</property>
+                                <property name="climb-rate">1</property>
+                                <property name="snap-to-ticks">True</property>
                                 <property name="numeric">True</property>
                                 <signal name="value-changed" handler="on__delay_button_change_value" swapped="no"/>
                               </object>
@@ -598,11 +616,9 @@
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">Recording</property>
                                 <property name="single-line-mode">True</property>
-                                <attributes>
-                                  <attribute name="weight" value="ultrabold"/>
-                                  <attribute name="scale" value="1"/>
-                                  <attribute name="size" value="30000"/>
-                                </attributes>
+                                <style>
+                                  <class name="status_label"/>
+                                </style>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -642,11 +658,10 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">False</property>
                                 <property name="label" translatable="yes">Paused</property>
-                                <attributes>
-                                  <attribute name="weight" value="ultrabold"/>
-                                  <attribute name="scale" value="1"/>
-                                  <attribute name="size" value="30000"/>
-                                </attributes>
+                                <property name="single-line-mode">True</property>
+                                <style>
+                                  <class name="status_label"/>
+                                </style>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -666,65 +681,6 @@
                         <property name="expand">False</property>
                         <property name="fill">True</property>
                         <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="ypad">10</property>
-                            <property name="label" translatable="yes">The file will be saved in your </property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="_label_video_saved_box">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="orientation">vertical</property>
-                            <child>
-                              <object class="GtkLabel" id="_label_video_saved">
-                                <property name="visible">True</property>
-                                <property name="can-focus">False</property>
-                              </object>
-                              <packing>
-                                <property name="expand">True</property>
-                                <property name="fill">True</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="label" translatable="yes"> folder.</property>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">2</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
                       </packing>
                     </child>
                   </object>
@@ -842,6 +798,67 @@
                     <property name="name">page2</property>
                     <property name="title" translatable="yes">page2</property>
                     <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="_delay_box">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">center</property>
+                    <property name="valign">center</property>
+                    <property name="margin-bottom">6</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="GtkBox">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="halign">center</property>
+                        <property name="valign">center</property>
+                        <property name="margin-bottom">6</property>
+                        <property name="orientation">vertical</property>
+                        <child>
+                          <object class="GtkLabel" id="_delay_label">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="single-line-mode">True</property>
+                            <style>
+                              <class name="time_label"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel">
+                            <property name="visible">True</property>
+                            <property name="can-focus">False</property>
+                            <property name="label" translatable="yes">Recording will start in...</property>
+                            <property name="single-line-mode">True</property>
+                            <style>
+                              <class name="status_label"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="expand">False</property>
+                            <property name="fill">True</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">True</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="name">page3</property>
+                    <property name="title" translatable="yes">page3</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>

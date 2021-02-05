@@ -1,0 +1,10 @@
+.time_label {
+  font-size: 400%;
+  font-weight: 300;
+  font-feature-settings: "tnum";
+}
+
+.status_label {
+  font-weight: 700;
+  font-size: 112%;
+}
