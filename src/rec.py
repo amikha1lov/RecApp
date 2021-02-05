@@ -154,74 +154,84 @@ def start_recording(self, *args):
         record(self)
 
 def record(self, *args):
-    self.quality_video = quality_video_switcher(self, *args)
-    self.soundOn = on__sound_switch(self, *args)
-    fileNameTime = _(constants["APPNAME"]) + "-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
-    videoFolder = self.settings.get_string('path-to-save-video-folder')
-    homeDirectory = os.getenv("HOME")
-    if homeDirectory == videoFolder:
-        self._label_video_saved.set_label("home")
-    else:
-        self._label_video_saved.set_label(videoFolder.split('/')[-1])
+    def record_logic(*args):
 
-    self.fileName = os.path.join(videoFolder, fileNameTime)
-    if self.delayBeforeRecording > 0:
+        # Visual Stuffs
+        self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
+        self._pause_continue_record_button_stack_revealer.set_reveal_child(True)
+        self._main_stack.set_visible_child(self._paused_start_stack_box)
+        self._preferences_back_stack_revealer.set_reveal_child(False)
+
+        self.quality_video = quality_video_switcher(self, *args)
+        self.soundOn = on__sound_switch(self, *args)
+        fileNameTime = _(constants["APPNAME"]) + "-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+        videoFolder = self.settings.get_string('path-to-save-video-folder')
+        homeDirectory = os.getenv("HOME")
+        if homeDirectory == videoFolder:
+            self._label_video_saved.set_label("home")
+        else:
+            self._label_video_saved.set_label(videoFolder.split('/')[-1])
+
+        self.fileName = os.path.join(videoFolder, fileNameTime)
+        if self.delayBeforeRecording > 0:
         self.notification = Notify.Notification.new(constants["APPNAME"],
                                                     _("recording will start in ") + " " + str(
                                                         self.delayBeforeRecording) + " " + _(
                                                         " seconds"))
         self.notification.show()
 
-    time.sleep(self.delayBeforeRecording)
+        if self.recordFormat == "webm":
+            self.mux = "webmmux"
+            self.extension = ".webm"
 
-    if self.recordFormat == "webm":
-        self.mux = "webmmux"
-        self.extension = ".webm"
+        elif self.recordFormat == "mkv":
+            self.mux = "matroskamux"
+            self.extension = ".mkv"
 
-    elif self.recordFormat == "mkv":
-        self.mux = "matroskamux"
-        self.extension = ".mkv"
+        elif self.recordFormat == "mp4":
+            self.mux = "mp4mux"
+            self.extension = ".mp4"
 
-    elif self.recordFormat == "mp4":
-        self.mux = "mp4mux"
-        self.extension = ".mp4"
+        if self.displayServer == "wayland":
 
-    if self.displayServer == "wayland":
-
-        RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
-        self.GNOMEScreencast.Screencast(self.fileName + self.extension,
-                                        {'framerate': GLib.Variant('i', int(self.videoFrames)),
-                                         'draw-cursor': GLib.Variant('b', self.recordMouse),
-                                         'pipeline': GLib.Variant('s', RecorderPipeline)})
-    else:
-        if self.coordinateMode == True:
-            video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
-            if self.recordSoundOn == True:
-                self.video = Popen(
-                    video_str.format(self.recordMouse, self.widthArea, self.heightArea,
-                                     self.videoFrames, self.quality_video, self.mux, self.fileName,
-                                     self.extension) + self.soundOn, shell=True)
-
-            else:
-                self.video = Popen(
-                    video_str.format(self.recordMouse, self.widthArea, self.heightArea,
-                                     self.videoFrames, self.quality_video, self.mux, self.fileName,
-                                     self.extension), shell=True)
-
-            self.coordinateMode = False
+            RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
+            self.GNOMEScreencast.Screencast(self.fileName + self.extension,
+                                            {'framerate': GLib.Variant('i', int(self.videoFrames)),
+                                             'draw-cursor': GLib.Variant('b', self.recordMouse),
+                                             'pipeline': GLib.Variant('s', RecorderPipeline)})
         else:
-            if self.recordSoundOn == True:
-                self.video = Popen(
-                    self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
-                                          self.mux, self.fileName, self.extension) + self.soundOn,
-                    shell=True)
+            if self.coordinateMode == True:
+                video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
+                if self.recordSoundOn == True:
+                    self.video = Popen(
+                        video_str.format(self.recordMouse, self.widthArea, self.heightArea,
+                                         self.videoFrames, self.quality_video, self.mux, self.fileName,
+                                         self.extension) + self.soundOn, shell=True)
+
+                else:
+                    self.video = Popen(
+                        video_str.format(self.recordMouse, self.widthArea, self.heightArea,
+                                         self.videoFrames, self.quality_video, self.mux, self.fileName,
+                                         self.extension), shell=True)
+
+                self.coordinateMode = False
             else:
-                self.video = Popen(
-                    self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
-                                          self.mux, self.fileName, self.extension), shell=True)
+                if self.recordSoundOn == True:
+                    self.video = Popen(
+                        self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
+                                              self.mux, self.fileName, self.extension) + self.soundOn,
+                        shell=True)
+                else:
+                    self.video = Popen(
+                        self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
+                                              self.mux, self.fileName, self.extension), shell=True)
 
-    self.isrecording = True
+        self.isrecording = True
 
+    if self.delayBeforeRecording > 0:
+        GLib.timeout_add_seconds(self.delayBeforeRecording, record_logic)
+    else:
+        record_logic(*args)
 
 def stop_recording(self, *args):
 
@@ -236,6 +246,14 @@ def stop_recording(self, *args):
     self.notification.add_action("open_file", _("Open File"), self.openVideoFile)
     self.notification.show()
     self.isrecording = False
+
+    # Visual Stuffs
+    self._record_stop_record_button_stack.set_visible_child(self._record_button)
+    self._pause_continue_record_button_stack_revealer.set_reveal_child(False)
+    self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
+    self._paused_start_stack.set_visible_child(self._recording_box)
+    self._main_stack.set_visible_child(self._main_screen_box)
+    self._preferences_back_stack_revealer.set_reveal_child(True)
 
 def delete_event(self, w, h):
     if self.isrecording:

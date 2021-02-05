@@ -256,28 +256,17 @@ class RecappWindow(Handy.ApplicationWindow):
     def on__formats_combobox_changed(self, box):
         formats_combobox_changed(self, box)
 
-# Headerbar buttons, if will be visible or not
-
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, widget):
         start_recording(self)
-        self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
-        self._pause_continue_record_button_stack_revealer.set_reveal_child(True)
-        self._main_stack.set_visible_child(self._paused_start_stack_box)
-        self._preferences_back_stack_revealer.set_reveal_child(False)
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, widget):
         stop_recording(self)
-        self._record_stop_record_button_stack.set_visible_child(self._record_button)
-        self._pause_continue_record_button_stack_revealer.set_reveal_child(False)
-        self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
-        self._paused_start_stack.set_visible_child(self._recording_box)
-        self._main_stack.set_visible_child(self._main_screen_box)
-        self._preferences_back_stack_revealer.set_reveal_child(True)
 
 # TODO
-# these functions too
+# Connect pause and continue to something
+
     @Gtk.Template.Callback()
     def on__pause_record_button_clicked(self, widget):
         self._pause_continue_record_button_stack.set_visible_child(self._continue_record_button)
@@ -288,10 +277,8 @@ class RecappWindow(Handy.ApplicationWindow):
         self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
         self._paused_start_stack.set_visible_child(self._recording_box)
 
-# Disable show pointer option in selection mode
 # TODO
-# connect these two functions to something
-# incorrect behavior of on__selection_mode_pressed
+# Connect window mode to something
 
     @Gtk.Template.Callback()
     def on__fullscreen_mode_pressed(self, widget):
@@ -314,8 +301,6 @@ class RecappWindow(Handy.ApplicationWindow):
             self.isFullscreenMode = False
             self.isWindowMode = False
 
-# Preferences box
-
     @Gtk.Template.Callback()
     def on__preferences_button_clicked(self, widget):
         self._main_stack.set_visible_child(self._preferences_box)
@@ -330,8 +315,6 @@ class RecappWindow(Handy.ApplicationWindow):
         self._record_stop_record_button_stack_revealer.set_reveal_child(True)
         self.set_size_request(462, 300)
 
-# Launch About Dialog
-
     @Gtk.Template.Callback()
     def on__about_button_clicked(self, widget):
         dialog = AboutDialog(self)
@@ -341,7 +324,7 @@ class RecappWindow(Handy.ApplicationWindow):
         response = dialog.run()
         dialog.destroy()
 
-# About Dialog
+
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/about.ui')
 class AboutDialog(Gtk.AboutDialog):
     __gtype_name__ = 'AboutDialog'
