@@ -21,6 +21,7 @@ import os
 import signal
 import sys
 import time
+import datetime
 from locale import gettext as _
 from subprocess import PIPE, Popen
 
@@ -60,6 +61,7 @@ class RecappWindow(Handy.ApplicationWindow):
     coordinateMode = False
     isrecording = False
     iscancelled = False
+    istimerrunning = False
     __gtype_name__ = 'RecAppWindow'
     encoders = ["vp8enc", "x264enc"]
     formats = []
@@ -83,8 +85,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _pause_record_button = Gtk.Template.Child()
     _continue_record_button = Gtk.Template.Child()
     _main_stack = Gtk.Template.Child()
-    _recording_box = Gtk.Template.Child() # the original _recording_box is renamed to _main_settings_box and _secondary_settings_box
-    _paused_box = Gtk.Template.Child()
     _main_screen_box = Gtk.Template.Child()
     _capture_mode_box = Gtk.Template.Child()
     _sound_rowbox = Gtk.Template.Child()
@@ -103,6 +103,10 @@ class RecappWindow(Handy.ApplicationWindow):
     _delay_label = Gtk.Template.Child()
     _cancel_button = Gtk.Template.Child()
 
+    _time_recording_label = Gtk.Template.Child()
+    _recording_label = Gtk.Template.Child()
+    _paused_label = Gtk.Template.Child()
+
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -115,6 +119,10 @@ class RecappWindow(Handy.ApplicationWindow):
 
         self._about_button.set_label("About " + constants["APPNAME"])
         self.isFullscreenMode = True
+
+        GLib.timeout_add(1000, self.refresh_time)
+        self.elapsed_time = datetime.timedelta()
+        self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
@@ -231,6 +239,12 @@ class RecappWindow(Handy.ApplicationWindow):
     def on_toggle_mouse_record(self, *args):
         toggle_mouse_record(self, *args)
 
+    def refresh_time(self):
+        if self.istimerrunning:
+            self.elapsed_time += datetime.timedelta(seconds=1)
+            self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+        return True
+
     @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
         video_folder_button(self, button)
@@ -266,19 +280,23 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, widget):
         stop_recording(self)
-
 # TODO
 # Connect pause and continue to something
 
     @Gtk.Template.Callback()
     def on__pause_record_button_clicked(self, widget):
         self._pause_continue_record_button_stack.set_visible_child(self._continue_record_button)
-        self._paused_start_stack.set_visible_child(self._paused_box)
+        self._paused_start_stack.set_visible_child(self._paused_label)
+        self.istimerrunning = False
+        self.label_context.remove_class("recording")
+
 
     @Gtk.Template.Callback()
     def on__continue_record_button_clicked(self, widget):
         self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
-        self._paused_start_stack.set_visible_child(self._recording_box)
+        self._paused_start_stack.set_visible_child(self._recording_label)
+        self.istimerrunning = True
+        self.label_context.add_class("recording")
 
     @Gtk.Template.Callback()
     def on__cancel_button_clicked(self, widget):

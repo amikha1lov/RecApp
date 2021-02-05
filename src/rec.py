@@ -21,6 +21,7 @@ import os
 import signal
 import sys
 import time
+import datetime
 from locale import gettext as _
 from subprocess import PIPE, Popen
 
@@ -153,6 +154,7 @@ def start_recording(self, *args):
         on__select_area(self)
         record(self)
 
+
 def record(self, *args):
     if self.delayBeforeRecording > 0:
         self._main_stack.set_visible_child(self._delay_box)
@@ -162,6 +164,7 @@ def record(self, *args):
     else:
         self._preferences_back_stack_revealer.set_reveal_child(False)
         record_logic(self, *args)
+
 
 def record_logic(self, *args):
     if self.iscancelled:
@@ -173,6 +176,11 @@ def record_logic(self, *args):
         self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
         self._pause_continue_record_button_stack_revealer.set_reveal_child(True)
         self._main_stack.set_visible_child(self._paused_start_stack_box)
+
+        self.istimerrunning = True
+
+        self.label_context = self._time_recording_label.get_style_context()
+        self.label_context.add_class("recording")
 
         self.quality_video = quality_video_switcher(self, *args)
         self.soundOn = on__sound_switch(self, *args)
@@ -242,9 +250,11 @@ def delay(self, *args):
             self.time_delay = self.delayBeforeRecording
     countdown(*args)
 
+
 def cancel_delay(self, *args):
     self.time_delay = 0
     self.iscancelled = True
+
 
 def stop_recording(self, *args):
 
@@ -259,13 +269,20 @@ def stop_recording(self, *args):
     self.notification.add_action("open_file", _("Open File"), self.openVideoFile)
     self.notification.show()
     self.isrecording = False
+    self.istimerrunning = False
 
     self._record_stop_record_button_stack.set_visible_child(self._record_button)
     self._pause_continue_record_button_stack_revealer.set_reveal_child(False)
     self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
-    self._paused_start_stack.set_visible_child(self._recording_box)
+    self._paused_start_stack.set_visible_child(self._recording_label)
     self._main_stack.set_visible_child(self._main_screen_box)
     self._preferences_back_stack_revealer.set_reveal_child(True)
+
+    self.label_context.remove_class("recording")
+
+    self.elapsed_time = datetime.timedelta()
+    self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+
 
 def delete_event(self, w, h):
     if self.isrecording:
