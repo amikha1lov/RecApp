@@ -370,4 +370,4 @@ class AboutDialog(Gtk.AboutDialog):
     __gtype_name__ = 'AboutDialog'
 
     def __init__(self, parent):
-        Gtk.AboutDialog.__init__(self, transient_for=parent)    
+        Gtk.AboutDialog.__init__(self, transient_for=parent)
