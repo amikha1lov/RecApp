@@ -300,6 +300,7 @@ def toggle_audio(self, *args):
 
 
 def toggle_high_quality(self, *args):
+    if not self.isrecording:
         if self._quality_video_switcher.get_active():
             self._quality_video_switcher.set_active(False)
         else:
