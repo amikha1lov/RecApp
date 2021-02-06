@@ -1,5 +1,5 @@
 .time_label {
-  font-size: 400%;
+  font-size: 450%;
   font-weight: 300;
   font-feature-settings: "tnum";
   transition-duration: 200ms;
@@ -13,3 +13,4 @@
 .recording {
   color: #e01b24;
 }
+

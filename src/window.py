@@ -287,16 +287,15 @@ class RecappWindow(Handy.ApplicationWindow):
     def on__pause_record_button_clicked(self, widget):
         self._pause_continue_record_button_stack.set_visible_child(self._continue_record_button)
         self._paused_start_stack.set_visible_child(self._paused_label)
-        self.istimerrunning = False
         self.label_context.remove_class("recording")
-
+        self.istimerrunning = False
 
     @Gtk.Template.Callback()
     def on__continue_record_button_clicked(self, widget):
         self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
         self._paused_start_stack.set_visible_child(self._recording_label)
-        self.istimerrunning = True
         self.label_context.add_class("recording")
+        self.istimerrunning = True
 
     @Gtk.Template.Callback()
     def on__cancel_button_clicked(self, widget):

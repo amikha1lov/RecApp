@@ -240,8 +240,7 @@ def record_logic(self, *args):
 def delay(self, *args):
     self.time_delay = self.delayBeforeRecording
     def countdown(*args):
-        m, s = divmod(self.time_delay, 60)
-        self._delay_label.set_label(f'{m:02d}∶{s:02d}')
+        self._delay_label.set_label(str(self.time_delay))
         if self.time_delay > 0:
             self.time_delay -=1
             GLib.timeout_add_seconds(1, countdown)
@@ -301,7 +300,6 @@ def toggle_audio(self, *args):
 
 
 def toggle_high_quality(self, *args):
-    if not self.isrecording:
         if self._quality_video_switcher.get_active():
             self._quality_video_switcher.set_active(False)
         else:
