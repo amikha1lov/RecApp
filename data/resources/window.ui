@@ -34,16 +34,31 @@
           </packing>
         </child>
         <child>
-          <object class="GtkModelButton" id="_about_button">
+          <object class="GtkModelButton" id="_keyboardshortcuts_button">
             <property name="visible">True</property>
             <property name="can-focus">True</property>
             <property name="receives-default">True</property>
-            <signal name="clicked" handler="on__about_button_clicked" swapped="no"/>
+            <property name="text" translatable="yes">Keyboard Shortcuts</property>
+            <signal name="clicked" handler="on__keyboardshortcuts_button_clicked" swapped="no"/>
           </object>
           <packing>
             <property name="expand">False</property>
             <property name="fill">True</property>
             <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="_about_button">
+            <property name="visible">True</property>
+            <property name="can-focus">True</property>
+            <property name="receives-default">True</property>
+            <property name="text" translatable="yes">About Recapp</property>
+            <signal name="clicked" handler="on__about_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
           </packing>
         </child>
       </object>
@@ -76,7 +91,6 @@
                   <object class="GtkStack" id="_record_stop_record_button_stack">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="transition-duration">200</property>
                     <property name="transition-type">crossfade</property>
                     <child>
                       <object class="GtkButton" id="_record_button">
@@ -145,7 +159,6 @@
                   <object class="GtkStack" id="_pause_continue_record_button_stack">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="transition-duration">200</property>
                     <property name="transition-type">crossfade</property>
                     <child>
                       <object class="GtkButton" id="_pause_record_button">
@@ -204,7 +217,6 @@
                   <object class="GtkStack" id="_preferences_back_stack">
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="transition-duration">200</property>
                     <property name="transition-type">crossfade</property>
                     <child>
                       <object class="GtkMenuButton" id="_menu_button">
@@ -273,7 +285,6 @@
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="hhomogeneous">False</property>
-                <property name="transition-duration">200</property>
                 <property name="transition-type">crossfade</property>
                 <property name="interpolate-size">True</property>
                 <child>
@@ -610,7 +621,6 @@
                           <object class="GtkStack" id="_paused_start_stack">
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
-                            <property name="transition-duration">200</property>
                             <property name="transition-type">crossfade</property>
                             <child>
                               <object class="GtkLabel" id="_recording_label">

@@ -121,8 +121,6 @@ class RecappWindow(Handy.ApplicationWindow):
         style_context = Gtk.StyleContext()
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        self._about_button.set_label("About " + constants["APPNAME"])
-
         GLib.timeout_add(1000, self.refresh_time)
         self.elapsed_time = datetime.timedelta()
         self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
@@ -353,6 +351,12 @@ class RecappWindow(Handy.ApplicationWindow):
         self.set_size_request(462, 300)
 
     @Gtk.Template.Callback()
+    def on__keyboardshortcuts_button_clicked(self, widget):
+        window = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/shortcuts.ui').get_object('shortcuts')
+        window.set_transient_for(self)
+        window.present()
+
+    @Gtk.Template.Callback()
     def on__about_button_clicked(self, widget):
         dialog = AboutDialog(self)
         dialog.set_program_name(_(constants["APPNAME"]))
@@ -361,10 +365,9 @@ class RecappWindow(Handy.ApplicationWindow):
         response = dialog.run()
         dialog.destroy()
 
-
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/about.ui')
 class AboutDialog(Gtk.AboutDialog):
     __gtype_name__ = 'AboutDialog'
 
     def __init__(self, parent):
-        Gtk.AboutDialog.__init__(self, transient_for=parent) 
+        Gtk.AboutDialog.__init__(self, transient_for=parent)    
