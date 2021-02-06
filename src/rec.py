@@ -265,7 +265,7 @@ def stop_recording(self, *args):
     else:
         self.video.send_signal(signal.SIGINT)
 
-    self.notification = Notify.Notification.new(constants["APPNAME"], _("Recording is complete"))
+    self.notification = Notify.Notification.new(constants["APPNAME"], _("Recording is complete!"))
     self.notification.add_action("open_folder", _("Open Folder"), self.openFolder)
     self.notification.add_action("open_file", _("Open File"), self.openVideoFile)
     self.notification.show()
