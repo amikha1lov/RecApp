@@ -43,7 +43,7 @@ Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
 
-# TODO Not working yet: record computer sounds
+# TODO Not working yet: record computer sounds (keyboard shortcut already working)
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
 class RecappWindow(Handy.ApplicationWindow):
@@ -62,6 +62,8 @@ class RecappWindow(Handy.ApplicationWindow):
     isrecording = False
     iscancelled = False
     istimerrunning = False
+    isrecordingwithdelay = False
+    isFullscreenMode = True
     __gtype_name__ = 'RecAppWindow'
     encoders = ["vp8enc", "x264enc"]
     formats = []
@@ -107,6 +109,8 @@ class RecappWindow(Handy.ApplicationWindow):
     _recording_label = Gtk.Template.Child()
     _paused_label = Gtk.Template.Child()
 
+    _sound_on_microphone = Gtk.Template.Child()
+
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -118,7 +122,6 @@ class RecappWindow(Handy.ApplicationWindow):
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         self._about_button.set_label("About " + constants["APPNAME"])
-        self.isFullscreenMode = True
 
         GLib.timeout_add(1000, self.refresh_time)
         self.elapsed_time = datetime.timedelta()
@@ -130,10 +133,14 @@ class RecappWindow(Handy.ApplicationWindow):
                       self.on_toggle_high_quality)
         accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_toggle_audio)
-        accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0,
+        accel.connect(Gdk.keyval_from_name('p'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_toggle_mouse_record)
         accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_toggle_record)
+        accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0,
+                      self.on_toggle_microphone)
+        accel.connect(Gdk.keyval_from_name('c'), Gdk.ModifierType.CONTROL_MASK, 0,
+                      self.on_cancel_record)
         self.cpus = multiprocessing.cpu_count() - 1
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
@@ -238,6 +245,12 @@ class RecappWindow(Handy.ApplicationWindow):
 
     def on_toggle_mouse_record(self, *args):
         toggle_mouse_record(self, *args)
+
+    def on_toggle_microphone(self, *args):
+        toggle_microphone(self, *args)
+
+    def on_cancel_record(self, *args):
+        cancel_record(self, *args)
 
     def refresh_time(self):
         if self.istimerrunning:
