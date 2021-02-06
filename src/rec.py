@@ -147,6 +147,7 @@ def on__sound_switch(self, *args):
 
 def start_recording(self, *args):
     if self.isFullscreenMode:
+        self.coordinateMode = False
         record(self)
     elif self.isWindowMode:
         print('window mode')
