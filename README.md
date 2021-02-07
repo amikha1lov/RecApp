@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img src="data/com.github.amikha1lov.RecApp.svg" alt="RecApp" width="128" height="128"/><br>
+	<img src="data/com.github.amikha1lov.RecApp.svg" alt="RecApp" width="192" height="192"/><br>
 	RecApp
 </h1>
 
@@ -11,7 +11,15 @@
 </p>
 
 <p align="center">
-  <img src="RecApp-screenshot.png"/>
+  <img src="screenshots/RecApp-screenshot.png"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/RecApp-screenshot2.png"/>
+</p>
+
+<p align="center">
+  <img src="screenshots/RecApp-screenshot3.png"/>
 </p>
 
 
