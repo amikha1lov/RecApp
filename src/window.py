@@ -76,11 +76,10 @@ class RecappWindow(Handy.ApplicationWindow):
     _video_folder_button = Gtk.Template.Child()
     _record_mouse_switcher = Gtk.Template.Child()
     _formats_combobox = Gtk.Template.Child()
-
     _record_stop_record_button_stack = Gtk.Template.Child()
     _fullscreen_mode_button = Gtk.Template.Child()
     _window_mode_button = Gtk.Template.Child()
-    _selection_mode_button = Gtk.Template.Child() #_select_area_button
+    _selection_mode_button = Gtk.Template.Child()
     _showpointer_rowbox = Gtk.Template.Child()
     _pause_continue_record_button_stack_revealer = Gtk.Template.Child()
     _pause_continue_record_button_stack = Gtk.Template.Child()
@@ -100,15 +99,12 @@ class RecappWindow(Handy.ApplicationWindow):
     _back_button = Gtk.Template.Child()
     _preferences_back_stack = Gtk.Template.Child()
     _record_stop_record_button_stack_revealer = Gtk.Template.Child()
-
     _delay_box = Gtk.Template.Child()
     _delay_label = Gtk.Template.Child()
     _cancel_button = Gtk.Template.Child()
-
     _time_recording_label = Gtk.Template.Child()
     _recording_label = Gtk.Template.Child()
     _paused_label = Gtk.Template.Child()
-
     _sound_on_microphone = Gtk.Template.Child()
 
 

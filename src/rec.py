@@ -178,9 +178,6 @@ def record_logic(self, *args):
         self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
         self._pause_continue_record_button_stack_revealer.set_reveal_child(True)
         self._main_stack.set_visible_child(self._paused_start_stack_box)
-
-        self.istimerrunning = True
-
         self.label_context = self._time_recording_label.get_style_context()
         self.label_context.add_class("recording")
 
@@ -237,6 +234,7 @@ def record_logic(self, *args):
                                               self.mux, self.fileName, self.extension), shell=True)
 
         self.isrecording = True
+        self.istimerrunning = True
 
 
 def delay(self, *args):
@@ -245,7 +243,7 @@ def delay(self, *args):
         self._delay_label.set_label(str(self.time_delay))
         if self.time_delay > 0:
             self.time_delay -=1
-            GLib.timeout_add_seconds(1, countdown)
+            GLib.timeout_add(1000, countdown)
         else:
             self.isrecordingwithdelay = False
             record_logic(self, *args)
@@ -279,7 +277,6 @@ def stop_recording(self, *args):
     self._paused_start_stack.set_visible_child(self._recording_label)
     self._main_stack.set_visible_child(self._main_screen_box)
     self._preferences_back_stack_revealer.set_reveal_child(True)
-
     self.label_context.remove_class("recording")
 
     self.elapsed_time = datetime.timedelta()
@@ -292,24 +289,22 @@ def delete_event(self, w, h):
 
 
 def toggle_audio(self, *args):
-    if not self.isrecordingwithdelay:
-        if not self.isrecording:
-            if self._sound_on_switch.get_active():
+    if not self.isrecordingwithdelay and not self.isrecording:
+        if self._sound_on_switch.get_active():
+            self._sound_on_switch.set_active(False)
+        else:
+            if self.displayServer == "wayland":
                 self._sound_on_switch.set_active(False)
             else:
-                if self.displayServer == "wayland":
-                    self._sound_on_switch.set_active(False)
-                else:
-                    self._sound_on_switch.set_active(True)
+                self._sound_on_switch.set_active(True)
 
 
 def toggle_high_quality(self, *args):
-    if not self.isrecordingwithdelay:
-        if not self.isrecording:
-            if self._quality_video_switcher.get_active():
-                self._quality_video_switcher.set_active(False)
-            else:
-                self._quality_video_switcher.set_active(True)
+    if not self.isrecordingwithdelay and not self.isrecording:
+        if self._quality_video_switcher.get_active():
+            self._quality_video_switcher.set_active(False)
+        else:
+            self._quality_video_switcher.set_active(True)
 
 
 def toggle_record(self, *args):
@@ -328,21 +323,19 @@ def quit_app(self, *args):
 
 
 def toggle_mouse_record(self, *args):
-    if not self.isrecordingwithdelay:
-        if not self.isrecording:
-            if self._record_mouse_switcher.get_active():
-                self._record_mouse_switcher.set_active(False)
-            else:
-                self._record_mouse_switcher.set_active(True)
+    if not self.isrecordingwithdelay and not self.isrecording:
+        if self._record_mouse_switcher.get_active():
+            self._record_mouse_switcher.set_active(False)
+        else:
+            self._record_mouse_switcher.set_active(True)
 
 
 def toggle_microphone(self, *args):
-    if not self.isrecordingwithdelay:
-        if not self.isrecording:
-            if self._sound_on_microphone.get_active():
-                self._sound_on_microphone.set_active(False)
-            else:
-                self._sound_on_microphone.set_active(True)
+    if not self.isrecordingwithdelay and not self.isrecording:
+        if self._sound_on_microphone.get_active():
+            self._sound_on_microphone.set_active(False)
+        else:
+            self._sound_on_microphone.set_active(True)
 
 
 def cancel_record(self, *args):
