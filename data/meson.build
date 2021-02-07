@@ -47,4 +47,3 @@ install_data('com.github.amikha1lov.RecApp.svg',
 
 install_data('com.github.amikha1lov.RecApp-symbolic.svg',
              install_dir : 'share/icons/hicolor/symbolic/apps')
-
