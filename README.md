@@ -45,3 +45,6 @@ flatpak-builder --repo=$HOME/Projects/flatpak/repo --force-clean --ccache build-
 flatpak remote-add --no-gpg-verify local-repo $HOME/Projects/flatpak/repo
 flatpak install local-repo com.github.amikha1lov.RecApp
 ```
+
+## Credits
+Design inspired by **[GNOME Screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot/)**.
