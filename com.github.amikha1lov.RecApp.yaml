@@ -1,6 +1,6 @@
 app-id: com.github.amikha1lov.RecApp
 runtime: org.gnome.Platform
-runtime-version: '3.36'
+runtime-version: '3.38'
 sdk: org.gnome.Sdk
 command: recapp
 finish-args:
@@ -88,3 +88,18 @@ modules:
           - type: archive
             url: https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-20.4.3.tar.gz
             sha256: f5fffd7db08aba0bb90ea2af8e777c272a6882d574598d511433930cc8f9aed4
+
+      - name: libhandy
+        buildsystem: meson
+        config-opts:
+          - -Dprofiling=false
+          - -Dintrospection=enabled
+          - -Dgtk_doc=false
+          - -Dtests=false
+          - -Dexamples=false
+          - -Dvapi=false
+          - -Dglade_catalog=disabled
+        sources:
+          - type: git
+            url: https://gitlab.gnome.org/GNOME/libhandy
+            tag: 1.0.2

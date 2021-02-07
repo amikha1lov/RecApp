@@ -21,6 +21,7 @@ import os
 import signal
 import sys
 import time
+import datetime
 from locale import gettext as _
 from subprocess import PIPE, Popen
 
@@ -35,15 +36,21 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify
+gi.require_version('Handy', '1')
+from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify, Handy
 
 Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
 
+# TODO Not working yet: record computer sounds (keyboard shortcut already working)
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
-class RecappWindow(Gtk.ApplicationWindow):
+class RecappWindow(Handy.ApplicationWindow):
+    __gtype_name__ = 'RecAppWindow'
+
+    Handy.init()
+
     soundOn = ""
     mux = ""
     extension = ""
@@ -54,7 +61,10 @@ class RecappWindow(Gtk.ApplicationWindow):
     heightArea = 0
     coordinateMode = False
     isrecording = False
-    __gtype_name__ = 'RecAppWindow'
+    iscancelled = False
+    istimerrunning = False
+    isrecordingwithdelay = False
+    isFullscreenMode = True
     encoders = ["vp8enc", "x264enc"]
     formats = []
     _record_button = Gtk.Template.Child()
@@ -62,79 +72,54 @@ class RecappWindow(Gtk.ApplicationWindow):
     _frames_combobox = Gtk.Template.Child()
     _delay_button = Gtk.Template.Child()
     _sound_on_switch = Gtk.Template.Child()
-    _sound_box = Gtk.Template.Child()
-    #_label_video_saved_box = Gtk.Template.Child()
-    #_label_video_saved = Gtk.Template.Child()
-    _quality_video_box = Gtk.Template.Child()
     _quality_video_switcher = Gtk.Template.Child()
     _video_folder_button = Gtk.Template.Child()
     _record_mouse_switcher = Gtk.Template.Child()
-    _quality_rowbox = Gtk.Template.Child()
-    _audio_rowbox = Gtk.Template.Child()
     _formats_combobox = Gtk.Template.Child()
-
     _record_stop_record_button_stack = Gtk.Template.Child()
     _fullscreen_mode_button = Gtk.Template.Child()
     _window_mode_button = Gtk.Template.Child()
-    _selection_mode_button = Gtk.Template.Child() #_select_area_button
+    _selection_mode_button = Gtk.Template.Child()
     _showpointer_rowbox = Gtk.Template.Child()
     _pause_continue_record_button_stack_revealer = Gtk.Template.Child()
     _pause_continue_record_button_stack = Gtk.Template.Child()
     _pause_record_button = Gtk.Template.Child()
     _continue_record_button = Gtk.Template.Child()
     _main_stack = Gtk.Template.Child()
-    _recording_box = Gtk.Template.Child() # the original _recording_box is renamed to _main_settings_box and _secondary_settings_box
-    _paused_box = Gtk.Template.Child()
     _main_screen_box = Gtk.Template.Child()
+    _capture_mode_box = Gtk.Template.Child()
+    _sound_rowbox = Gtk.Template.Child()
     _preferences_box = Gtk.Template.Child()
     _preferences_button = Gtk.Template.Child()
+    _menu_button = Gtk.Template.Child()
     _about_button = Gtk.Template.Child()
+    _paused_start_stack_box = Gtk.Template.Child()
     _paused_start_stack = Gtk.Template.Child()
     _preferences_back_stack_revealer = Gtk.Template.Child()
     _back_button = Gtk.Template.Child()
     _preferences_back_stack = Gtk.Template.Child()
     _record_stop_record_button_stack_revealer = Gtk.Template.Child()
+    _delay_box = Gtk.Template.Child()
+    _delay_label = Gtk.Template.Child()
+    _cancel_button = Gtk.Template.Child()
+    _time_recording_label = Gtk.Template.Child()
+    _recording_label = Gtk.Template.Child()
+    _paused_label = Gtk.Template.Child()
+    _sound_on_microphone = Gtk.Template.Child()
 
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
 
+        css_provider = Gtk.CssProvider()
+        css_provider.load_from_resource('/com/github/amikha1lov/RecApp/style.css')
         screen = Gdk.Screen.get_default()
-        provider = Gtk.CssProvider()
         style_context = Gtk.StyleContext()
-        style_context.add_provider_for_screen(
-            screen, provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION
-        )
-        css = b"""
-        decoration , dialog, window.background {
-            border-bottom-left-radius: 8px;
-            border-bottom-right-radius: 8px;
-        }
+        style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        #_main_settings_box,
-        #_secondary_settings_box {
-            border-radius: 8px;
-            border-color: #1f1f1f;
-            border-style: solid;
-            border-width: 1px;
-        }
-
-        #boxes:first-child {
-            border-top-right-radius: 8px;
-            border-top-left-radius: 8px;
-        }
-
-        #boxes {
-            border-bottom-color: #1f1f1f;
-            border-bottom-style: solid;
-            border-bottom-width: 1px;
-        }
-
-        #_about_button {
-            border-radius: 999px;
-        }
-        """
-        provider.load_from_data(css)
+        GLib.timeout_add(1000, self.refresh_time)
+        self.elapsed_time = datetime.timedelta()
+        self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
@@ -142,10 +127,14 @@ class RecappWindow(Gtk.ApplicationWindow):
                       self.on_toggle_high_quality)
         accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_toggle_audio)
-        accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0,
+        accel.connect(Gdk.keyval_from_name('p'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_toggle_mouse_record)
         accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_toggle_record)
+        accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0,
+                      self.on_toggle_microphone)
+        accel.connect(Gdk.keyval_from_name('c'), Gdk.ModifierType.CONTROL_MASK, 0,
+                      self.on_cancel_record)
         self.cpus = multiprocessing.cpu_count() - 1
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
@@ -193,14 +182,14 @@ class RecappWindow(Gtk.ApplicationWindow):
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
-            # TODO
-            # Hide things when wayland is True (Capture Mode, Record Audio)
-            # deactivate _sound_on_switch
+            self._capture_mode_box.set_visible(False)
+            self._sound_rowbox.set_visible(False)
+            self._sound_on_switch.set_active(False)
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
                 self.notification = Notify.Notification.new(constants["APPNAME"], _(
-                    "Sorry, Wayland session is not supported yet"))
+                    "Sorry, Wayland session is not supported yet."))
                 self.notification.show()
             else:
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast',
@@ -231,8 +220,37 @@ class RecappWindow(Gtk.ApplicationWindow):
         os.system("xdg-open " + videoFolderForOpen)
 
     def openVideoFile(self, notification, action, user_data=None):
-
         os.system("xdg-open " + self.fileName + self.extension)
+
+    def on_delete_event(self, w, h):
+        delete_event(self, w, h)
+
+    def on_toggle_audio(self, *args):
+        toggle_audio(self, *args)
+
+    def on_toggle_high_quality(self, *args):
+        toggle_high_quality(self, *args)
+
+    def on_toggle_record(self, *args):
+        toggle_record(self, *args)
+
+    def on_quit_app(self, *args):
+        quit_app(self, *args)
+
+    def on_toggle_mouse_record(self, *args):
+        toggle_mouse_record(self, *args)
+
+    def on_toggle_microphone(self, *args):
+        toggle_microphone(self, *args)
+
+    def on_cancel_record(self, *args):
+        cancel_record(self, *args)
+
+    def refresh_time(self):
+        if self.istimerrunning:
+            self.elapsed_time += datetime.timedelta(seconds=1)
+            self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+        return True
 
     @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
@@ -262,79 +280,61 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__formats_combobox_changed(self, box):
         formats_combobox_changed(self, box)
 
-    def on_delete_event(self, w, h):
-        delete_event(self, w, h)
-
-    def on_toggle_audio(self, *args):
-        toggle_audio(self, *args)
-
-    def on_toggle_high_quality(self, *args):
-        toggle_high_quality(self, *args)
-
-    def on_toggle_record(self, *args):
-        toggle_record(self, *args)
-
-    def on_quit_app(self, *args):
-        quit_app(self, *args)
-
-    def on_toggle_mouse_record(self, *args):
-        toggle_mouse_record(self, *args)
-
-# Headerbar buttons, if will be visible or not
-
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, widget):
         start_recording(self)
-        self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
-        self._pause_continue_record_button_stack_revealer.set_reveal_child(True)
-        self._main_stack.set_visible_child(self._paused_start_stack)
-        self._preferences_back_stack_revealer.set_reveal_child(False)
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, widget):
         stop_recording(self)
-        self._record_stop_record_button_stack.set_visible_child(self._record_button)
-        self._pause_continue_record_button_stack_revealer.set_reveal_child(False)
-        self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
-        self._paused_start_stack.set_visible_child(self._recording_box)
-        self._main_stack.set_visible_child(self._main_screen_box)
-        self._preferences_back_stack_revealer.set_reveal_child(True)
-
 # TODO
-# these functions too
+# Connect pause and continue to something
+
     @Gtk.Template.Callback()
     def on__pause_record_button_clicked(self, widget):
         self._pause_continue_record_button_stack.set_visible_child(self._continue_record_button)
-        self._paused_start_stack.set_visible_child(self._paused_box)
+        self._paused_start_stack.set_visible_child(self._paused_label)
+        self.label_context.remove_class("recording")
+        self.istimerrunning = False
 
     @Gtk.Template.Callback()
     def on__continue_record_button_clicked(self, widget):
         self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
-        self._paused_start_stack.set_visible_child(self._recording_box)
+        self._paused_start_stack.set_visible_child(self._recording_label)
+        self.label_context.add_class("recording")
+        self.istimerrunning = True
 
-# Disable show pointer option in selection mode
+    @Gtk.Template.Callback()
+    def on__cancel_button_clicked(self, widget):
+        cancel_delay(self)
+
 # TODO
-# connect these two functions to something
+# Connect window mode to something
 
     @Gtk.Template.Callback()
     def on__fullscreen_mode_pressed(self, widget):
-        self._showpointer_rowbox.set_sensitive(True)
+        if self._fullscreen_mode_button.get_active():
+            self.isFullscreenMode = True
+            self.isWindowMode = False
+            self.isSelectionMode = False
 
     @Gtk.Template.Callback()
     def on__window_mode_pressed(self, widget):
-        self._showpointer_rowbox.set_sensitive(True)
+        if self._window_mode_button.get_active():
+            self.isWindowMode = True
+            self.isFullscreenMode = False
+            self.isSelectionMode = False
 
     @Gtk.Template.Callback()
     def on__selection_mode_pressed(self, widget):
-        self._showpointer_rowbox.set_sensitive(False)
-        on__select_area(self)
-
-# Preferences box
+        if self._selection_mode_button.get_active():
+            self.isSelectionMode = True
+            self.isFullscreenMode = False
+            self.isWindowMode = False
 
     @Gtk.Template.Callback()
     def on__preferences_button_clicked(self, widget):
         self._main_stack.set_visible_child(self._preferences_box)
-        #self._record_stop_record_button_stack.set_visible_child(self._about_button)
         self._preferences_back_stack.set_visible_child(self._back_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(False)
 
@@ -342,23 +342,28 @@ class RecappWindow(Gtk.ApplicationWindow):
     def on__back_button_clicked(self, widget):
         self._main_stack.set_visible_child(self._main_screen_box)
         self._record_stop_record_button_stack.set_visible_child(self._record_button)
-        self._preferences_back_stack.set_visible_child(self._preferences_button)
+        self._preferences_back_stack.set_visible_child(self._menu_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(True)
+        self.set_size_request(462, 300)
 
-# Launch About Dialog
+    @Gtk.Template.Callback()
+    def on__keyboardshortcuts_button_clicked(self, widget):
+        window = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/shortcuts.ui').get_object('shortcuts')
+        window.set_transient_for(self)
+        window.present()
 
     @Gtk.Template.Callback()
     def on__about_button_clicked(self, widget):
         dialog = AboutDialog(self)
         dialog.set_program_name(_(constants["APPNAME"]))
         dialog.set_logo_icon_name(constants["APPID"])
+        dialog.set_version(constants["APPVERSION"])
         response = dialog.run()
         dialog.destroy()
 
-# About Dialog
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/about.ui')
 class AboutDialog(Gtk.AboutDialog):
     __gtype_name__ = 'AboutDialog'
 
     def __init__(self, parent):
-        Gtk.AboutDialog.__init__(self, transient_for=parent) 
+        Gtk.AboutDialog.__init__(self, transient_for=parent)

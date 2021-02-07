@@ -1,22 +1,31 @@
-# RecApp
+<h1 align="center">
+	<img src="data/com.github.amikha1lov.RecApp.svg" alt="RecApp" width="192" height="192"/><br>
+	RecApp
+</h1>
 
-User friendly Open Source screencaster for Linux written in GTK. Using free GStreamer modules and not depend on FFmpeg.
+
+<p align="center"><strong>Simple Screencasting Application</strong></p>
 
 <p align="center">
-  <img src="https://raw.githubusercontent.com/amikha1lov/RecApp/master/RecApp-screenshot.png" style="max-width:100%;">
+  <a href="https://flathub.org/apps/details/com.github.amikha1lov.RecApp"><img width="200" alt="Download on Flathub" src="https://flathub.org/assets/badges/flathub-badge-en.png"/></a>
 </p>
 
-## Installation
+<p align="center">
+  <img src="screenshots/RecApp-screenshot.png"/>
+</p>
 
-### Last stable version
+<p align="center">
+  <img src="screenshots/RecApp-screenshot2.png"/>
+</p>
 
-> **Recommended**
+<p align="center">
+  <img src="screenshots/RecApp-screenshot3.png"/>
+</p>
 
-You can install it from flathub.org using the instructions on
-[this page](https://flathub.org/apps/details/com.github.amikha1lov.RecApp).
 
+## Description
+A user-friendly and open-source screencast application for Linux written in GTK using free GStreamer modules instead of FFmpeg.
 
-[<img alt="" height="100" src="https://flathub.org/assets/badges/flathub-badge-en.png">](https://flathub.org/apps/details/com.github.amikha1lov.RecApp).
 
 ## Packaging status
 
@@ -24,9 +33,8 @@ You can install it from flathub.org using the instructions on
 
 [openSUSE Tumbleweed && openSUSE Leap 15.2 One-click installation](https://software.opensuse.org//download.html?project=GNOME%3AApps&package=recapp)
 
-## Build from source
 
-### Flatpak
+## Build from source
 
 ```
 git clone https://github.com/amikha1lov/RecApp.git
@@ -37,3 +45,7 @@ flatpak-builder --repo=$HOME/Projects/flatpak/repo --force-clean --ccache build-
 flatpak remote-add --no-gpg-verify local-repo $HOME/Projects/flatpak/repo
 flatpak install local-repo com.github.amikha1lov.RecApp
 ```
+
+## Credits
+
+Design inspired by **[GNOME Screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot/)**.
