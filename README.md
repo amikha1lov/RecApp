@@ -24,7 +24,7 @@
 
 
 ## Description
-A user-friendly and open-source screencast application for Linux written in GTK using free GStreamer modules instead of FFMPEG.
+A user-friendly and open-source screencast application for Linux written in GTK using free GStreamer modules instead of FFmpeg.
 
 
 ## Packaging status
