@@ -37,11 +37,3 @@ flatpak-builder --repo=$HOME/Projects/flatpak/repo --force-clean --ccache build-
 flatpak remote-add --no-gpg-verify local-repo $HOME/Projects/flatpak/repo
 flatpak install local-repo com.github.amikha1lov.RecApp
 ```
-
-
-## Credits
-Developed by **[Rafael Mardojai CM](https://github.com/rafaelmardojai)** and [contributors](https://github.com/rafaelmardojai/blanket/graphs/contributors).
-
-Thanks to Jorge Toledo for the name idea.
-
-
