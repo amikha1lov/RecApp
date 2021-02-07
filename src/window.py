@@ -47,6 +47,7 @@ Gst.init(sys.argv)
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
 class RecappWindow(Handy.ApplicationWindow):
+    __gtype_name__ = 'RecAppWindow'
 
     Handy.init()
 
@@ -64,7 +65,6 @@ class RecappWindow(Handy.ApplicationWindow):
     istimerrunning = False
     isrecordingwithdelay = False
     isFullscreenMode = True
-    __gtype_name__ = 'RecAppWindow'
     encoders = ["vp8enc", "x264enc"]
     formats = []
     _record_button = Gtk.Template.Child()
