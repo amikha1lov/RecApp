@@ -2,6 +2,7 @@
 <gresources>
   <gresource prefix="/com/github/amikha1lov/RecApp">
     <file>window.ui</file>
+    <file>shortcuts.ui</file>
     <file>about.ui</file>
 
     <file>style.css</file>

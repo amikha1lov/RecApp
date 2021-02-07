@@ -1,23 +1,15 @@
-decoration, dialog, window.background {
-  border-bottom-left-radius: 8px;
-  border-bottom-right-radius: 8px;
+.time_label {
+  font-size: 450%;
+  font-weight: 300;
+  font-feature-settings: "tnum";
+  transition-duration: 200ms;
 }
 
-#_main_settings_box,
-#_secondary_settings_box {
-  border-radius: 8px;
-  border-color: #1f1f1f;
-  border-style: solid;
-  border-width: 1px;
+.status_label {
+  font-weight: 700;
+  font-size: 112%;
 }
 
-#boxes:first-child {
-  border-top-right-radius: 8px;
-  border-top-left-radius: 8px;
-}
-
-#boxes {
-  border-bottom-color: #1f1f1f;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
+.recording {
+  color: #e01b24;
 }
