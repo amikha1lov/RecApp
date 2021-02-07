@@ -47,4 +47,5 @@ flatpak install local-repo com.github.amikha1lov.RecApp
 ```
 
 ## Credits
+
 Design inspired by **[GNOME Screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot/)**.
