@@ -1,5 +1,5 @@
 <h1 align="center">
-	<img src="data/com.github.amikha1lov.RecApp.svg" alt="RecApp" width="192" height="192"/><br>
+	<img src="data/com.github.amikha1lov.RecApp.png" alt="RecApp" width="192" height="192"/><br>
 	RecApp
 </h1>
 
