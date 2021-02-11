@@ -13,3 +13,18 @@
 .recording {
   color: #e01b24;
 }
+
+.flat {
+  background-image: none;
+  border: none;
+  background-color: @theme_bg_color;
+}
+
+#minibutton {
+  border-radius: 9999px;
+}
+
+#largebutton {
+  border-radius: 9999px;
+}
+

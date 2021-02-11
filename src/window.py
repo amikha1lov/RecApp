@@ -81,8 +81,8 @@ class RecappWindow(Handy.ApplicationWindow):
     _window_mode_button = Gtk.Template.Child()
     _selection_mode_button = Gtk.Template.Child()
     _showpointer_rowbox = Gtk.Template.Child()
-    _pause_continue_record_button_stack_revealer = Gtk.Template.Child()
-    _pause_continue_record_button_stack = Gtk.Template.Child()
+    #_pause_continue_record_button_stack_revealer = Gtk.Template.Child()
+    #_pause_continue_record_button_stack = Gtk.Template.Child()
     _pause_record_button = Gtk.Template.Child()
     _continue_record_button = Gtk.Template.Child()
     _main_stack = Gtk.Template.Child()
@@ -106,6 +106,7 @@ class RecappWindow(Handy.ApplicationWindow):
     _recording_label = Gtk.Template.Child()
     _paused_label = Gtk.Template.Child()
     _sound_on_microphone = Gtk.Template.Child()
+    _headerbar = Gtk.Template.Child()
 
 
     def __init__(self, **kwargs):
@@ -182,9 +183,9 @@ class RecappWindow(Handy.ApplicationWindow):
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
-            self._capture_mode_box.set_visible(False)
-            self._sound_rowbox.set_visible(False)
-            self._sound_on_switch.set_active(False)
+            #self._capture_mode_box.set_visible(False)
+            #self._sound_rowbox.set_visible(False)
+            #self._sound_on_switch.set_active(False)
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
@@ -283,23 +284,25 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, widget):
         start_recording(self)
+        self._headerbar.set_title("")
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, widget):
         stop_recording(self)
+        self._headerbar.set_title("RecApp")
 # TODO
 # Connect pause and continue to something
 
     @Gtk.Template.Callback()
     def on__pause_record_button_clicked(self, widget):
-        self._pause_continue_record_button_stack.set_visible_child(self._continue_record_button)
+        self._preferences_back_stack.set_visible_child(self._continue_record_button)
         self._paused_start_stack.set_visible_child(self._paused_label)
         self.label_context.remove_class("recording")
         self.istimerrunning = False
 
     @Gtk.Template.Callback()
     def on__continue_record_button_clicked(self, widget):
-        self._pause_continue_record_button_stack.set_visible_child(self._pause_record_button)
+        self._preferences_back_stack.set_visible_child(self._pause_record_button)
         self._paused_start_stack.set_visible_child(self._recording_label)
         self.label_context.add_class("recording")
         self.istimerrunning = True
@@ -307,6 +310,7 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__cancel_button_clicked(self, widget):
         cancel_delay(self)
+        self._headerbar.set_title("RecApp")
 
 # TODO
 # Connect window mode to something
