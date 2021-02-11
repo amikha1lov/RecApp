@@ -282,12 +282,10 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, widget):
         start_recording(self)
-        self._headerbar.set_title("")
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, widget):
         stop_recording(self)
-        self._headerbar.set_title("RecApp")
 # TODO
 # Connect pause and continue to something
 
@@ -308,7 +306,6 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__cancel_button_clicked(self, widget):
         cancel_delay(self)
-        self._headerbar.set_title("RecApp")
 
 # TODO
 # Connect window mode to something

@@ -146,6 +146,7 @@ def on__sound_switch(self, *args):
 
 
 def start_recording(self, *args):
+    self._headerbar.set_title("")
     if self.isFullscreenMode:
         self.coordinateMode = False
         record(self)
@@ -252,6 +253,7 @@ def delay(self, *args):
 
 
 def cancel_delay(self, *args):
+    self._headerbar.set_title("RecApp")
     self.time_delay = 0
     self.iscancelled = True
 
@@ -276,6 +278,7 @@ def stop_recording(self, *args):
     self._main_stack.set_visible_child(self._main_screen_box)
     self._preferences_back_stack.set_visible_child(self._menu_button)
     self.label_context.remove_class("recording")
+    self._headerbar.set_title("RecApp")
 
     self.elapsed_time = datetime.timedelta()
     self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
