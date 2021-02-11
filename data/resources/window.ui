@@ -80,13 +80,11 @@
             <property name="orientation">vertical</property>
             <child>
               <object class="HdyHeaderBar" id="_headerbar">
+                <property name="name">headerbar</property>
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
                 <property name="has-subtitle">False</property>
                 <property name="show-close-button">True</property>
-                <style>
-                  <class name="flat"/>
-                </style>
               </object>
               <packing>
                 <property name="expand">False</property>

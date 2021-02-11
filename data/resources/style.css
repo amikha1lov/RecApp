@@ -14,7 +14,7 @@
   color: #e01b24;
 }
 
-.flat {
+#headerbar {
   background-image: none;
   border: none;
   background-color: @theme_bg_color;
