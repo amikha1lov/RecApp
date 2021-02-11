@@ -705,6 +705,7 @@
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
+                            <property name="focus-on-click">False</property>
                             <signal name="clicked" handler="on__record_button_clicked" swapped="no"/>
                             <child>
                               <object class="GtkImage">
@@ -728,6 +729,7 @@
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
+                            <property name="focus-on-click">False</property>
                             <signal name="clicked" handler="on__stop_record_button_clicked" swapped="no"/>
                             <child>
                               <object class="GtkImage">
@@ -752,6 +754,7 @@
                             <property name="visible">True</property>
                             <property name="can-focus">True</property>
                             <property name="receives-default">True</property>
+                            <property name="focus-on-click">False</property>
                             <signal name="clicked" handler="on__cancel_button_clicked" swapped="no"/>
                             <child>
                               <object class="GtkImage">
@@ -825,6 +828,7 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
+                                <property name="focus-on-click">False</property>
                                 <signal name="clicked" handler="on__back_button_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkImage">
@@ -846,6 +850,7 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
+                                <property name="focus-on-click">False</property>
                                 <signal name="clicked" handler="on__pause_record_button_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkImage">
@@ -867,6 +872,7 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="receives-default">True</property>
+                                <property name="focus-on-click">False</property>
                                 <signal name="clicked" handler="on__continue_record_button_clicked" swapped="no"/>
                                 <child>
                                   <object class="GtkImage">
