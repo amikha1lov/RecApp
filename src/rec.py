@@ -238,16 +238,16 @@ def record_logic(self, *args):
 
 
 def delay(self, *args):
-    self.time_delay = self.delayBeforeRecording
+    self.time_delay = (self.delayBeforeRecording * 100)
     def countdown(*args):
-        self._delay_label.set_label(str(self.time_delay))
         if self.time_delay > 0:
-            self.time_delay -=1
-            GLib.timeout_add(1000, countdown)
+            self.time_delay -=10
+            GLib.timeout_add(100, countdown)
+            self._delay_label.set_label(str((self.time_delay // 100)+1))
         else:
             self.isrecordingwithdelay = False
             record_logic(self, *args)
-            self.time_delay = self.delayBeforeRecording
+            self.time_delay = (self.delayBeforeRecording * 100)
     countdown(*args)
 
 
