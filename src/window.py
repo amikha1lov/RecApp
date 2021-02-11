@@ -336,6 +336,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self._main_stack.set_visible_child(self._preferences_box)
         self._preferences_back_stack.set_visible_child(self._back_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(False)
+        self._headerbar.set_title("Preferences")
 
     @Gtk.Template.Callback()
     def on__back_button_clicked(self, widget):
@@ -343,6 +344,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self._record_stop_record_button_stack.set_visible_child(self._record_button)
         self._preferences_back_stack.set_visible_child(self._menu_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(True)
+        self._headerbar.set_title("RecApp")
         self.set_size_request(462, 300)
 
     @Gtk.Template.Callback()
