@@ -81,8 +81,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _window_mode_button = Gtk.Template.Child()
     _selection_mode_button = Gtk.Template.Child()
     _showpointer_rowbox = Gtk.Template.Child()
-    #_pause_continue_record_button_stack_revealer = Gtk.Template.Child()
-    #_pause_continue_record_button_stack = Gtk.Template.Child()
     _pause_record_button = Gtk.Template.Child()
     _continue_record_button = Gtk.Template.Child()
     _main_stack = Gtk.Template.Child()
@@ -183,9 +181,9 @@ class RecappWindow(Handy.ApplicationWindow):
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
-            #self._capture_mode_box.set_visible(False)
-            #self._sound_rowbox.set_visible(False)
-            #self._sound_on_switch.set_active(False)
+            self._capture_mode_box.set_visible(False)
+            self._sound_rowbox.set_visible(False)
+            self._sound_on_switch.set_active(False)
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
