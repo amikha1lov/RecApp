@@ -126,6 +126,11 @@ def on__select_area(self):
     self.coordinateMode = True
 
 
+def on__select_area_wayland(self):
+    self.waylandcoordinates = self.GNOMESelectArea.SelectArea()
+    self.coordinateMode = True
+
+
 def on__sound_switch(self, *args):
     if self._sound_on_switch.get_active():
         self.recordSoundOn = True
@@ -152,7 +157,10 @@ def start_recording(self, *args):
     elif self.isWindowMode:
         print('window mode')
     else:
-        on__select_area(self)
+        if self.displayServer == "wayland":
+            on__select_area_wayland(self)
+        else:
+            on__select_area(self)
         record(self)
 
 
@@ -200,12 +208,19 @@ def record_logic(self, *args):
             self.extension = ".mp4"
 
         if self.displayServer == "wayland":
-
             RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
-            self.GNOMEScreencast.Screencast(self.fileName + self.extension,
-                                            {'framerate': GLib.Variant('i', int(self.videoFrames)),
-                                             'draw-cursor': GLib.Variant('b', self.recordMouse),
-                                             'pipeline': GLib.Variant('s', RecorderPipeline)})
+            if self.coordinateMode == True:
+                self.GNOMEScreencast.ScreencastArea(self.waylandcoordinates[0], self.waylandcoordinates[1], self.waylandcoordinates[2], self.waylandcoordinates[3], self.fileName + self.extension,
+                                                {'framerate': GLib.Variant('i', int(self.videoFrames)),
+                                                 'draw-cursor': GLib.Variant('b', self.recordMouse),
+                                                 'pipeline': GLib.Variant('s', RecorderPipeline)})
+                self.coordinateMode == False
+
+            else:
+                self.GNOMEScreencast.Screencast(self.fileName + self.extension,
+                                                {'framerate': GLib.Variant('i', int(self.videoFrames)),
+                                                 'draw-cursor': GLib.Variant('b', self.recordMouse),
+                                                 'pipeline': GLib.Variant('s', RecorderPipeline)})
         else:
             if self.coordinateMode == True:
                 video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"

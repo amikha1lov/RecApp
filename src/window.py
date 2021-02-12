@@ -182,7 +182,6 @@ class RecappWindow(Handy.ApplicationWindow):
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
-            self._capture_mode_box.set_visible(False)
             self._sound_rowbox.set_visible(False)
             self._sound_on_switch.set_active(False)
             self.bus = SessionBus()
@@ -192,8 +191,8 @@ class RecappWindow(Handy.ApplicationWindow):
                     "Sorry, Wayland session is not supported yet."))
                 self.notification.show()
             else:
-                self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast',
-                                                    '/org/gnome/Shell/Screencast')
+                self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
+                self.GNOMESelectArea = self.bus.get('org.gnome.Shell.Screenshot', '/org/gnome/Shell/Screenshot')
         else:
             self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
 
