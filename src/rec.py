@@ -146,7 +146,6 @@ def on__sound_switch(self, *args):
 
 
 def start_recording(self, *args):
-    self._headerbar.set_title("")
     if self.isFullscreenMode:
         self.coordinateMode = False
         record(self)
@@ -158,6 +157,7 @@ def start_recording(self, *args):
 
 
 def record(self, *args):
+    self._headerbar.set_title("")
     if self.delayBeforeRecording > 0:
         self._main_stack.set_visible_child(self._delay_box)
         self._record_stop_record_button_stack.set_visible_child(self._cancel_button)
