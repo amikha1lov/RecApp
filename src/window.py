@@ -27,7 +27,6 @@ from subprocess import PIPE, Popen
 
 import gi
 import pulsectl
-from pydbus import SessionBus
 
 from .rec import *
 from .recapp_constants import recapp_constants as constants
@@ -185,15 +184,21 @@ class RecappWindow(Handy.ApplicationWindow):
             self._capture_mode_box.set_visible(False)
             self._sound_rowbox.set_visible(False)
             self._sound_on_switch.set_active(False)
-            self.bus = SessionBus()
+            self.bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
                 self.notification = Notify.Notification.new(constants["APPNAME"], _(
                     "Sorry, Wayland session is not supported yet."))
                 self.notification.show()
             else:
-                self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast',
-                                                    '/org/gnome/Shell/Screencast')
+                self.GNOMEScreencast = Gio.DBusProxy.new_sync(
+                    self.bus,
+                    Gio.DBusProxyFlags.NONE,
+                    None,
+                    "org.gnome.Shell.Screencast",
+                    "/org/gnome/Shell/Screencast",
+                    "org.gnome.Shell.Screencast",
+                    None)
         else:
             self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
 
