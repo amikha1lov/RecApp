@@ -23,7 +23,6 @@ Requires:       gstreamer1-plugins-good
 Requires:       gtk3
 Requires:       hicolor-icon-theme
 Requires:       python3-pulsectl
-Requires:       python3-pydbus
 Requires:       slop
 
 # For future

@@ -217,10 +217,19 @@ def record_logic(self, *args):
         if self.displayServer == "wayland":
 
             RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
-            self.GNOMEScreencast.Screencast(self.fileName + self.extension,
-                                            {'framerate': GLib.Variant('i', int(self.videoFrames)),
-                                             'draw-cursor': GLib.Variant('b', self.recordMouse),
-                                             'pipeline': GLib.Variant('s', RecorderPipeline)})
+            self.GNOMEScreencast.call_sync(
+                "Screencast",
+                GLib.Variant.new_tuple(
+                    GLib.Variant.new_string(self.fileName + self.extension),
+                    GLib.Variant("a{sv}",
+                        {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                         "draw-cursor": GLib.Variant("b", self.recordMouse),
+                         "pipeline": GLib.Variant("s", RecorderPipeline)}
+                    ),
+                ),
+                Gio.DBusProxyFlags.NONE,
+                -1,
+                None)
         else:
             if self.coordinateMode == True:
                 video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
@@ -274,7 +283,12 @@ def cancel_delay(self, *args):
 def stop_recording(self, *args):
 
     if self.displayServer == "wayland":
-        self.GNOMEScreencast.StopScreencast()
+        self.GNOMEScreencast.call_sync(
+            "StopScreencast",
+            None,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            None)
 
     else:
         self.video.send_signal(signal.SIGINT)
