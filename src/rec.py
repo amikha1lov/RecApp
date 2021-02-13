@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import locale
-import multiprocessing
 import os
 import signal
 import sys
@@ -26,7 +25,6 @@ from locale import gettext as _
 from subprocess import PIPE, Popen
 
 import gi
-import pulsectl
 
 from .recapp_constants import recapp_constants as constants
 
@@ -128,6 +126,8 @@ def on__select_area(self):
 def on__sound_switch(self, *args):
     if self._sound_on_switch.get_active():
         self.recordSoundOn = True
+
+        import pulsectl
         with pulsectl.Pulse() as pulse:
             self.soundOnSource = pulse.sink_list()[0].name
             self.settings.set_boolean('record-audio-switch', True)
