@@ -219,12 +219,8 @@ class RecappWindow(Handy.ApplicationWindow):
         Copyright (c) 2016 Taylor Marks <taylor@marksfam.com>
         The MIT License
         '''
-        from urllib.request import pathname2url
-
-        Gst.init(None)
-
         playbin = Gst.ElementFactory.make('playbin', 'playbin')
-        playbin.props.uri = 'resource://' + pathname2url(os.path.abspath(sound))
+        playbin.props.uri = 'resource://' + sound
 
         set_result = playbin.set_state(Gst.State.PLAYING)
 
