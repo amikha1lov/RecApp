@@ -22,7 +22,6 @@ import sys
 import time
 import datetime
 from locale import gettext as _
-from subprocess import PIPE, Popen
 
 import gi
 
@@ -167,9 +166,7 @@ class RecappWindow(Handy.ApplicationWindow):
             if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) == None:
 
                 directory = "/RecAppVideo"
-                parent_dir = Popen("xdg-user-dir", shell=True, stdout=PIPE).communicate()
-                parent_dir = list(parent_dir)
-                parent_dir = parent_dir[0].decode().split()[0]
+                parent_dir = os.path.expanduser("~")
                 path = parent_dir + directory
 
                 if not os.path.exists(path):
@@ -226,12 +223,38 @@ class RecappWindow(Handy.ApplicationWindow):
             self.formats.index(self.settings.get_string('format-video')))
         self.recordFormat = self._formats_combobox.get_active_text()
 
-    def openFolder(self, action, parameter):
-        videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
-        os.system("xdg-open " + videoFolderForOpen)
+    def openFolder(self, notification, action, user_data=None):
+        try:
+            videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
+            Gio.AppInfo.launch_default_for_uri("file:///" + videoFolderForOpen.lstrip("/"))
 
-    def openVideoFile(self, action, parameter):
-        os.system("xdg-open " + self.fileName + self.extension)
+        except Exception as error:
+            dialog = Gtk.MessageDialog(
+                transient_for=self,
+                type=Gtk.MessageType.WARNING,
+                buttons=Gtk.ButtonsType.OK,
+                text=_("Unable to open folder")
+            )
+            dialog.format_secondary_text(str(error))
+            dialog.run()
+            dialog.destroy()
+
+    def openVideoFile(self, notification, action, user_data=None):
+        try:
+            Gio.AppInfo.launch_default_for_uri(
+                "file:///" + self.fileName.lstrip("/") + self.extension
+            )
+
+        except Exception as error:
+            dialog = Gtk.MessageDialog(
+                transient_for=self,
+                type=Gtk.MessageType.WARNING,
+                buttons=Gtk.ButtonsType.OK,
+                text=_("Unable to open file")
+            )
+            dialog.format_secondary_text(str(error))
+            dialog.run()
+            dialog.destroy()
 
     def on_delete_event(self, w, h):
         delete_event(self, w, h)
