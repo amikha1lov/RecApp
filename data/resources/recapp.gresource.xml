@@ -11,6 +11,6 @@
     <file preprocess="xml-stripblanks">icons/data_icons_selection-symbolic.svg</file>
     <file preprocess="xml-stripblanks">icons/data_icons_window-symbolic.svg</file>
 
-    <file>sounds/chime.mp3</file>
+    <file>sounds/chime.ogg</file>
   </gresource>
 </gresources>
