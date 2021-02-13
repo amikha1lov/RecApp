@@ -250,6 +250,7 @@ def record_logic(self, *args):
 
         self.isrecording = True
         self.istimerrunning = True
+        self.playsound('/com/github/amikha1lov/RecApp/sounds/chime.mp3')
 
 
 def delay(self, *args):

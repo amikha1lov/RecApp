@@ -214,6 +214,24 @@ class RecappWindow(Handy.ApplicationWindow):
             self.formats.index(self.settings.get_string('format-video')))
         self.recordFormat = self._formats_combobox.get_active_text()
 
+    def playsound(self, sound):
+        '''
+        Copyright (c) 2016 Taylor Marks <taylor@marksfam.com>
+        The MIT License
+        '''
+        from urllib.request import pathname2url
+
+        Gst.init(None)
+
+        playbin = Gst.ElementFactory.make('playbin', 'playbin')
+        playbin.props.uri = 'resource://' + pathname2url(os.path.abspath(sound))
+
+        set_result = playbin.set_state(Gst.State.PLAYING)
+
+        bus = playbin.get_bus()
+        bus.poll(Gst.MessageType.EOS, Gst.CLOCK_TIME_NONE)
+        playbin.set_state(Gst.State.NULL)
+
     def openFolder(self, notification, action, user_data=None):
         videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
         os.system("xdg-open " + videoFolderForOpen)
