@@ -19,7 +19,6 @@ import locale
 import os
 import signal
 import sys
-import time
 import datetime
 from locale import gettext as _
 from subprocess import PIPE, Popen
@@ -190,7 +189,7 @@ def record_logic(self, *args):
 
         self.quality_video = quality_video_switcher(self, *args)
         self.soundOn = on__sound_switch(self, *args)
-        fileNameTime = _(constants["APPNAME"]) + "-" + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
+        fileNameTime = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
         videoFolder = self.settings.get_string('path-to-save-video-folder')
         self.fileName = os.path.join(videoFolder, fileNameTime)
 

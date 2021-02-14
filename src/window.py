@@ -19,7 +19,6 @@ import locale
 import os
 import signal
 import sys
-import time
 import datetime
 from locale import gettext as _
 
