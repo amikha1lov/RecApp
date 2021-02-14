@@ -1,0 +1,26 @@
+name: Linting
+
+on: [push, pull_request]
+
+jobs:
+
+  flake8:
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python ${{ matrix.python }}
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.9
+
+      - name: Install dependencies
+        run: |
+          sudo apt update
+          sudo apt -y install flake8
+      - name: Lint with flake8
+        run: |
+          flake8

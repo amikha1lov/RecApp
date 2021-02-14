@@ -15,32 +15,34 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import locale
+import gi
 import os
-import signal
 import sys
-import time
 import datetime
+
 from locale import gettext as _
+from pydbus import SessionBus
 from subprocess import PIPE, Popen
 
-import gi
-from pydbus import SessionBus
+from .rec import cancel_delay, cancel_record, delay_button_change, delete_event, \
+    formats_combobox_changed, frames_combobox_changed, mouse_switcher, on__sound_switch, \
+    quality_video_switcher, quit_app, start_recording, stop_recording, toggle_audio, \
+    toggle_high_quality, toggle_microphone, toggle_mouse_record, toggle_record, video_folder_button
 
-from .rec import *
 from .recapp_constants import recapp_constants as constants
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('GstPbutils', '1.0')
 gi.require_version('Handy', '1')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Handy
+
+from gi.repository import Gdk, Gio, GLib, Gst, Gtk, Handy  # noqa: E402
 
 Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
 
 # TODO Not working yet: record computer sounds (keyboard shortcut already working)
+
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
 class RecappWindow(Handy.ApplicationWindow):
@@ -104,7 +106,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _paused_label = Gtk.Template.Child()
     _sound_on_microphone = Gtk.Template.Child()
 
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.application = kwargs["application"]
@@ -117,7 +118,7 @@ class RecappWindow(Handy.ApplicationWindow):
 
         GLib.timeout_add(1000, self.refresh_time)
         self.elapsed_time = datetime.timedelta()
-        self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+        self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
@@ -165,7 +166,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
         if self.currentFolder == "Default":
-            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) == None:
+            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) is None:
 
                 directory = "/RecAppVideo"
                 parent_dir = Popen("xdg-user-dir", shell=True, stdout=PIPE).communicate()
@@ -201,7 +202,9 @@ class RecappWindow(Handy.ApplicationWindow):
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast',
                                                     '/org/gnome/Shell/Screencast')
         else:
-            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
+            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} " \
+                "! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! " \
+                "{3} name=mux ! queue ! filesink location='{4}'{5}"
 
         for encoder in self.encoders:
             plugin = Gst.ElementFactory.find(encoder)
@@ -255,7 +258,7 @@ class RecappWindow(Handy.ApplicationWindow):
     def refresh_time(self):
         if self.istimerrunning:
             self.elapsed_time += datetime.timedelta(seconds=1)
-            self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+            self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
         return True
 
     @Gtk.Template.Callback()
@@ -364,8 +367,9 @@ class RecappWindow(Handy.ApplicationWindow):
         dialog.set_program_name(_(constants["APPNAME"]))
         dialog.set_logo_icon_name(constants["APPID"])
         dialog.set_version(constants["APPVERSION"])
-        response = dialog.run()
+        dialog.run()
         dialog.destroy()
+
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/about.ui')
 class AboutDialog(Gtk.AboutDialog):
