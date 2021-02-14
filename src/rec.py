@@ -124,18 +124,7 @@ def on__select_area(self):
 
 def on__select_area_wayland(self):
     self.waylandcoordinates = self.GNOMESelectArea.call_sync(
-            "SelectArea",
-            GLib.Variant.new_tuple(
-                GLib.Variant.new_string(self.fileName + self.extension),
-                GLib.Variant("a{sv}",
-                    {"framerate": GLib.Variant("i", int(self.videoFrames)),
-                     "draw-cursor": GLib.Variant("b", self.recordMouse),
-                     "pipeline": GLib.Variant("s", RecorderPipeline)}
-                ),
-            ),
-            Gio.DBusProxyFlags.NONE,
-            -1,
-            None)
+        "SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
     self.coordinateMode = True
 
 
@@ -223,7 +212,10 @@ def record_logic(self, *args):
                 self.GNOMEScreencast.call_sync(
                     "ScreencastArea",
                     GLib.Variant.new_tuple(
-                        self.waylandcoordinates[0], self.waylandcoordinates[1], self.waylandcoordinates[2], self.waylandcoordinates[3],
+                        GLib.Variant("i", self.waylandcoordinates[0]),
+                        GLib.Variant("i", self.waylandcoordinates[1]),
+                        GLib.Variant("i", self.waylandcoordinates[2]),
+                        GLib.Variant("i", self.waylandcoordinates[3]),
                         GLib.Variant.new_string(self.fileName + self.extension),
                         GLib.Variant("a{sv}",
                             {"framerate": GLib.Variant("i", int(self.videoFrames)),
@@ -231,10 +223,10 @@ def record_logic(self, *args):
                              "pipeline": GLib.Variant("s", RecorderPipeline)}
                         ),
                     ),
-                    Gio.DbusProxyFlags.NONE,
+                    Gio.DBusProxyFlags.NONE,
                     -1,
                     None)
-                self.coordinateMode == False:
+                self.coordinateMode == False
             else:
                 self.GNOMEScreencast.call_sync(
                     "Screencast",
