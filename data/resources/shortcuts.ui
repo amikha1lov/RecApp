@@ -14,8 +14,15 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">1</property>
+                <property name="accelerator">F10</property>
+                <property name="title" translatable="yes" context="shortcut window">Show primary menu</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">1</property>
                 <property name="accelerator">&lt;ctrl&gt;q</property>
-                <property name="title" translatable="yes" context="shortcut window">Quit the application</property>
+                <property name="title" translatable="yes" context="shortcut window">Quit</property>
               </object>
             </child>
             <child>
