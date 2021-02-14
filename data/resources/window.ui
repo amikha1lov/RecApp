@@ -867,7 +867,6 @@
                                 <property name="can-focus">True</property>
                                 <property name="focus-on-click">False</property>
                                 <property name="receives-default">True</property>
-                                <property name="popover">_main_popover</property>
                                 <accelerator key="F10" signal="clicked"/>
                                 <child>
                                   <object class="GtkImage">

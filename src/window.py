@@ -114,6 +114,15 @@ class RecappWindow(Handy.ApplicationWindow):
         style_context = Gtk.StyleContext()
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
+        # new
+        builder = Gtk.Builder()
+        builder.add_from_resource('/com/github/amikha1lov/RecApp/primary-menu.ui')
+
+        primaryMenuModel = builder.get_object('primary-menu')
+        self.popover = Gtk.Popover.new_from_model(self._menu_button, primaryMenuModel)
+        self._menu_button.set_popover(self.popover)
+        # new
+
         GLib.timeout_add(1000, self.refresh_time)
         self.elapsed_time = datetime.timedelta()
         self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
