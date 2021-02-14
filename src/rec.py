@@ -146,6 +146,22 @@ def on__sound_switch(self, *args):
 
 
 def start_recording(self, *args):
+    videoFolder = self.settings.get_string('path-to-save-video-folder')
+
+    if not os.access(videoFolder, os.W_OK):
+        dialog = Gtk.MessageDialog(
+            transient_for=self,
+            type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.OK,
+            text=_("Unable to start recording")
+        )
+        dialog.format_secondary_text(
+            _("Error creating file. Please choose another location and retry.")
+        )
+        dialog.run()
+        dialog.destroy()
+        return
+
     if self.isFullscreenMode:
         self.coordinateMode = False
         record(self)
