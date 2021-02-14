@@ -163,7 +163,7 @@ def start_recording(self, *args):
 
 
 def record(self, *args):
-    self._headerbar.set_title("")
+    self._title_stack.set_visible_child(self._blank_label)
     if self.delayBeforeRecording > 0:
         self._main_stack.set_visible_child(self._delay_box)
         self._record_stop_record_button_stack.set_visible_child(self._cancel_button)
@@ -288,7 +288,7 @@ def delay(self, *args):
 
 
 def cancel_delay(self, *args):
-    self._headerbar.set_title(constants["APPNAME"])
+    self._title_stack.set_visible_child(self._title_label)
     self.time_delay = 0
     self.iscancelled = True
 
@@ -321,7 +321,7 @@ def stop_recording(self, *args):
     self._main_stack.set_visible_child(self._main_screen_box)
     self._preferences_back_stack.set_visible_child(self._menu_button)
     self.label_context.remove_class("recording")
-    self._headerbar.set_title(constants["APPNAME"])
+    self._title_stack.set_visible_child(self._title_label)
 
     self.elapsed_time = datetime.timedelta()
     self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))

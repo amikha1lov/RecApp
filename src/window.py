@@ -98,7 +98,10 @@ class RecappWindow(Handy.ApplicationWindow):
     _recording_label = Gtk.Template.Child()
     _paused_label = Gtk.Template.Child()
     _sound_on_microphone = Gtk.Template.Child()
-    _headerbar = Gtk.Template.Child()
+    _title_stack = Gtk.Template.Child()
+    _title_label = Gtk.Template.Child()
+    _preferences_label = Gtk.Template.Child()
+    _blank_label = Gtk.Template.Child()
 
 
     def __init__(self, **kwargs):
@@ -111,7 +114,6 @@ class RecappWindow(Handy.ApplicationWindow):
         style_context = Gtk.StyleContext()
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        self._headerbar.set_title(constants["APPNAME"])
         GLib.timeout_add(1000, self.refresh_time)
         self.elapsed_time = datetime.timedelta()
         self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
@@ -391,7 +393,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self._main_stack.set_visible_child(self._preferences_box)
         self._preferences_back_stack.set_visible_child(self._back_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(False)
-        self._headerbar.set_title("Preferences")
+        self._title_stack.set_visible_child(self._preferences_label)
 
     @Gtk.Template.Callback()
     def on__back_button_clicked(self, widget):
@@ -399,7 +401,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self._record_stop_record_button_stack.set_visible_child(self._record_button)
         self._preferences_back_stack.set_visible_child(self._menu_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(True)
-        self._headerbar.set_title(constants["APPNAME"])
+        self._title_stack.set_visible_child(self._title_label)
         self.set_size_request(462, 300)
 
     @Gtk.Template.Callback()
