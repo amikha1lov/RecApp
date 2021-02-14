@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import locale
-import multiprocessing
 import os
 import signal
 import sys
@@ -26,7 +25,6 @@ from locale import gettext as _
 from subprocess import PIPE, Popen
 
 import gi
-import pulsectl
 from pydbus import SessionBus
 
 from .rec import *
@@ -135,7 +133,7 @@ class RecappWindow(Handy.ApplicationWindow):
                       self.on_toggle_microphone)
         accel.connect(Gdk.keyval_from_name('c'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_cancel_record)
-        self.cpus = multiprocessing.cpu_count() - 1
+        self.cpus = os.cpu_count() - 1
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
         Notify.init(constants["APPID"])
