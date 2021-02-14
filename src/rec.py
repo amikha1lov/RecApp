@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import locale
-import multiprocessing
 import os
 import signal
 import sys
@@ -26,16 +25,13 @@ from locale import gettext as _
 from subprocess import PIPE, Popen
 
 import gi
-import pulsectl
-from pydbus import SessionBus
 
 from .recapp_constants import recapp_constants as constants
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify
+from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk
 
 Gtk.init(sys.argv)
 # initialize GStreamer
@@ -102,9 +98,9 @@ def on__select_area(self):
                        stdout=PIPE).communicate()
     listCoor = [int(i) for i in coordinate[0].decode().split()]
     if not listCoor[0] or not listCoor[1]:
-        self.notification = Notify.Notification.new(constants["APPNAME"],
-                                                    _("Please re-select the area"))
-        self.notification.show()
+        notification = Gio.Notification.new(constants["APPNAME"])
+        notification.set_body(_("Please re-select the area"))
+        self.application.send_notification(None, notification)
         return
 
     startx, starty, endx, endy = listCoor[2], listCoor[3], listCoor[2] + listCoor[0] - 1, listCoor[
@@ -127,13 +123,27 @@ def on__select_area(self):
 
 
 def on__select_area_wayland(self):
-    self.waylandcoordinates = self.GNOMESelectArea.SelectArea()
+    self.waylandcoordinates = self.GNOMESelectArea.call_sync(
+            "SelectArea",
+            GLib.Variant.new_tuple(
+                GLib.Variant.new_string(self.fileName + self.extension),
+                GLib.Variant("a{sv}",
+                    {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                     "draw-cursor": GLib.Variant("b", self.recordMouse),
+                     "pipeline": GLib.Variant("s", RecorderPipeline)}
+                ),
+            ),
+            Gio.DBusProxyFlags.NONE,
+            -1,
+            None)
     self.coordinateMode = True
 
 
 def on__sound_switch(self, *args):
     if self._sound_on_switch.get_active():
         self.recordSoundOn = True
+
+        import pulsectl
         with pulsectl.Pulse() as pulse:
             self.soundOnSource = pulse.sink_list()[0].name
             self.settings.set_boolean('record-audio-switch', True)
@@ -210,17 +220,35 @@ def record_logic(self, *args):
         if self.displayServer == "wayland":
             RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
             if self.coordinateMode == True:
-                self.GNOMEScreencast.ScreencastArea(self.waylandcoordinates[0], self.waylandcoordinates[1], self.waylandcoordinates[2], self.waylandcoordinates[3], self.fileName + self.extension,
-                                                {'framerate': GLib.Variant('i', int(self.videoFrames)),
-                                                 'draw-cursor': GLib.Variant('b', self.recordMouse),
-                                                 'pipeline': GLib.Variant('s', RecorderPipeline)})
-                self.coordinateMode == False
-
+                self.GNOMEScreencast.call_sync(
+                    "ScreencastArea",
+                    GLib.Variant.new_tuple(
+                        self.waylandcoordinates[0], self.waylandcoordinates[1], self.waylandcoordinates[2], self.waylandcoordinates[3],
+                        GLib.Variant.new_string(self.fileName + self.extension),
+                        GLib.Variant("a{sv}",
+                            {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                             "draw-cursor": GLib.Variant("b", self.recordMouse),
+                             "pipeline": GLib.Variant("s", RecorderPipeline)}
+                        ),
+                    ),
+                    Gio.DbusProxyFlags.NONE,
+                    -1,
+                    None)
+                self.coordinateMode == False:
             else:
-                self.GNOMEScreencast.Screencast(self.fileName + self.extension,
-                                                {'framerate': GLib.Variant('i', int(self.videoFrames)),
-                                                 'draw-cursor': GLib.Variant('b', self.recordMouse),
-                                                 'pipeline': GLib.Variant('s', RecorderPipeline)})
+                self.GNOMEScreencast.call_sync(
+                    "Screencast",
+                    GLib.Variant.new_tuple(
+                        GLib.Variant.new_string(self.fileName + self.extension),
+                        GLib.Variant("a{sv}",
+                            {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                             "draw-cursor": GLib.Variant("b", self.recordMouse),
+                             "pipeline": GLib.Variant("s", RecorderPipeline)}
+                        ),
+                    ),
+                    Gio.DBusProxyFlags.NONE,
+                    -1,
+                    None)
         else:
             if self.coordinateMode == True:
                 video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
@@ -277,15 +305,22 @@ def cancel_delay(self, *args):
 def stop_recording(self, *args):
 
     if self.displayServer == "wayland":
-        self.GNOMEScreencast.StopScreencast()
+        self.GNOMEScreencast.call_sync(
+            "StopScreencast",
+            None,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            None)
 
     else:
         self.video.send_signal(signal.SIGINT)
 
-    self.notification = Notify.Notification.new(constants["APPNAME"], _("Recording is complete!"))
-    self.notification.add_action("open_folder", _("Open Folder"), self.openFolder)
-    self.notification.add_action("open_file", _("Open File"), self.openVideoFile)
-    self.notification.show()
+    notification = Gio.Notification.new(constants["APPNAME"])
+    notification.set_body(_("Recording is complete!"))
+    notification.add_button(_("Open Folder"), "app.open-folder")
+    notification.add_button(_("Open File"), "app.open-file")
+    self.application.send_notification(None, notification)
+
     self.isrecording = False
     self.istimerrunning = False
 

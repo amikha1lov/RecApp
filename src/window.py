@@ -16,28 +16,23 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import locale
-import multiprocessing
 import os
 import signal
 import sys
 import time
 import datetime
 from locale import gettext as _
-from subprocess import PIPE, Popen
 
 import gi
-import pulsectl
-from pydbus import SessionBus
 
 from .rec import *
 from .recapp_constants import recapp_constants as constants
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
 gi.require_version('Handy', '1')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify, Handy
+from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Handy
 
 Gtk.init(sys.argv)
 # initialize GStreamer
@@ -109,6 +104,7 @@ class RecappWindow(Handy.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.application = kwargs["application"]
 
         css_provider = Gtk.CssProvider()
         css_provider.load_from_resource('/com/github/amikha1lov/RecApp/style.css')
@@ -135,11 +131,9 @@ class RecappWindow(Handy.ApplicationWindow):
                       self.on_toggle_microphone)
         accel.connect(Gdk.keyval_from_name('c'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_cancel_record)
-        self.cpus = multiprocessing.cpu_count() - 1
+        self.cpus = os.cpu_count() - 1
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
-        Notify.init(constants["APPID"])
-        self.notification = None
         self.settings = Gio.Settings.new(constants["APPID"])
         self.recordSoundOn = self.settings.get_boolean('record-audio-switch')
         self.delayBeforeRecording = self.settings.get_int('delay')
@@ -157,15 +151,22 @@ class RecappWindow(Handy.ApplicationWindow):
         else:
             self._frames_combobox.set_active(2)
 
+        # Notification actions
+        action = Gio.SimpleAction.new("open-folder", None)
+        action.connect("activate", self.openFolder)
+        self.application.add_action(action)
+
+        action = Gio.SimpleAction.new("open-file", None)
+        action.connect("activate", self.openVideoFile)
+        self.application.add_action(action)
+
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
         if self.currentFolder == "Default":
             if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) == None:
 
                 directory = "/RecAppVideo"
-                parent_dir = Popen("xdg-user-dir", shell=True, stdout=PIPE).communicate()
-                parent_dir = list(parent_dir)
-                parent_dir = parent_dir[0].decode().split()[0]
+                parent_dir = os.path.expanduser("~")
                 path = parent_dir + directory
 
                 if not os.path.exists(path):
@@ -184,15 +185,30 @@ class RecappWindow(Handy.ApplicationWindow):
         if self.displayServer == "wayland":
             self._sound_rowbox.set_visible(False)
             self._sound_on_switch.set_active(False)
-            self.bus = SessionBus()
+            self.bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
-                self.notification = Notify.Notification.new(constants["APPNAME"], _(
-                    "Sorry, Wayland session is not supported yet."))
-                self.notification.show()
+                notification = Gio.Notification.new(constants["APPNAME"])
+                notification.set_body(_("Sorry, Wayland session is not supported yet."))
+
+                self.application.send_notification(None, notification)
             else:
-                self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast', '/org/gnome/Shell/Screencast')
-                self.GNOMESelectArea = self.bus.get('org.gnome.Shell.Screenshot', '/org/gnome/Shell/Screenshot')
+                self.GNOMEScreencast = Gio.DBusProxy.new_sync(
+                    self.bus,
+                    Gio.DBusProxyFlags.NONE,
+                    None,
+                    "org.gnome.Shell.Screencast",
+                    "/org/gnome/Shell/Screencast",
+                    "org.gnome.Shell.Screencast",
+                    None)
+                self.GNOMESelectArea = Gio.DBusProxy.new_sync(
+                    self.bus,
+                    Gio.DBusProxyFlags.NONE,
+                    None,
+                    "org.gnome.Shell.Screenshot",
+                    "/org/gnome/Shell/Screenshot",
+                    "org.gnome.Shell.Screenshot",
+                    None)
         else:
             self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
 
@@ -229,11 +245,37 @@ class RecappWindow(Handy.ApplicationWindow):
         playbin.set_state(Gst.State.NULL)
 
     def openFolder(self, notification, action, user_data=None):
-        videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
-        os.system("xdg-open " + videoFolderForOpen)
+        try:
+            videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
+            Gio.AppInfo.launch_default_for_uri("file:///" + videoFolderForOpen.lstrip("/"))
+
+        except Exception as error:
+            dialog = Gtk.MessageDialog(
+                transient_for=self,
+                type=Gtk.MessageType.WARNING,
+                buttons=Gtk.ButtonsType.OK,
+                text=_("Unable to open folder")
+            )
+            dialog.format_secondary_text(str(error))
+            dialog.run()
+            dialog.destroy()
 
     def openVideoFile(self, notification, action, user_data=None):
-        os.system("xdg-open " + self.fileName + self.extension)
+        try:
+            Gio.AppInfo.launch_default_for_uri(
+                "file:///" + self.fileName.lstrip("/") + self.extension
+            )
+
+        except Exception as error:
+            dialog = Gtk.MessageDialog(
+                transient_for=self,
+                type=Gtk.MessageType.WARNING,
+                buttons=Gtk.ButtonsType.OK,
+                text=_("Unable to open file")
+            )
+            dialog.format_secondary_text(str(error))
+            dialog.run()
+            dialog.destroy()
 
     def on_delete_event(self, w, h):
         delete_event(self, w, h)
