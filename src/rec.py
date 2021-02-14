@@ -31,9 +31,8 @@ from .recapp_constants import recapp_constants as constants
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify
+from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk
 
 Gtk.init(sys.argv)
 # initialize GStreamer
@@ -100,9 +99,9 @@ def on__select_area(self):
                        stdout=PIPE).communicate()
     listCoor = [int(i) for i in coordinate[0].decode().split()]
     if not listCoor[0] or not listCoor[1]:
-        self.notification = Notify.Notification.new(constants["APPNAME"],
-                                                    _("Please re-select the area"))
-        self.notification.show()
+        notification = Gio.Notification.new(constants["APPNAME"])
+        notification.set_body(_("Please re-select the area"))
+        self.application.send_notification(None, notification)
         return
 
     startx, starty, endx, endy = listCoor[2], listCoor[3], listCoor[2] + listCoor[0] - 1, listCoor[
@@ -264,10 +263,12 @@ def stop_recording(self, *args):
     else:
         self.video.send_signal(signal.SIGINT)
 
-    self.notification = Notify.Notification.new(constants["APPNAME"], _("Recording is complete!"))
-    self.notification.add_action("open_folder", _("Open Folder"), self.openFolder)
-    self.notification.add_action("open_file", _("Open File"), self.openVideoFile)
-    self.notification.show()
+    notification = Gio.Notification.new(constants["APPNAME"])
+    notification.set_body(_("Recording is complete!"))
+    notification.add_button(_("Open Folder"), "app.open-folder")
+    notification.add_button(_("Open File"), "app.open-file")
+    self.application.send_notification(None, notification)
+
     self.isrecording = False
     self.istimerrunning = False
 

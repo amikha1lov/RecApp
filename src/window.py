@@ -32,10 +32,9 @@ from .recapp_constants import recapp_constants as constants
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
 gi.require_version('Handy', '1')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify, Handy
+from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Handy
 
 Gtk.init(sys.argv)
 # initialize GStreamer
@@ -108,6 +107,7 @@ class RecappWindow(Handy.ApplicationWindow):
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
+        self.application = kwargs["application"]
 
         css_provider = Gtk.CssProvider()
         css_provider.load_from_resource('/com/github/amikha1lov/RecApp/style.css')
@@ -136,8 +136,6 @@ class RecappWindow(Handy.ApplicationWindow):
         self.cpus = os.cpu_count() - 1
         self.add_accel_group(accel)
         self.connect("delete-event", self.on_delete_event)
-        Notify.init(constants["APPID"])
-        self.notification = None
         self.settings = Gio.Settings.new(constants["APPID"])
         self.recordSoundOn = self.settings.get_boolean('record-audio-switch')
         self.delayBeforeRecording = self.settings.get_int('delay')
@@ -154,6 +152,15 @@ class RecappWindow(Handy.ApplicationWindow):
             self._frames_combobox.set_active(1)
         else:
             self._frames_combobox.set_active(2)
+
+        # Notification actions
+        action = Gio.SimpleAction.new("open-folder", None)
+        action.connect("activate", self.openFolder)
+        self.application.add_action(action)
+
+        action = Gio.SimpleAction.new("open-file", None)
+        action.connect("activate", self.openVideoFile)
+        self.application.add_action(action)
 
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
@@ -186,9 +193,10 @@ class RecappWindow(Handy.ApplicationWindow):
             self.bus = SessionBus()
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
-                self.notification = Notify.Notification.new(constants["APPNAME"], _(
-                    "Sorry, Wayland session is not supported yet."))
-                self.notification.show()
+                notification = Gio.Notification.new(constants["APPNAME"])
+                notification.set_body(_("Sorry, Wayland session is not supported yet."))
+
+                self.application.send_notification(None, notification)
             else:
                 self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast',
                                                     '/org/gnome/Shell/Screencast')
@@ -213,11 +221,11 @@ class RecappWindow(Handy.ApplicationWindow):
             self.formats.index(self.settings.get_string('format-video')))
         self.recordFormat = self._formats_combobox.get_active_text()
 
-    def openFolder(self, notification, action, user_data=None):
+    def openFolder(self, action, parameter):
         videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
         os.system("xdg-open " + videoFolderForOpen)
 
-    def openVideoFile(self, notification, action, user_data=None):
+    def openVideoFile(self, action, parameter):
         os.system("xdg-open " + self.fileName + self.extension)
 
     def on_delete_event(self, w, h):
