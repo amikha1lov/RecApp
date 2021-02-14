@@ -310,6 +310,7 @@ def stop_recording(self, *args):
     notification.set_body(_("Recording is complete!"))
     notification.add_button(_("Open Folder"), "app.open-folder")
     notification.add_button(_("Open File"), "app.open-file")
+    notification.set_default_action("app.open-file")
     self.application.send_notification(None, notification)
 
     self.isrecording = False
