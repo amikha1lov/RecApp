@@ -166,7 +166,7 @@ def record(self, *args):
     if self.delayBeforeRecording > 0:
         self._main_stack.set_visible_child(self._delay_box)
         self._record_stop_record_button_stack.set_visible_child(self._cancel_button)
-        self._preferences_back_stack_revealer.set_reveal_child(False)
+        self._menu_stack_revealer.set_reveal_child(False)
         self.isrecordingwithdelay = True
         delay(self, *args)
     else:
@@ -177,12 +177,12 @@ def record_logic(self, *args):
     if self.iscancelled:
         self._main_stack.set_visible_child(self._main_screen_box)
         self._record_stop_record_button_stack.set_visible_child(self._record_button)
-        self._preferences_back_stack.set_visible_child(self._menu_button)
+        self._menu_stack.set_visible_child(self._menu_button)
         self.iscancelled = False
     else:
         self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
         self._main_stack.set_visible_child(self._paused_start_stack_box)
-        self._preferences_back_stack.set_visible_child(self._pause_record_button)
+        self._menu_stack.set_visible_child(self._pause_record_button)
         self.label_context = self._time_recording_label.get_style_context()
         self.label_context.add_class("recording")
 
@@ -280,7 +280,7 @@ def delay(self, *args):
             self._delay_label.set_label(str((self.time_delay // 100)+1))
         else:
             self.isrecordingwithdelay = False
-            self._preferences_back_stack_revealer.set_reveal_child(True)
+            self._menu_stack_revealer.set_reveal_child(True)
             record_logic(self, *args)
             self.time_delay = (self.delayBeforeRecording * 100)
     countdown(*args)
@@ -318,7 +318,7 @@ def stop_recording(self, *args):
     self._record_stop_record_button_stack.set_visible_child(self._record_button)
     self._paused_start_stack.set_visible_child(self._recording_label)
     self._main_stack.set_visible_child(self._main_screen_box)
-    self._preferences_back_stack.set_visible_child(self._menu_button)
+    self._menu_stack.set_visible_child(self._menu_button)
     self.label_context.remove_class("recording")
     self._title_stack.set_visible_child(self._title_label)
 

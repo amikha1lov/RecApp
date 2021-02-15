@@ -49,3 +49,4 @@ flatpak install local-repo com.github.amikha1lov.RecApp
 ## Credits
 
 Design inspired by **[GNOME Screenshot](https://gitlab.gnome.org/GNOME/gnome-screenshot/)**.
+The **[chime](https://soundbible.com/1598-Electronic-Chime.html)** used is under the Public Domain.

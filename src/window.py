@@ -85,9 +85,9 @@ class RecappWindow(Handy.ApplicationWindow):
     _menu_button = Gtk.Template.Child()
     _paused_start_stack_box = Gtk.Template.Child()
     _paused_start_stack = Gtk.Template.Child()
-    _preferences_back_stack_revealer = Gtk.Template.Child()
+    _menu_stack_revealer = Gtk.Template.Child()
     _back_button = Gtk.Template.Child()
-    _preferences_back_stack = Gtk.Template.Child()
+    _menu_stack = Gtk.Template.Child()
     _record_stop_record_button_stack_revealer = Gtk.Template.Child()
     _delay_box = Gtk.Template.Child()
     _delay_label = Gtk.Template.Child()
@@ -247,15 +247,9 @@ class RecappWindow(Handy.ApplicationWindow):
         self.recordFormat = self._formats_combobox.get_active_text()
 
     def playsound(self, sound):
-        '''
-        Copyright (c) 2016 Taylor Marks <taylor@marksfam.com>
-        The MIT License
-        '''
         playbin = Gst.ElementFactory.make('playbin', 'playbin')
         playbin.props.uri = 'resource://' + sound
-
         set_result = playbin.set_state(Gst.State.PLAYING)
-
         bus = playbin.get_bus()
         bus.poll(Gst.MessageType.EOS, Gst.CLOCK_TIME_NONE)
         playbin.set_state(Gst.State.NULL)
@@ -363,14 +357,14 @@ class RecappWindow(Handy.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__pause_record_button_clicked(self, widget):
-        self._preferences_back_stack.set_visible_child(self._continue_record_button)
+        self._menu_stack.set_visible_child(self._continue_record_button)
         self._paused_start_stack.set_visible_child(self._paused_label)
         self.label_context.remove_class("recording")
         self.istimerrunning = False
 
     @Gtk.Template.Callback()
     def on__continue_record_button_clicked(self, widget):
-        self._preferences_back_stack.set_visible_child(self._pause_record_button)
+        self._menu_stack.set_visible_child(self._pause_record_button)
         self._paused_start_stack.set_visible_child(self._recording_label)
         self.label_context.add_class("recording")
         self.istimerrunning = True
@@ -406,7 +400,7 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__preferences_button_clicked(self, widget):
         self._main_stack.set_visible_child(self._preferences_box)
-        self._preferences_back_stack.set_visible_child(self._back_button)
+        self._menu_stack.set_visible_child(self._back_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(False)
         self._title_stack.set_visible_child(self._preferences_label)
 
@@ -414,7 +408,7 @@ class RecappWindow(Handy.ApplicationWindow):
     def on__back_button_clicked(self, widget):
         self._main_stack.set_visible_child(self._main_screen_box)
         self._record_stop_record_button_stack.set_visible_child(self._record_button)
-        self._preferences_back_stack.set_visible_child(self._menu_button)
+        self._menu_stack.set_visible_child(self._menu_button)
         self._record_stop_record_button_stack_revealer.set_reveal_child(True)
         self._title_stack.set_visible_child(self._title_label)
         self.set_size_request(462, 300)
