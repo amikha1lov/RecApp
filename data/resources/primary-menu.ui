@@ -41,7 +41,7 @@
       <item>
         <attribute translatable="yes" name="label">_Matroska</attribute>
         <attribute name="action">app.video-format</attribute>
-        <attribute name="target">matroska</attribute>
+        <attribute name="target">mkv</attribute>
       </item>
       <item>
         <attribute translatable="yes" name="label">_MP4</attribute>
