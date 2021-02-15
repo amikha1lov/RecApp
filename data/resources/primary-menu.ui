@@ -1,35 +1,75 @@
 <interface>
   <menu id="primary-menu">
     <submenu>
-      <attribute translatable="yes" name="label">_Temperature Unit</attribute>
+      <attribute translatable="yes" name="label">_Frames per second</attribute>
       <item>
-        <attribute translatable="yes" name="label">Celsius</attribute>
-        <attribute name="action">app.temperature-unit</attribute>
+        <attribute translatable="yes" name="label">_15</attribute>
+        <attribute name="action">app.frames-per-second</attribute>
         <attribute name="target">centigrade</attribute>
       </item>
       <item>
-        <attribute translatable="yes" name="label">_Fahrenheit</attribute>
-        <attribute name="action">app.temperature-unit</attribute>
+        <attribute translatable="yes" name="label">_30</attribute>
+        <attribute name="action">app.frames-per-second</attribute>
+        <attribute name="target">fahrenheit</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_60</attribute>
+        <attribute name="action">app.frames-per-second</attribute>
         <attribute name="target">fahrenheit</attribute>
       </item>
     </submenu>
     <submenu>
-      <attribute translatable="yes" name="label">_Temperature Unit</attribute>
+      <attribute translatable="yes" name="label">_Video format</attribute>
       <item>
-        <attribute translatable="yes" name="label">Celsius</attribute>
-        <attribute name="action">app.temperature-unit</attribute>
+        <attribute translatable="yes" name="label">_webm</attribute>
+        <attribute name="action">app.video-format</attribute>
         <attribute name="target">centigrade</attribute>
       </item>
       <item>
-        <attribute translatable="yes" name="label">_Fahrenheit</attribute>
-        <attribute name="action">app.temperature-unit</attribute>
+        <attribute translatable="yes" name="label">_mkv</attribute>
+        <attribute name="action">app.video-format</attribute>
+        <attribute name="target">fahrenheit</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_mp4</attribute>
+        <attribute name="action">app.video-format</attribute>
+        <attribute name="target">fahrenheit</attribute>
+      </item>
+    </submenu>
+    <submenu>
+      <attribute translatable="yes" name="label">_Video quality</attribute>
+      <item>
+        <attribute translatable="yes" name="label">_Low</attribute>
+        <attribute name="action">app.video-quality</attribute>
+        <attribute name="target">centigrade</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_High</attribute>
+        <attribute name="action">app.video-quality</attribute>
+        <attribute name="target">fahrenheit</attribute>
+      </item>
+    </submenu>
+    <submenu>
+      <attribute translatable="yes" name="label">_Ask where to save</attribute>
+      <item>
+        <attribute translatable="yes" name="label">_Default to Videos folder</attribute>
+        <attribute name="action">app.saving-directory</attribute>
+        <attribute name="target">centigrade</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_Always</attribute>
+        <attribute name="action">app.saving-directory</attribute>
         <attribute name="target">fahrenheit</attribute>
       </item>
     </submenu>
     <section>
       <item>
-        <attribute name="action">win.about</attribute>
-        <attribute name="label" translatable="yes">_About Weather</attribute>
+        <attribute name="action">app.shortcuts</attribute>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.about</attribute>
+        <attribute name="label" translatable="yes">_About RecApp</attribute>
       </item>
     </section>
   </menu>

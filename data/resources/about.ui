@@ -2,7 +2,7 @@
 <!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <template class="AboutDialog" parent="GtkAboutDialog">
+  <object class="GtkAboutDialog" id="about">
     <property name="can-focus">False</property>
     <property name="type-hint">dialog</property>
     <property name="copyright" translatable="yes">© 2021 Alexey Mikhailov</property>
@@ -45,5 +45,5 @@ and contributors of Telegram chat https://t.me/gnome_rus</property>
         </child>
       </object>
     </child>
-  </template>
+  </object>
 </interface>

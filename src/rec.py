@@ -122,8 +122,7 @@ def on__select_area(self):
 
 
 def on__select_area_wayland(self):
-    self.waylandcoordinates = self.GNOMESelectArea.call_sync(
-        "SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
+    self.waylandcoordinates = self.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
     self.coordinateMode = True
 
 

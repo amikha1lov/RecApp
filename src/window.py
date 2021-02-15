@@ -114,15 +114,14 @@ class RecappWindow(Handy.ApplicationWindow):
         style_context = Gtk.StyleContext()
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
-        # new
+        # Initialize popover
         builder = Gtk.Builder()
         builder.add_from_resource('/com/github/amikha1lov/RecApp/primary-menu.ui')
-
         primaryMenuModel = builder.get_object('primary-menu')
         self.popover = Gtk.Popover.new_from_model(self._menu_button, primaryMenuModel)
         self._menu_button.set_popover(self.popover)
-        # new
 
+        # Initialize recording timer
         GLib.timeout_add(1000, self.refresh_time)
         self.elapsed_time = datetime.timedelta()
         self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
@@ -168,6 +167,15 @@ class RecappWindow(Handy.ApplicationWindow):
 
         action = Gio.SimpleAction.new("open-file", None)
         action.connect("activate", self.openVideoFile)
+        self.application.add_action(action)
+
+        # Popover actions
+        action = Gio.SimpleAction.new("shortcuts", None)
+        action.connect("activate", self.open_shortcuts_window)
+        self.application.add_action(action)
+
+        action = Gio.SimpleAction.new("about", None)
+        action.connect("activate", self.open_about_dialog)
         self.application.add_action(action)
 
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
@@ -413,24 +421,16 @@ class RecappWindow(Handy.ApplicationWindow):
         self._title_stack.set_visible_child(self._title_label)
         self.set_size_request(462, 300)
 
-    @Gtk.Template.Callback()
-    def on__keyboardshortcuts_button_clicked(self, widget):
+    def open_shortcuts_window(self, action, widget):
         window = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/shortcuts.ui').get_object('shortcuts')
         window.set_transient_for(self)
         window.present()
 
-    @Gtk.Template.Callback()
-    def on__about_button_clicked(self, widget):
-        dialog = AboutDialog(self)
+    def open_about_dialog(self, action, widget):
+        dialog = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/about.ui').get_object('about')
         dialog.set_program_name(_(constants["APPNAME"]))
         dialog.set_logo_icon_name(constants["APPID"])
         dialog.set_version(constants["APPVERSION"])
-        response = dialog.run()
+        dialog.set_transient_for(self)
+        dialog.run()
         dialog.destroy()
-
-@Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/about.ui')
-class AboutDialog(Gtk.AboutDialog):
-    __gtype_name__ = 'AboutDialog'
-
-    def __init__(self, parent):
-        Gtk.AboutDialog.__init__(self, transient_for=parent)
