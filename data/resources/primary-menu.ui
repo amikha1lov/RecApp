@@ -34,23 +34,23 @@
     <submenu>
       <attribute translatable="yes" name="label">_Video Format</attribute>
       <item>
-        <attribute translatable="yes" name="label">_webm</attribute>
+        <attribute translatable="yes" name="label">_WebM</attribute>
         <attribute name="action">app.video-format</attribute>
         <attribute name="target">centigrade</attribute>
       </item>
       <item>
-        <attribute translatable="yes" name="label">_mkv</attribute>
+        <attribute translatable="yes" name="label">_Matroska</attribute>
         <attribute name="action">app.video-format</attribute>
         <attribute name="target">fahrenheit</attribute>
       </item>
       <item>
-        <attribute translatable="yes" name="label">_mp4</attribute>
+        <attribute translatable="yes" name="label">_MP4</attribute>
         <attribute name="action">app.video-format</attribute>
         <attribute name="target">fahrenheit</attribute>
       </item>
     </submenu>
     <item>
-      <attribute translatable="yes" name="label">_Saving Folder…</attribute>
+      <attribute translatable="yes" name="label">_Select Saving Location…</attribute>
     </item>
     <section>
       <item>
