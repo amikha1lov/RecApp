@@ -1,7 +1,7 @@
 <interface>
   <menu id="primary-menu">
     <submenu>
-      <attribute translatable="yes" name="label">_Frames per second</attribute>
+      <attribute translatable="yes" name="label">_Frames Per Second</attribute>
       <item>
         <attribute translatable="yes" name="label">_15</attribute>
         <attribute name="action">app.frames-per-second</attribute>
@@ -19,7 +19,20 @@
       </item>
     </submenu>
     <submenu>
-      <attribute translatable="yes" name="label">_Video format</attribute>
+      <attribute translatable="yes" name="label">_Video Quality</attribute>
+      <item>
+        <attribute translatable="yes" name="label">_Low</attribute>
+        <attribute name="action">app.video-quality</attribute>
+        <attribute name="target">centigrade</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_High</attribute>
+        <attribute name="action">app.video-quality</attribute>
+        <attribute name="target">fahrenheit</attribute>
+      </item>
+    </submenu>
+    <submenu>
+      <attribute translatable="yes" name="label">_Video Format</attribute>
       <item>
         <attribute translatable="yes" name="label">_webm</attribute>
         <attribute name="action">app.video-format</attribute>
@@ -36,32 +49,9 @@
         <attribute name="target">fahrenheit</attribute>
       </item>
     </submenu>
-    <submenu>
-      <attribute translatable="yes" name="label">_Video quality</attribute>
-      <item>
-        <attribute translatable="yes" name="label">_Low</attribute>
-        <attribute name="action">app.video-quality</attribute>
-        <attribute name="target">centigrade</attribute>
-      </item>
-      <item>
-        <attribute translatable="yes" name="label">_High</attribute>
-        <attribute name="action">app.video-quality</attribute>
-        <attribute name="target">fahrenheit</attribute>
-      </item>
-    </submenu>
-    <submenu>
-      <attribute translatable="yes" name="label">_Ask where to save</attribute>
-      <item>
-        <attribute translatable="yes" name="label">_Default to Videos folder</attribute>
-        <attribute name="action">app.saving-directory</attribute>
-        <attribute name="target">centigrade</attribute>
-      </item>
-      <item>
-        <attribute translatable="yes" name="label">_Always</attribute>
-        <attribute name="action">app.saving-directory</attribute>
-        <attribute name="target">fahrenheit</attribute>
-      </item>
-    </submenu>
+    <item>
+      <attribute translatable="yes" name="label">_Saving Folder…</attribute>
+    </item>
     <section>
       <item>
         <attribute name="action">app.shortcuts</attribute>
