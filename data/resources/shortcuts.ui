@@ -48,13 +48,6 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">1</property>
-                <property name="accelerator">&lt;ctrl&gt;h</property>
-                <property name="title" translatable="yes" context="shortcut window">Toggle high quality mode</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">1</property>
                 <property name="accelerator">&lt;ctrl&gt;a</property>
                 <property name="title" translatable="yes" context="shortcut window">Toggle record computer sounds</property>
               </object>

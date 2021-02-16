@@ -50,19 +50,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="_preferences_label">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">Preferences</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                      </object>
-                      <packing>
-                        <property name="name">page1</property>
-                        <property name="title" translatable="yes">page1</property>
-                        <property name="position">1</property>
-                      </packing>
+                      <placeholder/>
                     </child>
                     <child>
                       <object class="GtkLabel" id="_blank_label">
@@ -471,116 +459,6 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkBox" id="_preferences_box">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="margin-start">24</property>
-                        <property name="margin-end">24</property>
-                        <property name="orientation">vertical</property>
-                        <child>
-                          <object class="GtkListBox" id="_secondary_settings_box">
-                            <property name="name">_secondary_settings_box</property>
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="selection-mode">none</property>
-                            <child>
-                              <object class="HdyActionRow">
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="activatable">False</property>
-                                <property name="selectable">False</property>
-                                <property name="title" translatable="yes">Frames per second</property>
-                                <property name="use-underline">True</property>
-                                <child>
-                                  <object class="GtkComboBoxText" id="_frames_combobox">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="valign">center</property>
-                                    <property name="active-id">1</property>
-                                    <items>
-                                      <item id="0" translatable="yes">15</item>
-                                      <item id="1" translatable="yes">30</item>
-                                      <item id="2" translatable="yes">60</item>
-                                    </items>
-                                    <signal name="changed" handler="on__frames_combobox_changed" swapped="no"/>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="HdyActionRow">
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="title" translatable="yes">High quality mode</property>
-                                <property name="activatable-widget">_quality_video_switcher</property>
-                                <property name="use-underline">True</property>
-                                <child>
-                                  <object class="GtkSwitch" id="_quality_video_switcher">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">True</property>
-                                    <property name="valign">center</property>
-                                    <signal name="state-set" handler="on__quality_video_switcher_state_set" swapped="no"/>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="HdyActionRow">
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="activatable">False</property>
-                                <property name="selectable">False</property>
-                                <property name="title" translatable="yes">Video format</property>
-                                <property name="use-underline">True</property>
-                                <child>
-                                  <object class="GtkComboBoxText" id="_formats_combobox">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="valign">center</property>
-                                    <signal name="changed" handler="on__formats_combobox_changed" swapped="no"/>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <child>
-                              <object class="HdyActionRow">
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="activatable">False</property>
-                                <property name="selectable">False</property>
-                                <property name="title" translatable="yes">Saving folder</property>
-                                <property name="use-underline">True</property>
-                                <child>
-                                  <object class="GtkFileChooserButton" id="_video_folder_button">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="valign">center</property>
-                                    <property name="action">select-folder</property>
-                                    <property name="do-overwrite-confirmation">True</property>
-                                    <property name="title" translatable="yes"/>
-                                    <signal name="file-set" handler="on__video_folder_button_file_set" swapped="no"/>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                            <style>
-                              <class name="content"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">True</property>
-                            <property name="position">0</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="name">page2</property>
-                        <property name="title" translatable="yes">page2</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
                       <object class="GtkBox" id="_delay_box">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
@@ -638,7 +516,7 @@
                       <packing>
                         <property name="name">page3</property>
                         <property name="title" translatable="yes">page3</property>
-                        <property name="position">3</property>
+                        <property name="position">2</property>
                       </packing>
                     </child>
                   </object>

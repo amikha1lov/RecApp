@@ -1,20 +1,39 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="recapp">
+  <enum id="com.github.amikha1lov.RecApp.Quality">
+    <value nick="low" value="0"/>
+    <value nick="high" value="1"/>
+  </enum>
+  <enum id="com.github.amikha1lov.RecApp.Frames">
+    <value nick="15" value="0"/>
+    <value nick="30" value="1"/>
+    <value nick="60" value="2"/>
+  </enum>
+  <enum id="com.github.amikha1lov.RecApp.Format">
+    <value nick="webm" value="0"/>
+    <value nick="mkv" value="1"/>
+    <value nick="mp4" value="2"/>
+  </enum>
 	<schema id="com.github.amikha1lov.RecApp" path="/com/github/amikha1lov/recapp/">
-	  <key type="i" name="frames">
-      <default>30</default>
+	  <key enum="com.github.amikha1lov.RecApp.Quality" name="video-quality">
+      <default>"low"</default>
+      <summary>Quality</summary>
+      <description>Quality of the recording</description>
+    </key>
+	  <key enum="com.github.amikha1lov.RecApp.Frames" name="frames-per-second">
+      <default>"30"</default>
       <summary>Frames</summary>
-      <description>Number of frames per video.</description>
+      <description>Number of frames per recording</description>
+    </key>
+	  <key enum="com.github.amikha1lov.RecApp.Format" name="video-format">
+      <default>"webm"</default>
+      <summary>Video recording format</summary>
+      <description>The format in which the video will be recorded</description>
     </key>
 	  <key type="i" name="delay">
       <default>0</default>
       <summary>Delay</summary>
       <description>Delay before recording.</description>
-    </key>
-    <key type="b" name="high-quality-switch">
-      <default>false</default>
-      <summary>Enabling high quality mode</summary>
-      <description>Record video in high quality.</description>
     </key>
 	  <key type="b" name="record-audio-switch">
       <default>false</default>
@@ -26,15 +45,10 @@
       <summary>Enabling record mouse cursor</summary>
       <description>Recording the mouse cursor.</description>
     </key>
-    <key type="s" name="path-to-save-video-folder">
+	  <key type="s" name="path-to-save-video-folder">
       <default>"Default"</default>
       <summary>Path to the save folder</summary>
-      <description>Path to the folder where the file will be saved.</description>
-    </key>
-	    <key type="s" name="format-video">
-      <default>"webm"</default>
-      <summary>Video recording format</summary>
-      <description>The format in which the video will be recorded.</description>
+      <description>Path to the folder where the file will be saved</description>
     </key>
 	</schema>
 </schemalist>

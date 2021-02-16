@@ -37,48 +37,57 @@ Gtk.init(sys.argv)
 Gst.init(sys.argv)
 
 
-def formats_combobox_changed(self, box):
-    self.recordFormat = box.get_active_text()
-    self.settings.set_string('format-video', self.recordFormat)
-
-
 def video_folder_button(self, button):
     self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_filename())
     self._video_folder_button.set_current_folder_uri(
         self.settings.get_string('path-to-save-video-folder'))
 
 
-def quality_video_switcher(self, *args):
-    if self._quality_video_switcher.get_active():
-        state = "on"
-        self.settings.set_boolean('high-quality-switch', True)
+def on__frames_changed(self, *args):
+    frames = self.settings.get_enum("frames-per-second")
+    if frames == 0:
+        self.videoFrames = 15
+    if frames == 1:
+        self.videoFrames = 30
+    if frames == 2:
+        self.videoFrames = 60
+    return self.videoFrames
+
+
+def on__quality_changed(self, *args):
+    quality = self.settings.get_enum("video-quality")
+    self.recordFormat = on__formats_changed(self, *args)
+    if quality == 0:
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
             self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
                 self.cpus)
         elif self.recordFormat == "mp4":
             self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
                 self.cpus)
-        return self.quality_video
-    else:
-        state = "off"
-        self.settings.set_boolean('high-quality-switch', False)
+    if quality == 1:
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
             self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
                 self.cpus)
         elif self.recordFormat == "mp4":
             self.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
                 self.cpus)
-        return self.quality_video
+    return self.quality_video
+
+
+def on__formats_changed(self, *args):
+    format = self.settings.get_enum("video-format")
+    if format == 0:
+        self.recordFormat = "webm"
+    if format == 1:
+        self.recordFormat = "mkv"
+    if format == 2:
+        self.recordFormat = "mp4"
+    return self.recordFormat
 
 
 def delay_button_change(self, spin):
     self.delayBeforeRecording = spin.get_value_as_int()
     self.settings.set_int('delay', spin.get_value_as_int())
-
-
-def frames_combobox_changed(self, box):
-    self.videoFrames = int(box.get_active_text())
-    self.settings.set_int('frames', int(box.get_active_text()))
 
 
 def mouse_switcher(self, switch, gparam):
@@ -186,7 +195,10 @@ def record_logic(self, *args):
         self.label_context = self._time_recording_label.get_style_context()
         self.label_context.add_class("recording")
 
-        self.quality_video = quality_video_switcher(self, *args)
+        self.quality_video = on__quality_changed(self, *args)
+        self.videoFrames = on__frames_changed(self, *args)
+        self.recordFormat = on__formats_changed(self, *args)
+
         self.soundOn = on__sound_switch(self, *args)
         fileNameTime = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
         videoFolder = self.settings.get_string('path-to-save-video-folder')
@@ -340,14 +352,6 @@ def toggle_audio(self, *args):
                 self._sound_on_switch.set_active(False)
             else:
                 self._sound_on_switch.set_active(True)
-
-
-def toggle_high_quality(self, *args):
-    if not self.isrecordingwithdelay and not self.isrecording:
-        if self._quality_video_switcher.get_active():
-            self._quality_video_switcher.set_active(False)
-        else:
-            self._quality_video_switcher.set_active(True)
 
 
 def toggle_record(self, *args):

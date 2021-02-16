@@ -63,13 +63,10 @@ class RecappWindow(Handy.ApplicationWindow):
     formats = []
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
-    _frames_combobox = Gtk.Template.Child()
     _delay_button = Gtk.Template.Child()
     _sound_on_switch = Gtk.Template.Child()
-    _quality_video_switcher = Gtk.Template.Child()
     _video_folder_button = Gtk.Template.Child()
     _record_mouse_switcher = Gtk.Template.Child()
-    _formats_combobox = Gtk.Template.Child()
     _record_stop_record_button_stack = Gtk.Template.Child()
     _fullscreen_mode_button = Gtk.Template.Child()
     _window_mode_button = Gtk.Template.Child()
@@ -81,7 +78,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _main_screen_box = Gtk.Template.Child()
     _capture_mode_box = Gtk.Template.Child()
     _sound_rowbox = Gtk.Template.Child()
-    _preferences_box = Gtk.Template.Child()
     _menu_button = Gtk.Template.Child()
     _paused_start_stack_box = Gtk.Template.Child()
     _paused_start_stack = Gtk.Template.Child()
@@ -98,7 +94,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _sound_on_microphone = Gtk.Template.Child()
     _title_stack = Gtk.Template.Child()
     _title_label = Gtk.Template.Child()
-    _preferences_label = Gtk.Template.Child()
     _blank_label = Gtk.Template.Child()
 
 
@@ -126,8 +121,6 @@ class RecappWindow(Handy.ApplicationWindow):
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
-        accel.connect(Gdk.keyval_from_name('h'), Gdk.ModifierType.CONTROL_MASK, 0,
-                      self.on_toggle_high_quality)
         accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0,
                       self.on_toggle_audio)
         accel.connect(Gdk.keyval_from_name('p'), Gdk.ModifierType.CONTROL_MASK, 0,
@@ -144,19 +137,10 @@ class RecappWindow(Handy.ApplicationWindow):
         self.settings = Gio.Settings.new(constants["APPID"])
         self.recordSoundOn = self.settings.get_boolean('record-audio-switch')
         self.delayBeforeRecording = self.settings.get_int('delay')
-        self.videoFrames = self.settings.get_int('frames')
         self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
-        self.recordFormat = self.settings.get_string('format-video')
         self._sound_on_switch.set_active(self.recordSoundOn)
         self._record_mouse_switcher.set_active(self.recordMouse)
-        self._quality_video_switcher.set_active(self.settings.get_boolean("high-quality-switch"))
         self._delay_button.set_value(self.delayBeforeRecording)
-        if self.videoFrames == 15:
-            self._frames_combobox.set_active(0)
-        elif self.videoFrames == 30:
-            self._frames_combobox.set_active(1)
-        else:
-            self._frames_combobox.set_active(2)
 
         # Notification actions
         action = Gio.SimpleAction.new("open-folder", None)
@@ -168,6 +152,21 @@ class RecappWindow(Handy.ApplicationWindow):
         self.application.add_action(action)
 
         # Popover actions
+        action = Gio.SimpleAction.new_stateful("frames-per-second", GLib.VariantType.new("s"), GLib.Variant('s', "30"))
+        action.set_state(self.settings.get_value("frames-per-second"))
+        action.connect("change-state", self.on_frames_per_second_change_state)
+        self.application.add_action(action)
+
+        action = Gio.SimpleAction.new_stateful("video-quality", GLib.VariantType.new("s"), GLib.Variant('s', "low"))
+        action.set_state(self.settings.get_value("video-quality"))
+        action.connect("change-state", self.on_video_quality_change_state)
+        self.application.add_action(action)
+
+        action = Gio.SimpleAction.new_stateful("video-format", GLib.VariantType.new("s"), GLib.Variant('s', "webm"))
+        action.set_state(self.settings.get_value("video-format"))
+        action.connect("change-state", self.on_video_format_change_state)
+        self.application.add_action(action)
+
         action = Gio.SimpleAction.new("shortcuts", None)
         action.connect("activate", self.open_shortcuts_window)
         self.application.add_action(action)
@@ -238,13 +237,18 @@ class RecappWindow(Handy.ApplicationWindow):
                     self.formats.append("mp4")
             else:
                 pass
-        formats_store = Gtk.ListStore(str)
-        for format in self.formats:
-            formats_store.append([format])
-        self._formats_combobox.set_model(formats_store)
-        self._formats_combobox.set_active(
-            self.formats.index(self.settings.get_string('format-video')))
-        self.recordFormat = self._formats_combobox.get_active_text()
+
+    def on_frames_per_second_change_state(self, action, value):
+        self.settings.set_value("frames-per-second", value)
+        action.set_state(value)
+
+    def on_video_quality_change_state(self, action, value):
+        self.settings.set_value("video-quality", value)
+        action.set_state(value)
+
+    def on_video_format_change_state(self, action, value):
+        self.settings.set_value("video-format", value)
+        action.set_state(value)
 
     def playsound(self, sound):
         playbin = Gst.ElementFactory.make('playbin', 'playbin')
@@ -293,9 +297,6 @@ class RecappWindow(Handy.ApplicationWindow):
     def on_toggle_audio(self, *args):
         toggle_audio(self, *args)
 
-    def on_toggle_high_quality(self, *args):
-        toggle_high_quality(self, *args)
-
     def on_toggle_record(self, *args):
         toggle_record(self, *args)
 
@@ -322,10 +323,6 @@ class RecappWindow(Handy.ApplicationWindow):
         video_folder_button(self, button)
 
     @Gtk.Template.Callback()
-    def on__frames_combobox_changed(self, box):
-        frames_combobox_changed(self, box)
-
-    @Gtk.Template.Callback()
     def on__record_mouse_switcher_state_set(self, switch, gparam):
         mouse_switcher(self, switch, gparam)
 
@@ -336,14 +333,6 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__sound_on_switch_activate(self, switch, gparam):
         on__sound_switch(self, switch, gparam)
-
-    @Gtk.Template.Callback()
-    def on__quality_video_switcher_state_set(self, switch, gparam):
-        quality_video_switcher(self, switch, gparam)
-
-    @Gtk.Template.Callback()
-    def on__formats_combobox_changed(self, box):
-        formats_combobox_changed(self, box)
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, widget):
@@ -396,22 +385,6 @@ class RecappWindow(Handy.ApplicationWindow):
             self.isSelectionMode = True
             self.isFullscreenMode = False
             self.isWindowMode = False
-
-    @Gtk.Template.Callback()
-    def on__preferences_button_clicked(self, widget):
-        self._main_stack.set_visible_child(self._preferences_box)
-        self._menu_stack.set_visible_child(self._back_button)
-        self._record_stop_record_button_stack_revealer.set_reveal_child(False)
-        self._title_stack.set_visible_child(self._preferences_label)
-
-    @Gtk.Template.Callback()
-    def on__back_button_clicked(self, widget):
-        self._main_stack.set_visible_child(self._main_screen_box)
-        self._record_stop_record_button_stack.set_visible_child(self._record_button)
-        self._menu_stack.set_visible_child(self._menu_button)
-        self._record_stop_record_button_stack_revealer.set_reveal_child(True)
-        self._title_stack.set_visible_child(self._title_label)
-        self.set_size_request(462, 300)
 
     def open_shortcuts_window(self, action, widget):
         window = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/shortcuts.ui').get_object('shortcuts')
