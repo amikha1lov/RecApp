@@ -2,9 +2,10 @@
 <gresources>
   <gresource prefix="/com/github/amikha1lov/RecApp">
     <file>window.ui</file>
+    <file>primary-menu.ui</file>
+    <file>selectlocation.ui</file>
     <file>shortcuts.ui</file>
     <file>about.ui</file>
-    <file>primary-menu.ui</file>
 
     <file>style.css</file>
 

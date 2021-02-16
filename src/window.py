@@ -65,7 +65,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _stop_record_button = Gtk.Template.Child()
     _delay_button = Gtk.Template.Child()
     _sound_on_switch = Gtk.Template.Child()
-    _video_folder_button = Gtk.Template.Child()
     _record_mouse_switcher = Gtk.Template.Child()
     _record_stop_record_button_stack = Gtk.Template.Child()
     _fullscreen_mode_button = Gtk.Template.Child()
@@ -82,7 +81,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _paused_start_stack_box = Gtk.Template.Child()
     _paused_start_stack = Gtk.Template.Child()
     _menu_stack_revealer = Gtk.Template.Child()
-    _back_button = Gtk.Template.Child()
     _menu_stack = Gtk.Template.Child()
     _record_stop_record_button_stack_revealer = Gtk.Template.Child()
     _delay_box = Gtk.Template.Child()
@@ -121,19 +119,16 @@ class RecappWindow(Handy.ApplicationWindow):
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
-        accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0,
-                      self.on_toggle_audio)
-        accel.connect(Gdk.keyval_from_name('p'), Gdk.ModifierType.CONTROL_MASK, 0,
-                      self.on_toggle_mouse_record)
-        accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0,
-                      self.on_toggle_record)
-        accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0,
-                      self.on_toggle_microphone)
-        accel.connect(Gdk.keyval_from_name('c'), Gdk.ModifierType.CONTROL_MASK, 0,
-                      self.on_cancel_record)
-        self.cpus = os.cpu_count() - 1
+        accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_audio)
+        accel.connect(Gdk.keyval_from_name('p'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_mouse_record)
+        accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_record)
+        accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_microphone)
+        accel.connect(Gdk.keyval_from_name('c'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_cancel_record)
         self.add_accel_group(accel)
+
+        self.cpus = os.cpu_count() - 1
         self.connect("delete-event", self.on_delete_event)
+
         self.settings = Gio.Settings.new(constants["APPID"])
         self.recordSoundOn = self.settings.get_boolean('record-audio-switch')
         self.delayBeforeRecording = self.settings.get_int('delay')
@@ -167,6 +162,10 @@ class RecappWindow(Handy.ApplicationWindow):
         action.connect("change-state", self.on_video_format_change_state)
         self.application.add_action(action)
 
+        action = Gio.SimpleAction.new("selectlocation", None)
+        action.connect("activate", self.open_selectlocation)
+        self.application.add_action(action)
+
         action = Gio.SimpleAction.new("shortcuts", None)
         action.connect("activate", self.open_shortcuts_window)
         self.application.add_action(action)
@@ -190,10 +189,6 @@ class RecappWindow(Handy.ApplicationWindow):
             else:
                 self.settings.set_string('path-to-save-video-folder', GLib.get_user_special_dir(
                     GLib.UserDirectory.DIRECTORY_VIDEOS))
-            self._video_folder_button.set_current_folder_uri(
-                self.settings.get_string('path-to-save-video-folder'))
-        else:
-            self._video_folder_button.set_current_folder_uri(self.currentFolder)
 
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
@@ -319,10 +314,6 @@ class RecappWindow(Handy.ApplicationWindow):
         return True
 
     @Gtk.Template.Callback()
-    def on__video_folder_button_file_set(self, button):
-        video_folder_button(self, button)
-
-    @Gtk.Template.Callback()
     def on__record_mouse_switcher_state_set(self, switch, gparam):
         mouse_switcher(self, switch, gparam)
 
@@ -386,9 +377,21 @@ class RecappWindow(Handy.ApplicationWindow):
             self.isFullscreenMode = False
             self.isWindowMode = False
 
+    def open_selectlocation(self, action, widget):
+        dialog = FileChooserSelection(self)
+        dialog.set_transient_for(self)
+        dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT)
+        response = dialog.run()
+        if response == Gtk.ResponseType.ACCEPT:
+            directory = dialog.get_filenames()
+        else:
+            directory = None
+        dialog.destroy()
+        self.settings.set_string("path-to-save-video-folder", directory[0])
+
+
     def open_shortcuts_window(self, action, widget):
         window = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/shortcuts.ui').get_object('shortcuts')
-        window.set_transient_for(self)
         window.present()
 
     def open_about_dialog(self, action, widget):
@@ -399,3 +402,13 @@ class RecappWindow(Handy.ApplicationWindow):
         dialog.set_transient_for(self)
         dialog.run()
         dialog.destroy()
+
+
+@Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/selectlocation.ui')
+class FileChooserSelection(Gtk.FileChooserDialog):
+    __gtype_name__ = 'FileChooserSelection'
+
+    def __init__(self, parent):
+        Gtk.FileChooserDialog.__init__(self, transient_for=parent)
+
+

@@ -37,12 +37,6 @@ Gtk.init(sys.argv)
 Gst.init(sys.argv)
 
 
-def video_folder_button(self, button):
-    self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_filename())
-    self._video_folder_button.set_current_folder_uri(
-        self.settings.get_string('path-to-save-video-folder'))
-
-
 def on__frames_changed(self, *args):
     frames = self.settings.get_enum("frames-per-second")
     if frames == 0:
@@ -157,6 +151,22 @@ def on__sound_switch(self, *args):
 
 
 def start_recording(self, *args):
+    videoFolder = self.settings.get_string('path-to-save-video-folder')
+
+    if not os.access(videoFolder, os.W_OK):
+        dialog = Gtk.MessageDialog(
+            transient_for=self,
+            type=Gtk.MessageType.WARNING,
+            buttons=Gtk.ButtonsType.OK,
+            text=_("Unable to start recording")
+        )
+        dialog.format_secondary_text(
+            _("Error creating file. Please choose another location and retry.")
+        )
+        dialog.run()
+        dialog.destroy()
+        return
+
     if self.isFullscreenMode:
         self.coordinateMode = False
         record(self)
