@@ -188,8 +188,8 @@ class RecappWindow(Handy.ApplicationWindow):
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
-            #self._sound_rowbox.set_visible(False)
-            #self._sound_on_switch.set_active(False)
+            self._sound_rowbox.set_visible(False)
+            self._sound_on_switch.set_active(False)
             self.bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
