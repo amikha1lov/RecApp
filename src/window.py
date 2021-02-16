@@ -378,7 +378,7 @@ class RecappWindow(Handy.ApplicationWindow):
             self.isWindowMode = False
 
     def open_selectlocation(self, action, widget):
-        dialog = FileChooserSelection(self)
+        dialog = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/selectlocation.ui').get_object('selectlocation')
         dialog.set_transient_for(self)
         dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT)
         response = dialog.run()
@@ -387,6 +387,20 @@ class RecappWindow(Handy.ApplicationWindow):
         else:
             directory = None
         dialog.destroy()
+
+        if not os.access(directory[0], os.W_OK):
+            error = Gtk.MessageDialog(
+                transient_for=self,
+                type=Gtk.MessageType.WARNING,
+                buttons=Gtk.ButtonsType.OK,
+                text=_("Unable to start recording")
+            )
+            error.format_secondary_text(
+                _("Error creating file. Please choose another location and retry.")
+            )
+            error.run()
+            error.destroy()
+
         self.settings.set_string("path-to-save-video-folder", directory[0])
 
 
@@ -402,13 +416,3 @@ class RecappWindow(Handy.ApplicationWindow):
         dialog.set_transient_for(self)
         dialog.run()
         dialog.destroy()
-
-
-@Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/selectlocation.ui')
-class FileChooserSelection(Gtk.FileChooserDialog):
-    __gtype_name__ = 'FileChooserSelection'
-
-    def __init__(self, parent):
-        Gtk.FileChooserDialog.__init__(self, transient_for=parent)
-
-
