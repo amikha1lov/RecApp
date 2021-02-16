@@ -337,48 +337,7 @@ def delete_event(self, w, h):
         stop_recording(self)
 
 
-def toggle_audio(self, *args):
-    if not self.isrecordingwithdelay and not self.isrecording:
-        if self._sound_on_switch.get_active():
-            self._sound_on_switch.set_active(False)
-        else:
-            if self.displayServer == "wayland":
-                self._sound_on_switch.set_active(False)
-            else:
-                self._sound_on_switch.set_active(True)
-
-
-def toggle_record(self, *args):
-    if not self.isrecordingwithdelay:
-        if self.isrecording:
-            stop_recording(self)
-        else:
-            start_recording(self)
-
-
 def quit_app(self, *args):
     if self.isrecording:
         stop_recording(self)
-
     self.destroy()
-
-
-def toggle_mouse_record(self, *args):
-    if not self.isrecordingwithdelay and not self.isrecording:
-        if self._record_mouse_switcher.get_active():
-            self._record_mouse_switcher.set_active(False)
-        else:
-            self._record_mouse_switcher.set_active(True)
-
-
-def toggle_microphone(self, *args):
-    if not self.isrecordingwithdelay and not self.isrecording:
-        if self._sound_on_microphone.get_active():
-            self._sound_on_microphone.set_active(False)
-        else:
-            self._sound_on_microphone.set_active(True)
-
-
-def cancel_record(self, *args):
-    if self.isrecordingwithdelay:
-        cancel_delay(self)

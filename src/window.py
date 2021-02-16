@@ -119,11 +119,6 @@ class RecappWindow(Handy.ApplicationWindow):
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
-        accel.connect(Gdk.keyval_from_name('a'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_audio)
-        accel.connect(Gdk.keyval_from_name('p'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_mouse_record)
-        accel.connect(Gdk.keyval_from_name('r'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_record)
-        accel.connect(Gdk.keyval_from_name('m'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_toggle_microphone)
-        accel.connect(Gdk.keyval_from_name('c'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_cancel_record)
         self.add_accel_group(accel)
 
         self.cpus = os.cpu_count() - 1
@@ -193,8 +188,8 @@ class RecappWindow(Handy.ApplicationWindow):
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
         if self.displayServer == "wayland":
-            self._sound_rowbox.set_visible(False)
-            self._sound_on_switch.set_active(False)
+            #self._sound_rowbox.set_visible(False)
+            #self._sound_on_switch.set_active(False)
             self.bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
@@ -286,26 +281,55 @@ class RecappWindow(Handy.ApplicationWindow):
             dialog.run()
             dialog.destroy()
 
+    def open_selectlocation(self, action, widget):
+        dialog = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/selectlocation.ui').get_object('selectlocation')
+        dialog.set_transient_for(self)
+        dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT)
+        response = dialog.run()
+        if response == Gtk.ResponseType.ACCEPT:
+            directory = dialog.get_filenames()
+        else:
+            directory = None
+        dialog.destroy()
+
+        try:
+            if not os.access(directory[0], os.W_OK) or not directory[0][:5] == '/home': # not ideal solution
+                error = Gtk.MessageDialog(
+                    transient_for=self,
+                    type=Gtk.MessageType.WARNING,
+                    buttons=Gtk.ButtonsType.OK,
+                    text=_("Inaccessible location")
+                )
+                error.format_secondary_text(
+                    _("Please choose another location and retry.")
+                )
+                error.run()
+                error.destroy()
+            else:
+                self.settings.set_string("path-to-save-video-folder", directory[0])
+        except:
+            return
+
+
+    def open_shortcuts_window(self, action, widget):
+        window = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/shortcuts.ui').get_object('shortcuts')
+        window.set_transient_for(self)
+        window.present()
+
+    def open_about_dialog(self, action, widget):
+        dialog = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/about.ui').get_object('about')
+        dialog.set_program_name(_(constants["APPNAME"]))
+        dialog.set_logo_icon_name(constants["APPID"])
+        dialog.set_version(constants["APPVERSION"])
+        dialog.set_transient_for(self)
+        dialog.run()
+        dialog.destroy()
+
     def on_delete_event(self, w, h):
         delete_event(self, w, h)
 
-    def on_toggle_audio(self, *args):
-        toggle_audio(self, *args)
-
-    def on_toggle_record(self, *args):
-        toggle_record(self, *args)
-
     def on_quit_app(self, *args):
         quit_app(self, *args)
-
-    def on_toggle_mouse_record(self, *args):
-        toggle_mouse_record(self, *args)
-
-    def on_toggle_microphone(self, *args):
-        toggle_microphone(self, *args)
-
-    def on_cancel_record(self, *args):
-        cancel_record(self, *args)
 
     def refresh_time(self):
         if self.istimerrunning:
@@ -376,46 +400,3 @@ class RecappWindow(Handy.ApplicationWindow):
             self.isSelectionMode = True
             self.isFullscreenMode = False
             self.isWindowMode = False
-
-    def open_selectlocation(self, action, widget):
-        dialog = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/selectlocation.ui').get_object('selectlocation')
-        dialog.set_transient_for(self)
-        dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT)
-        response = dialog.run()
-        if response == Gtk.ResponseType.ACCEPT:
-            directory = dialog.get_filenames()
-        else:
-            directory = None
-        dialog.destroy()
-
-        try:
-            if not os.access(directory[0], os.W_OK) or not directory[0][:5] == '/home': # not ideal solution
-                error = Gtk.MessageDialog(
-                    transient_for=self,
-                    type=Gtk.MessageType.WARNING,
-                    buttons=Gtk.ButtonsType.OK,
-                    text=_("Inaccessible location")
-                )
-                error.format_secondary_text(
-                    _("Please choose another location and retry.")
-                )
-                error.run()
-                error.destroy()
-            else:
-                self.settings.set_string("path-to-save-video-folder", directory[0])
-        except:
-            return
-
-
-    def open_shortcuts_window(self, action, widget):
-        window = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/shortcuts.ui').get_object('shortcuts')
-        window.present()
-
-    def open_about_dialog(self, action, widget):
-        dialog = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/about.ui').get_object('about')
-        dialog.set_program_name(_(constants["APPNAME"]))
-        dialog.set_logo_icon_name(constants["APPID"])
-        dialog.set_version(constants["APPVERSION"])
-        dialog.set_transient_for(self)
-        dialog.run()
-        dialog.destroy()
