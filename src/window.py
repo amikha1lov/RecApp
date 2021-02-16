@@ -388,20 +388,23 @@ class RecappWindow(Handy.ApplicationWindow):
             directory = None
         dialog.destroy()
 
-        if not os.access(directory[0], os.W_OK):
-            error = Gtk.MessageDialog(
-                transient_for=self,
-                type=Gtk.MessageType.WARNING,
-                buttons=Gtk.ButtonsType.OK,
-                text=_("Unable to start recording")
-            )
-            error.format_secondary_text(
-                _("Error creating file. Please choose another location and retry.")
-            )
-            error.run()
-            error.destroy()
-
-        self.settings.set_string("path-to-save-video-folder", directory[0])
+        try:
+            if not os.access(directory[0], os.W_OK) or not directory[0][:5] == '/home': # not ideal solution
+                error = Gtk.MessageDialog(
+                    transient_for=self,
+                    type=Gtk.MessageType.WARNING,
+                    buttons=Gtk.ButtonsType.OK,
+                    text=_("Inaccessible location")
+                )
+                error.format_secondary_text(
+                    _("Please choose another location and retry.")
+                )
+                error.run()
+                error.destroy()
+            else:
+                self.settings.set_string("path-to-save-video-folder", directory[0])
+        except:
+            return
 
 
     def open_shortcuts_window(self, action, widget):
