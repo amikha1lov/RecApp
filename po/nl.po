@@ -1,0 +1,198 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2020-05-27 12:39+0300\n"
+"PO-Revision-Date: 2021-02-18 18:20+0100\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: Poedit 2.4.2\n"
+"Last-Translator: Heimen Stoffels <vistausss@outlook.com>\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"Language: nl\n"
+
+#: data/com.github.amikha1lov.RecApp.desktop.in:3
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:8 src/window.ui:632
+msgid "RecApp"
+msgstr "RecApp"
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:9
+msgid "User friendly Open Source screencaster for Linux written in GTK"
+msgstr ""
+"Een gebruiksvriendelijke, open source schermopnametoepassing voor Linux, "
+"gemaakt met GTK"
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:12
+msgid ""
+"User friendly Open Source screencaster for Linux written in GTK. Using free "
+"GStreamer modules and not depend on FFmpeg."
+msgstr ""
+"Een gebruiksvriendelijke, open source schermopnametoepassing voor Linux, "
+"gemaakt met GTK en GStreamer-modules i.p.v. FFmpeg."
+
+#: data/com.github.amikha1lov.RecApp.appdata.xml.in:38
+msgid "Alexey Mikhailov"
+msgstr "Alexey Mikhailov"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:6
+msgid "Frames"
+msgstr "Aantal frames"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:7
+msgid "Number of frames per video."
+msgstr "Het aantal frames per video."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:11 src/window.ui:184
+msgid "Delay"
+msgstr "Wachttijd"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:12
+msgid "Delay before recording."
+msgstr "De wachttijd alvorens de opname start."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:16
+msgid "Enabling high quality mode"
+msgstr "Opnemen in hoge kwaliteit"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:17
+msgid "Record video in high quality."
+msgstr "Neem video in hoge kwaliteit op."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:21
+msgid "Enabling audio recording"
+msgstr "Audio opnemen"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:22
+msgid "The inclusion of audio recording."
+msgstr "Neem niet alleen video, maar ook audio op."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:26
+msgid "Enabling record mouse cursor"
+msgstr "Cursor tonen"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:27
+msgid "Recording the mouse cursor."
+msgstr "Leg ook de muiscursor vast."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:31
+msgid "Path to the save folder"
+msgstr "Pad naar opslagmap"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:32
+msgid "Path to the folder where the file will be saved."
+msgstr "Het pad naar de map waarin het bestand moet worden opgeslagen."
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:36
+msgid "Video recording format"
+msgstr "Bestandsformaat"
+
+#: data/com.github.amikha1lov.RecApp.gschema.xml:37
+msgid "The format in which the video will be recorded."
+msgstr "Het bestandsformaat waarin de video wordt opgenomen."
+
+#: src/window.ui:20
+msgid "Preferences"
+msgstr "Voorkeuren"
+
+#: src/window.ui:34
+msgid "About"
+msgstr "Over"
+
+#: src/window.ui:111
+msgid "Frames per second"
+msgstr "Aantal frames per seconde"
+
+#: src/window.ui:126
+msgid "15"
+msgstr "15"
+
+#: src/window.ui:127
+msgid "30"
+msgstr "30"
+
+#: src/window.ui:128
+msgid "60"
+msgstr "60"
+
+#: src/window.ui:196
+msgid "0"
+msgstr "0"
+
+#: src/window.ui:253
+msgid "Format"
+msgstr "Formaat"
+
+#: src/window.ui:319
+msgid "High quality"
+msgstr "Hoge kwaliteit"
+
+#: src/window.ui:386
+msgid "Record audio from apps"
+msgstr "Audio van toepassingen opnemen"
+
+#: src/window.ui:452
+msgid "Record mouse cursor"
+msgstr "Cursor opnemen"
+
+#: src/window.ui:518
+msgid "Folder for saving the file"
+msgstr "Opslagmap"
+
+#: src/window.ui:596
+msgid "The file will be saved in "
+msgstr "Het bestand wordt opgeslagen in "
+
+#: src/window.ui:633 src/rec.py:194
+msgid "Simple app for recording desktop"
+msgstr "Eenvoudige toepassing voor het opnemen van de werkomgeving"
+
+#: src/window.ui:691
+msgid "[    ]"
+msgstr "[    ]"
+
+#: src/window.ui:695
+msgid "Select Area"
+msgstr "Gebied selecteren"
+
+#: src/window.py:142
+msgid "Sorry, Wayland session is not supported yet"
+msgstr "Er is momenteel nog geen Waylands-ondersteuning"
+
+#: src/rec.py:88
+msgid "Please re-select the area"
+msgstr "Selecteer het gebied nogmaals"
+
+#: src/rec.py:119
+msgid "RecApp-"
+msgstr "RecApp-"
+
+#: src/rec.py:124
+msgid "recording will start in "
+msgstr "opname start over "
+
+#: src/rec.py:124
+msgid " seconds"
+msgstr " seconden"
+
+#: src/rec.py:181
+msgid "Recording is complete"
+msgstr "De opname is voltooid"
+
+#: src/rec.py:182
+msgid "Open Folder"
+msgstr "Map openen"
+
+#: src/rec.py:183
+msgid "Open File"
+msgstr "Bestand openen"
+
+#: src/rec.py:196
+msgid "Website"
+msgstr "Website"
