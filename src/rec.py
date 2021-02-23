@@ -45,8 +45,8 @@ def formats_combobox_changed(self, box):
 
 
 def video_folder_button(self, button):
-    self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_filename())
-    self._video_folder_button.set_current_folder_uri(
+    self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_path())
+    self._video_folder_button.set_path(
         self.settings.get_string('path-to-save-video-folder'))
 
 
