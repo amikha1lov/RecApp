@@ -15,24 +15,22 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import locale
+import gi
 import os
 import signal
 import sys
 import time
 import datetime
+
 from locale import gettext as _
 from subprocess import PIPE, Popen
-
-import gi
-from pydbus import SessionBus
 
 from .recapp_constants import recapp_constants as constants
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('GstPbutils', '1.0')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk
+
+from gi.repository import Gio, GLib, Gst, Gtk  # noqa: E402
 
 Gtk.init(sys.argv)
 # initialize GStreamer
@@ -52,24 +50,22 @@ def video_folder_button(self, button):
 
 def quality_video_switcher(self, *args):
     if self._quality_video_switcher.get_active():
-        state = "on"
         self.settings.set_boolean('high-quality-switch', True)
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
-            self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
-                self.cpus)
+            self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} " \
+                "cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
         elif self.recordFormat == "mp4":
-            self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
-                self.cpus)
+            self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! " \
+                "h264parse ! video/x-h264, profile=baseline".format(self.cpus)
         return self.quality_video
     else:
-        state = "off"
         self.settings.set_boolean('high-quality-switch', False)
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
-            self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
-                self.cpus)
+            self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} " \
+                "cq_level=13 deadline=1000000 threads={0}".format(self.cpus)
         elif self.recordFormat == "mp4":
-            self.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
-                self.cpus)
+            self.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! " \
+                "h264parse ! video/x-h264, profile=baseline".format(self.cpus)
         return self.quality_video
 
 
@@ -85,11 +81,9 @@ def frames_combobox_changed(self, box):
 
 def mouse_switcher(self, switch, gparam):
     if switch.get_active():
-        state = "on"
         self.recordMouse = True
         self.settings.set_boolean('record-mouse-cursor-switch', True)
     else:
-        state = "off"
         self.recordMouse = False
         self.settings.set_boolean('record-mouse-cursor-switch', False)
 
@@ -132,12 +126,14 @@ def on__sound_switch(self, *args):
             self.soundOnSource = pulse.sink_list()[0].name
             self.settings.set_boolean('record-audio-switch', True)
             if self.recordFormat == "webm" or self.recordFormat == "mkv":
-                self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux.".format(
-                    self.soundOnSource)
+                self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! " \
+                    "'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! " \
+                    "audioconvert ! vorbisenc ! queue ! mux.".format(self.soundOnSource)
 
             elif self.recordFormat == "mp4":
-                self.soundOn = " pulsesrc buffer-time=20000000 device='{}.monitor' ! 'audio/x-raw,channels=2,rate=48000' ! queue ! audioconvert ! queue ! opusenc bitrate=512000 ! queue ! mux.".format(
-                    self.soundOnSource)
+                self.soundOn = " pulsesrc buffer-time=20000000 device='{}.monitor' ! " \
+                    "'audio/x-raw,channels=2,rate=48000' ! queue ! audioconvert ! queue ! " \
+                    "opusenc bitrate=512000 ! queue ! mux.".format(self.soundOnSource)
         return self.soundOn
     else:
         self.recordSoundOn = False
@@ -231,9 +227,13 @@ def record_logic(self, *args):
                 -1,
                 None)
         else:
-            if self.coordinateMode == True:
-                video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
-                if self.recordSoundOn == True:
+            if self.coordinateMode:
+                video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " \
+                    + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! " \
+                    "queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! " \
+                    "filesink location='{6}'{7}"
+
+                if self.recordSoundOn:
                     self.video = Popen(
                         video_str.format(self.recordMouse, self.widthArea, self.heightArea,
                                          self.videoFrames, self.quality_video, self.mux, self.fileName,
@@ -247,7 +247,7 @@ def record_logic(self, *args):
 
                 self.coordinateMode = False
             else:
-                if self.recordSoundOn == True:
+                if self.recordSoundOn:
                     self.video = Popen(
                         self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
                                               self.mux, self.fileName, self.extension) + self.soundOn,
@@ -263,11 +263,12 @@ def record_logic(self, *args):
 
 def delay(self, *args):
     self.time_delay = (self.delayBeforeRecording * 100)
+
     def countdown(*args):
         if self.time_delay > 0:
-            self.time_delay -=10
+            self.time_delay -= 10
             GLib.timeout_add(100, countdown)
-            self._delay_label.set_label(str((self.time_delay // 100)+1))
+            self._delay_label.set_label(str((self.time_delay // 100) + 1))
         else:
             self.isrecordingwithdelay = False
             record_logic(self, *args)
@@ -311,7 +312,7 @@ def stop_recording(self, *args):
     self.label_context.remove_class("recording")
 
     self.elapsed_time = datetime.timedelta()
-    self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+    self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
 
 def delete_event(self, w, h):
