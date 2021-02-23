@@ -90,9 +90,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _recording_label = Gtk.Template.Child()
     _paused_label = Gtk.Template.Child()
     _sound_on_microphone = Gtk.Template.Child()
-    _title_stack = Gtk.Template.Child()
-    _title_label = Gtk.Template.Child()
-    _blank_label = Gtk.Template.Child()
 
 
     def __init__(self, **kwargs):

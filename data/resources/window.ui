@@ -29,41 +29,166 @@
                 <property name="can-focus">False</property>
                 <property name="has-subtitle">False</property>
                 <property name="show-close-button">True</property>
-                <child type="title">
-                  <object class="GtkStack" id="_title_stack">
+                <child>
+                  <object class="GtkRevealer" id="_record_stop_record_button_stack_revealer">
+                    <property name="name">_record_stop_record_button_stack_revealer</property>
                     <property name="visible">True</property>
                     <property name="can-focus">False</property>
-                    <property name="transition-duration">150</property>
                     <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">200</property>
+                    <property name="reveal-child">True</property>
                     <child>
-                      <object class="GtkLabel" id="_title_label">
+                      <object class="GtkStack" id="_record_stop_record_button_stack">
                         <property name="visible">True</property>
                         <property name="can-focus">False</property>
-                        <property name="label" translatable="yes">RecApp</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
+                        <property name="transition-type">crossfade</property>
+                        <child>
+                          <object class="GtkButton" id="_record_button">
+                            <property name="label" translatable="yes">Start Recording</property>
+                            <property name="name">largebutton</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="focus-on-click">False</property>
+                            <property name="receives-default">True</property>
+                            <signal name="clicked" handler="on__record_button_clicked" swapped="no"/>
+                            <accelerator key="r" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                            <style>
+                              <class name="suggested-action"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="name">page0</property>
+                            <property name="title" translatable="yes">page0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="_stop_record_button">
+                            <property name="label" translatable="yes">Stop Recording</property>
+                            <property name="name">largebutton</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="focus-on-click">False</property>
+                            <property name="receives-default">True</property>
+                            <signal name="clicked" handler="on__stop_record_button_clicked" swapped="no"/>
+                            <accelerator key="r" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                            <style>
+                              <class name="destructive-action"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="name">page1</property>
+                            <property name="title" translatable="yes">page1</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="_cancel_button">
+                            <property name="label" translatable="yes">Cancel Delay</property>
+                            <property name="name">largebutton</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="focus-on-click">False</property>
+                            <property name="receives-default">True</property>
+                            <signal name="clicked" handler="on__cancel_button_clicked" swapped="no"/>
+                            <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
+                            <style>
+                              <class name="destructive-action"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="name">page2</property>
+                            <property name="title" translatable="yes">page2</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
                       </object>
-                      <packing>
-                        <property name="name">page0</property>
-                        <property name="title" translatable="yes">page0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <placeholder/>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="_blank_label">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                      </object>
-                      <packing>
-                        <property name="name">page2</property>
-                        <property name="title" translatable="yes">page2</property>
-                        <property name="position">2</property>
-                      </packing>
                     </child>
                   </object>
+                </child>
+                <child>
+                  <object class="GtkRevealer" id="_menu_stack_revealer">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="transition-type">crossfade</property>
+                    <property name="transition-duration">200</property>
+                    <property name="reveal-child">True</property>
+                    <child>
+                      <object class="GtkStack" id="_menu_stack">
+                        <property name="visible">True</property>
+                        <property name="can-focus">False</property>
+                        <property name="transition-type">crossfade</property>
+                        <child>
+                          <object class="GtkMenuButton" id="_menu_button">
+                            <property name="name">minibutton</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="focus-on-click">False</property>
+                            <property name="receives-default">True</property>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="icon-name">open-menu-symbolic</property>
+                              </object>
+                            </child>
+                            <accelerator key="F10" signal="clicked"/>
+                          </object>
+                          <packing>
+                            <property name="name">page0</property>
+                            <property name="title" translatable="yes">page0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="_pause_record_button">
+                            <property name="name">minibutton</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="focus-on-click">False</property>
+                            <property name="receives-default">True</property>
+                            <signal name="clicked" handler="on__pause_record_button_clicked" swapped="no"/>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="icon-name">media-playback-pause-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="name">page2</property>
+                            <property name="title" translatable="yes">page2</property>
+                            <property name="position">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkButton" id="_continue_record_button">
+                            <property name="name">minibutton</property>
+                            <property name="visible">True</property>
+                            <property name="can-focus">True</property>
+                            <property name="focus-on-click">False</property>
+                            <property name="receives-default">True</property>
+                            <signal name="clicked" handler="on__continue_record_button_clicked" swapped="no"/>
+                            <child>
+                              <object class="GtkImage">
+                                <property name="visible">True</property>
+                                <property name="can-focus">False</property>
+                                <property name="icon-name">media-playback-start-symbolic</property>
+                              </object>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="name">page3</property>
+                            <property name="title" translatable="yes">page3</property>
+                            <property name="position">2</property>
+                          </packing>
+                        </child>
+                      </object>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="pack-type">end</property>
+                    <property name="position">1</property>
+                  </packing>
                 </child>
               </object>
               <packing>
@@ -76,7 +201,8 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can-focus">False</property>
-                <property name="margin-top">6</property>
+                <property name="margin-top">24</property>
+                <property name="margin-bottom">24</property>
                 <property name="orientation">vertical</property>
                 <child>
                   <object class="GtkStack" id="_main_stack">
@@ -534,249 +660,6 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can-focus">False</property>
-                <property name="margin-top">18</property>
-                <property name="margin-bottom">18</property>
-                <property name="homogeneous">True</property>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <placeholder/>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="margin-start">6</property>
-                    <property name="margin-end">6</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkRevealer" id="_record_stop_record_button_stack_revealer">
-                        <property name="name">_record_stop_record_button_stack_revealer</property>
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="transition-type">crossfade</property>
-                        <property name="transition-duration">200</property>
-                        <property name="reveal-child">True</property>
-                        <child>
-                          <object class="GtkStack" id="_record_stop_record_button_stack">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="transition-type">crossfade</property>
-                            <child>
-                              <object class="GtkButton" id="_record_button">
-                                <property name="name">largebutton</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="focus-on-click">False</property>
-                                <property name="receives-default">True</property>
-                                <signal name="clicked" handler="on__record_button_clicked" swapped="no"/>
-                                <accelerator key="r" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="icon-name">emblem-videos-symbolic</property>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="suggested-action"/>
-                                </style>
-                              </object>
-                              <packing>
-                                <property name="name">page0</property>
-                                <property name="title" translatable="yes">page0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="_stop_record_button">
-                                <property name="name">largebutton</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="focus-on-click">False</property>
-                                <property name="receives-default">True</property>
-                                <signal name="clicked" handler="on__stop_record_button_clicked" swapped="no"/>
-                                <accelerator key="r" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="icon-name">media-playback-stop-symbolic</property>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="destructive-action"/>
-                                </style>
-                              </object>
-                              <packing>
-                                <property name="name">page1</property>
-                                <property name="title" translatable="yes">page1</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="_cancel_button">
-                                <property name="name">largebutton</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="focus-on-click">False</property>
-                                <property name="receives-default">True</property>
-                                <signal name="clicked" handler="on__cancel_button_clicked" swapped="no"/>
-                                <accelerator key="c" signal="activate" modifiers="GDK_CONTROL_MASK"/>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="icon-name">edit-delete-symbolic</property>
-                                  </object>
-                                </child>
-                                <style>
-                                  <class name="destructive-action"/>
-                                </style>
-                              </object>
-                              <packing>
-                                <property name="name">page2</property>
-                                <property name="title" translatable="yes">page2</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox">
-                    <property name="visible">True</property>
-                    <property name="can-focus">False</property>
-                    <property name="halign">center</property>
-                    <property name="valign">center</property>
-                    <property name="margin-end">12</property>
-                    <property name="orientation">vertical</property>
-                    <child>
-                      <object class="GtkRevealer" id="_menu_stack_revealer">
-                        <property name="visible">True</property>
-                        <property name="can-focus">False</property>
-                        <property name="transition-type">crossfade</property>
-                        <property name="transition-duration">200</property>
-                        <property name="reveal-child">True</property>
-                        <child>
-                          <object class="GtkStack" id="_menu_stack">
-                            <property name="visible">True</property>
-                            <property name="can-focus">False</property>
-                            <property name="transition-type">crossfade</property>
-                            <child>
-                              <object class="GtkMenuButton" id="_menu_button">
-                                <property name="name">minibutton</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="focus-on-click">False</property>
-                                <property name="receives-default">True</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="icon-name">open-menu-symbolic</property>
-                                  </object>
-                                </child>
-                                <accelerator key="F10" signal="clicked"/>
-                              </object>
-                              <packing>
-                                <property name="name">page0</property>
-                                <property name="title" translatable="yes">page0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="_pause_record_button">
-                                <property name="name">minibutton</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="focus-on-click">False</property>
-                                <property name="receives-default">True</property>
-                                <signal name="clicked" handler="on__pause_record_button_clicked" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="icon-name">media-playback-pause-symbolic</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="name">page2</property>
-                                <property name="title" translatable="yes">page2</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkButton" id="_continue_record_button">
-                                <property name="name">minibutton</property>
-                                <property name="visible">True</property>
-                                <property name="can-focus">True</property>
-                                <property name="focus-on-click">False</property>
-                                <property name="receives-default">True</property>
-                                <signal name="clicked" handler="on__continue_record_button_clicked" swapped="no"/>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="visible">True</property>
-                                    <property name="can-focus">False</property>
-                                    <property name="icon-name">media-playback-start-symbolic</property>
-                                  </object>
-                                </child>
-                              </object>
-                              <packing>
-                                <property name="name">page3</property>
-                                <property name="title" translatable="yes">page3</property>
-                                <property name="position">3</property>
-                              </packing>
-                            </child>
-                          </object>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
               </packing>
             </child>
           </object>

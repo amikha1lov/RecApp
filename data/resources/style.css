@@ -13,22 +13,3 @@
 .recording {
   color: #e01b24;
 }
-
-#headerbar {
-  background-image: none;
-  border: none;
-  background-color: @theme_bg_color;
-}
-
-#minibutton {
-  border-radius: 9999px;
-  -gtk-outline-radius: 9999px;
-}
-
-#largebutton {
-  border-radius: 9999px;
-  min-height: 38px;
-  -gtk-outline-radius: 9999px;
-}
-
-/* -gtk-outline-radius should be removed on GTK4 port */
