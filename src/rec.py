@@ -43,8 +43,8 @@ def formats_combobox_changed(self, box):
 
 
 def video_folder_button(self, button):
-    self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_filename())
-    self._video_folder_button.set_current_folder_uri(
+    self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_path())
+    self._video_folder_button.set_path(
         self.settings.get_string('path-to-save-video-folder'))
 
 
@@ -213,10 +213,19 @@ def record_logic(self, *args):
         if self.displayServer == "wayland":
 
             RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
-            self.GNOMEScreencast.Screencast(self.fileName + self.extension,
-                                            {'framerate': GLib.Variant('i', int(self.videoFrames)),
-                                             'draw-cursor': GLib.Variant('b', self.recordMouse),
-                                             'pipeline': GLib.Variant('s', RecorderPipeline)})
+            self.GNOMEScreencast.call_sync(
+                "Screencast",
+                GLib.Variant.new_tuple(
+                    GLib.Variant.new_string(self.fileName + self.extension),
+                    GLib.Variant("a{sv}",
+                        {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                         "draw-cursor": GLib.Variant("b", self.recordMouse),
+                         "pipeline": GLib.Variant("s", RecorderPipeline)}
+                    ),
+                ),
+                Gio.DBusProxyFlags.NONE,
+                -1,
+                None)
         else:
             if self.coordinateMode:
                 video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " \
@@ -275,7 +284,12 @@ def cancel_delay(self, *args):
 def stop_recording(self, *args):
 
     if self.displayServer == "wayland":
-        self.GNOMEScreencast.StopScreencast()
+        self.GNOMEScreencast.call_sync(
+            "StopScreencast",
+            None,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            None)
 
     else:
         self.video.send_signal(signal.SIGINT)

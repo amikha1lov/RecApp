@@ -163,15 +163,21 @@ class RecappWindow(Handy.ApplicationWindow):
         action.connect("activate", self.openVideoFile)
         self.application.add_action(action)
 
+        # Extend the functionality of our GtkButton
+        self._video_folder_button = FileChooserButton(
+            self._video_folder_button,
+            parent=self,
+            chooser_type="folder",
+            selected_function=self.on__video_folder_button_file_set
+        )
+
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
         if self.currentFolder == "Default":
             if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) is None:
 
                 directory = "/RecAppVideo"
-                parent_dir = Popen("xdg-user-dir", shell=True, stdout=PIPE).communicate()
-                parent_dir = list(parent_dir)
-                parent_dir = parent_dir[0].decode().split()[0]
+                parent_dir = os.path.expanduser("~")
                 path = parent_dir + directory
 
                 if not os.path.exists(path):
@@ -180,10 +186,10 @@ class RecappWindow(Handy.ApplicationWindow):
             else:
                 self.settings.set_string('path-to-save-video-folder', GLib.get_user_special_dir(
                     GLib.UserDirectory.DIRECTORY_VIDEOS))
-            self._video_folder_button.set_current_folder_uri(
+            self._video_folder_button.set_path(
                 self.settings.get_string('path-to-save-video-folder'))
         else:
-            self._video_folder_button.set_current_folder_uri(self.currentFolder)
+            self._video_folder_button.set_path(self.currentFolder)
 
         self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
 
@@ -191,7 +197,7 @@ class RecappWindow(Handy.ApplicationWindow):
             self._capture_mode_box.set_visible(False)
             self._sound_rowbox.set_visible(False)
             self._sound_on_switch.set_active(False)
-            self.bus = SessionBus()
+            self.bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
                 self._record_button.set_sensitive(False)
                 notification = Gio.Notification.new(constants["APPNAME"])
@@ -199,8 +205,14 @@ class RecappWindow(Handy.ApplicationWindow):
 
                 self.application.send_notification(None, notification)
             else:
-                self.GNOMEScreencast = self.bus.get('org.gnome.Shell.Screencast',
-                                                    '/org/gnome/Shell/Screencast')
+                self.GNOMEScreencast = Gio.DBusProxy.new_sync(
+                    self.bus,
+                    Gio.DBusProxyFlags.NONE,
+                    None,
+                    "org.gnome.Shell.Screencast",
+                    "/org/gnome/Shell/Screencast",
+                    "org.gnome.Shell.Screencast",
+                    None)
         else:
             self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} " \
                 "! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! " \
@@ -225,11 +237,37 @@ class RecappWindow(Handy.ApplicationWindow):
         self.recordFormat = self._formats_combobox.get_active_text()
 
     def openFolder(self, action, parameter):
-        videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
-        os.system("xdg-open " + videoFolderForOpen)
+        try:
+            videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
+            Gio.AppInfo.launch_default_for_uri("file:///" + videoFolderForOpen.lstrip("/"))
+
+        except Exception as error:
+            dialog = Gtk.MessageDialog(
+                transient_for=self,
+                type=Gtk.MessageType.WARNING,
+                buttons=Gtk.ButtonsType.OK,
+                text=_("Unable to open folder")
+            )
+            dialog.format_secondary_text(str(error))
+            dialog.run()
+            dialog.destroy()
 
     def openVideoFile(self, action, parameter):
-        os.system("xdg-open " + self.fileName + self.extension)
+        try:
+            Gio.AppInfo.launch_default_for_uri(
+                "file:///" + self.fileName.lstrip("/") + self.extension
+            )
+
+        except Exception as error:
+            dialog = Gtk.MessageDialog(
+                transient_for=self,
+                type=Gtk.MessageType.WARNING,
+                buttons=Gtk.ButtonsType.OK,
+                text=_("Unable to open file")
+            )
+            dialog.format_secondary_text(str(error))
+            dialog.run()
+            dialog.destroy()
 
     def on_delete_event(self, w, h):
         delete_event(self, w, h)
@@ -261,7 +299,6 @@ class RecappWindow(Handy.ApplicationWindow):
             self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
         return True
 
-    @Gtk.Template.Callback()
     def on__video_folder_button_file_set(self, button):
         video_folder_button(self, button)
 
@@ -377,3 +414,146 @@ class AboutDialog(Gtk.AboutDialog):
 
     def __init__(self, parent):
         Gtk.AboutDialog.__init__(self, transient_for=parent)
+
+class FileChooserButton:
+    # This class extends the functionality of a GtkButton to open a file
+    # chooser and display the name of a selected folder or file
+
+    def __init__(self, button, parent=None, chooser_type="file", selected_function=None):
+
+        self.parent = parent
+        self.button = button
+        self.chooser_type = chooser_type
+        self.selected_function = selected_function
+        self.path = ""
+
+        box = Gtk.Box()
+        box.set_spacing(6)
+        self.icon = Gtk.Image.new()
+
+        if chooser_type == "folder":
+            self.icon.set_from_icon_name("folder-symbolic", Gtk.IconSize.BUTTON)
+        else:
+            self.icon.set_from_icon_name("text-x-generic-symbolic", Gtk.IconSize.BUTTON)
+
+        self.label = Gtk.Label.new(_("(None)"))
+
+        box.add(self.icon)
+        box.add(self.label)
+
+        self.button.add(box)
+        self.button.show_all()
+
+        self.button.connect("clicked", self.open_file_chooser)
+
+    def choose_dir(self, parent=None, initialdir="~", title=_("Select a Folder"), multichoice=True):
+        try:
+            dialog = Gtk.FileChooserNative.new(
+                title,
+                parent,
+                Gtk.FileChooserAction.SELECT_FOLDER,
+                _("_Open"),
+                _("_Cancel")
+            )
+        except AttributeError:
+            dialog = Gtk.FileChooserDialog(
+                title,
+                parent,
+                Gtk.FileChooserAction.SELECT_FOLDER
+            )
+            dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT)
+
+        if multichoice:
+            dialog.set_select_multiple(True)
+
+        folder = os.path.expanduser(initialdir)
+
+        if os.path.exists(folder):
+            dialog.set_current_folder(folder)
+        else:
+            dialog.set_current_folder(os.path.expanduser("~"))
+
+        response = dialog.run()
+
+        if response == Gtk.ResponseType.ACCEPT:
+            res = dialog.get_filenames()
+        else:
+            res = None
+
+        dialog.destroy()
+
+        return res
+
+    def choose_file(self, parent=None, initialdir="~", title=_("Select a File"), multiple=False):
+        try:
+            dialog = Gtk.FileChooserNative.new(
+                title,
+                parent,
+                Gtk.FileChooserAction.OPEN,
+                _("_Open"),
+                _("_Cancel")
+            )
+        except AttributeError:
+            dialog = Gtk.FileChooserDialog(
+                title,
+                parent,
+                Gtk.FileChooserAction.OPEN
+            )
+            dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT)
+
+        dialog.set_select_multiple(multiple)
+        folder = os.path.expanduser(initialdir)
+
+        if os.path.exists(folder):
+            dialog.set_current_folder(folder)
+        else:
+            dialog.set_current_folder(os.path.expanduser("~"))
+
+        response = dialog.run()
+
+        if response == Gtk.ResponseType.ACCEPT:
+            res = dialog.get_filenames()
+        else:
+            res = None
+
+        dialog.destroy()
+
+        return res
+
+    def open_file_chooser(self, widget):
+
+        if self.chooser_type == "folder":
+            selected = self.choose_dir(self.parent, self.path, multichoice=False)
+
+        else:
+            if self.path:
+                folder_path = os.path.dirname(self.path)
+            else:
+                folder_path = ""
+
+            selected = self.choose_file(self.parent, folder_path)
+
+        if selected:
+            self.set_path(selected[0])
+
+            try:
+                self.selected_function(self)
+
+            except TypeError as e:
+                # No function defined
+                return
+
+    def get_path(self):
+        return self.path
+
+    def set_path(self, path):
+
+        if not path:
+            return
+
+        self.path = path
+        self.label.set_label(os.path.basename(path))
+
+    def clear(self):
+        self.path = ""
+        self.label.set_label(_("(None)"))
