@@ -145,10 +145,6 @@ class RecappWindow(Handy.ApplicationWindow):
         action.connect("activate", self.open_shortcuts_window)
         self.application.add_action(action)
 
-        # action = Gio.SimpleAction.new("about", None)
-        # action.connect("activate", self.open_about_dialog)
-        # self.application.add_action(action)
-
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
         if self.currentFolder == "Default":

@@ -1,5 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
+
 <interface>
+  <object class="GtkAdjustment" id="delay_adjustment">
+    <property name="step_increment">1</property>
+    <property name="lower">0</property>
+    <property name="upper">60</property>
+  </object>
   <template class="hdy_preferences_dialog" parent="HdyPreferencesWindow">
     <property name="can_swipe_back">True</property>
     <property name="default-width">600</property>
@@ -12,32 +18,18 @@
         <child>
           <object class="HdyPreferencesGroup">
             <property name="visible">True</property>
-            <property name="title" translatable="yes">Output</property>
             <child>
               <object class="HdyActionRow">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes">Output folder</property>
+                <property name="title" translatable="yes">Delay</property>
                 <property name="use_underline">True</property>
                 <child>
-                  <object class="GtkEntry" id="rename_entry">
+                  <object class="GtkSpinButton" id="delay_button">
                     <property name="visible">True</property>
                     <property name="valign">center</property>
-                    <signal name="changed" handler="on_rename_entry_changed" swapped="no"/>
-                  </object>
-                </child>
-              </object>
-            </child>
-            <child>
-              <object class="HdyActionRow">
-                <property name="visible">True</property>
-                <property name="title" translatable="yes">Output folder</property>
-                <property name="subtitle" translatable="yes">Final output folder that will contain all cleared photos</property>
-                <property name="use_underline">True</property>
-                <child>
-                  <object class="GtkEntry" id="rename_folder_entry">
-                    <property name="visible">True</property>
-                    <property name="valign">center</property>
-                    <signal name="changed" handler="on_rename_folder_entry_changed" swapped="no"/>
+                    <property name="adjustment">delay_adjustment</property>
+                    <property name="digits">0</property>
+                    <signal name="value-changed" handler="on_delay_button_value_changed" swapped="no"/>
                   </object>
                 </child>
               </object>

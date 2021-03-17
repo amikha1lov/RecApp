@@ -26,9 +26,13 @@ from .recapp_constants import recapp_constants as constants
 class PreferencesWindow(Handy.PreferencesWindow):
     __gtype_name__ = "hdy_preferences_dialog"
 
-    rename_entry = Gtk.Template.Child()
-    rename_folder_entry = Gtk.Template.Child()
+    delay_button = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
         self.settings = Gio.Settings.new(constants["APPID"])
+        self.delay_button.props.value = self.settings.get_int('delay')
+
+    @Gtk.Template.Callback()
+    def on_delay_button_value_changed(self, button):
+        self.settings.set_int('delay', button.props.value)
