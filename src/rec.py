@@ -16,73 +16,72 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import locale
-import multiprocessing
 import os
 import signal
 import sys
-import time
+import datetime
 from locale import gettext as _
 from subprocess import PIPE, Popen
 
 import gi
-import pulsectl
-from pydbus import SessionBus
 
 from .recapp_constants import recapp_constants as constants
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('Notify', '0.7')
 gi.require_version('GstPbutils', '1.0')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Notify
+from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk
 
 Gtk.init(sys.argv)
 # initialize GStreamer
 Gst.init(sys.argv)
 
 
-def formats_combobox_changed(self, box):
-    self.recordFormat = box.get_active_text()
-    self.settings.set_string('format-video', self.recordFormat)
+def on__frames_changed(self, *args):
+    frames = self.settings.get_enum("frames-per-second")
+    if frames == 0:
+        self.videoFrames = 15
+    if frames == 1:
+        self.videoFrames = 30
+    if frames == 2:
+        self.videoFrames = 60
+    return self.videoFrames
 
 
-def video_folder_button(self, button):
-    self.settings.set_string('path-to-save-video-folder', self._video_folder_button.get_filename())
-    self._video_folder_button.set_current_folder_uri(
-        self.settings.get_string('path-to-save-video-folder'))
-
-
-def quality_video_switcher(self, *args):
-    if self._quality_video_switcher.get_active():
-        state = "on"
-        self.settings.set_boolean('high-quality-switch', True)
+def on__quality_changed(self, *args):
+    quality = self.settings.get_enum("video-quality")
+    self.recordFormat = on__formats_changed(self, *args)
+    if quality == 0:
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
             self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
                 self.cpus)
         elif self.recordFormat == "mp4":
             self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
                 self.cpus)
-        return self.quality_video
-    else:
-        state = "off"
-        self.settings.set_boolean('high-quality-switch', False)
+    if quality == 1:
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
             self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
                 self.cpus)
         elif self.recordFormat == "mp4":
             self.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
                 self.cpus)
-        return self.quality_video
+    return self.quality_video
+
+
+def on__formats_changed(self, *args):
+    format = self.settings.get_enum("video-format")
+    if format == 0:
+        self.recordFormat = "webm"
+    if format == 1:
+        self.recordFormat = "mkv"
+    if format == 2:
+        self.recordFormat = "mp4"
+    return self.recordFormat
 
 
 def delay_button_change(self, spin):
     self.delayBeforeRecording = spin.get_value_as_int()
     self.settings.set_int('delay', spin.get_value_as_int())
-
-
-def frames_combobox_changed(self, box):
-    self.videoFrames = int(box.get_active_text())
-    self.settings.set_int('frames', int(box.get_active_text()))
 
 
 def mouse_switcher(self, switch, gparam):
@@ -101,9 +100,9 @@ def on__select_area(self):
                        stdout=PIPE).communicate()
     listCoor = [int(i) for i in coordinate[0].decode().split()]
     if not listCoor[0] or not listCoor[1]:
-        self.notification = Notify.Notification.new(constants["APPNAME"],
-                                                    _("Please re-select the area"))
-        self.notification.show()
+        notification = Gio.Notification.new(constants["APPNAME"])
+        notification.set_body(_("Please re-select the area"))
+        self.application.send_notification(None, notification)
         return
 
     startx, starty, endx, endy = listCoor[2], listCoor[3], listCoor[2] + listCoor[0] - 1, listCoor[
@@ -125,9 +124,16 @@ def on__select_area(self):
     self.coordinateMode = True
 
 
+def on__select_area_wayland(self):
+    self.waylandcoordinates = self.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
+    self.coordinateMode = True
+
+
 def on__sound_switch(self, *args):
     if self._sound_on_switch.get_active():
         self.recordSoundOn = True
+
+        import pulsectl
         with pulsectl.Pulse() as pulse:
             self.soundOnSource = pulse.sink_list()[0].name
             self.settings.set_boolean('record-audio-switch', True)
@@ -145,114 +151,183 @@ def on__sound_switch(self, *args):
 
 
 def start_recording(self, *args):
-    self._recording_box.set_visible(False)
-    self._select_area_button.set_visible(False)
-    self._label_video_saved_box.set_visible(True)
-    self.quality_video = quality_video_switcher(self, *args)
-    self.soundOn = on__sound_switch(self, *args)
-    fileNameTime = _("RecApp-") + time.strftime("%Y-%m-%d-%H:%M:%S", time.localtime())
-    videoFolder = self.settings.get_string('path-to-save-video-folder')
-    self._label_video_saved.set_label(videoFolder)
-    self.fileName = os.path.join(videoFolder, fileNameTime)
-    if self.delayBeforeRecording > 0:
-        self.notification = Notify.Notification.new(constants["APPNAME"],
-                                                    _("recording will start in ") + " " + str(
-                                                        self.delayBeforeRecording) + " " + _(
-                                                        " seconds"))
-        self.notification.show()
-
-    time.sleep(self.delayBeforeRecording)
-
-    if self.recordFormat == "webm":
-        self.mux = "webmmux"
-        self.extension = ".webm"
-
-    elif self.recordFormat == "mkv":
-        self.mux = "matroskamux"
-        self.extension = ".mkv"
-
-    elif self.recordFormat == "mp4":
-        self.mux = "mp4mux"
-        self.extension = ".mp4"
-
-    if self.displayServer == "wayland":
-
-        RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
-        self.GNOMEScreencast.Screencast(self.fileName + self.extension,
-                                        {'framerate': GLib.Variant('i', int(self.videoFrames)),
-                                         'draw-cursor': GLib.Variant('b', self.recordMouse),
-                                         'pipeline': GLib.Variant('s', RecorderPipeline)})
+    if self.isFullscreenMode:
+        self.coordinateMode = False
+        record(self)
+    elif self.isWindowMode:
+        print('window mode')
     else:
-        if self.coordinateMode == True:
-            video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
-            if self.recordSoundOn == True:
-                self.video = Popen(
-                    video_str.format(self.recordMouse, self.widthArea, self.heightArea,
-                                     self.videoFrames, self.quality_video, self.mux, self.fileName,
-                                     self.extension) + self.soundOn, shell=True)
-
-            else:
-                self.video = Popen(
-                    video_str.format(self.recordMouse, self.widthArea, self.heightArea,
-                                     self.videoFrames, self.quality_video, self.mux, self.fileName,
-                                     self.extension), shell=True)
-
-            self.coordinateMode = False
+        if self.displayServer == "wayland":
+            on__select_area_wayland(self)
         else:
-            if self.recordSoundOn == True:
-                self.video = Popen(
-                    self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
-                                          self.mux, self.fileName, self.extension) + self.soundOn,
-                    shell=True)
-            else:
-                self.video = Popen(
-                    self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
-                                          self.mux, self.fileName, self.extension), shell=True)
+            on__select_area(self)
+        record(self)
 
-    self._record_button.set_visible(False)
-    self._stop_record_button.set_visible(True)
-    self.isrecording = True
+
+def record(self, *args):
+    if self.delayBeforeRecording > 0:
+        self._main_stack.set_visible_child(self._delay_box)
+        self._record_stop_record_button_stack.set_visible_child(self._cancel_button)
+        self._menu_stack_revealer.set_reveal_child(False)
+        self.isrecordingwithdelay = True
+        delay(self, *args)
+    else:
+        record_logic(self, *args)
+
+
+def record_logic(self, *args):
+    if self.iscancelled:
+        self._main_stack.set_visible_child(self._main_screen_box)
+        self._record_stop_record_button_stack.set_visible_child(self._record_button)
+        self._menu_stack.set_visible_child(self._menu_button)
+        self.iscancelled = False
+    else:
+        self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
+        self._main_stack.set_visible_child(self._paused_start_stack_box)
+        self._menu_stack.set_visible_child(self._pause_record_button)
+        self.label_context = self._time_recording_label.get_style_context()
+        self.label_context.add_class("recording")
+
+        self.quality_video = on__quality_changed(self, *args)
+        self.videoFrames = on__frames_changed(self, *args)
+        self.recordFormat = on__formats_changed(self, *args)
+
+        self.soundOn = on__sound_switch(self, *args)
+        fileNameTime = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+        videoFolder = self.settings.get_string('path-to-save-video-folder')
+        self.fileName = os.path.join(videoFolder, fileNameTime)
+
+        if self.recordFormat == "webm":
+            self.mux = "webmmux"
+            self.extension = ".webm"
+
+        elif self.recordFormat == "mkv":
+            self.mux = "matroskamux"
+            self.extension = ".mkv"
+
+        elif self.recordFormat == "mp4":
+            self.mux = "mp4mux"
+            self.extension = ".mp4"
+
+        if self.displayServer == "wayland":
+            RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
+            if self.coordinateMode is True:
+                self.GNOMEScreencast.call_sync(
+                    "ScreencastArea",
+                    GLib.Variant.new_tuple(
+                        GLib.Variant("i", self.waylandcoordinates[0]),
+                        GLib.Variant("i", self.waylandcoordinates[1]),
+                        GLib.Variant("i", self.waylandcoordinates[2]),
+                        GLib.Variant("i", self.waylandcoordinates[3]),
+                        GLib.Variant.new_string(self.fileName + self.extension),
+                        GLib.Variant("a{sv}",
+                            {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                             "draw-cursor": GLib.Variant("b", self.recordMouse),
+                             "pipeline": GLib.Variant("s", RecorderPipeline)}
+                        ),
+                    ),
+                    Gio.DBusProxyFlags.NONE,
+                    -1,
+                    None)
+                self.coordinateMode == False
+            else:
+                self.GNOMEScreencast.call_sync(
+                    "Screencast",
+                    GLib.Variant.new_tuple(
+                        GLib.Variant.new_string(self.fileName + self.extension),
+                        GLib.Variant("a{sv}",
+                            {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                             "draw-cursor": GLib.Variant("b", self.recordMouse),
+                             "pipeline": GLib.Variant("s", RecorderPipeline)}
+                        ),
+                    ),
+                    Gio.DBusProxyFlags.NONE,
+                    -1,
+                    None)
+        else:
+            if self.coordinateMode is True:
+                video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
+                if self.recordSoundOn is True:
+                    self.video = Popen(
+                        video_str.format(self.recordMouse, self.widthArea, self.heightArea,
+                                         self.videoFrames, self.quality_video, self.mux, self.fileName,
+                                         self.extension) + self.soundOn, shell=True)
+
+                else:
+                    self.video = Popen(
+                        video_str.format(self.recordMouse, self.widthArea, self.heightArea,
+                                         self.videoFrames, self.quality_video, self.mux, self.fileName,
+                                         self.extension), shell=True)
+
+                self.coordinateMode = False
+            else:
+                if self.recordSoundOn is True:
+                    self.video = Popen(
+                        self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
+                                              self.mux, self.fileName, self.extension) + self.soundOn,
+                        shell=True)
+                else:
+                    self.video = Popen(
+                        self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
+                                              self.mux, self.fileName, self.extension), shell=True)
+
+        self.isrecording = True
+        self.istimerrunning = True
+        self.playsound('/com/github/amikha1lov/RecApp/sounds/chime.ogg')
+
+
+def delay(self, *args):
+    self.time_delay = (self.delayBeforeRecording * 100)
+    
+    def countdown(*args):
+        if self.time_delay > 0:
+            self.time_delay -=10
+            GLib.timeout_add(100, countdown)
+            self._delay_label.set_label(str((self.time_delay // 100)+1))
+        else:
+            self.isrecordingwithdelay = False
+            self._menu_stack_revealer.set_reveal_child(True)
+            record_logic(self, *args)
+            self.time_delay = (self.delayBeforeRecording * 100)
+    countdown(*args)
+
+
+def cancel_delay(self, *args):
+    self.time_delay = 0
+    self.iscancelled = True
 
 
 def stop_recording(self, *args):
-    self._stop_record_button.set_visible(False)
-    self._record_button.set_visible(True)
-    self._label_video_saved_box.set_visible(False)
-    self._recording_box.set_visible(True)
 
     if self.displayServer == "wayland":
-        self.GNOMEScreencast.StopScreencast()
+        self.GNOMEScreencast.call_sync(
+            "StopScreencast",
+            None,
+            Gio.DBusCallFlags.NONE,
+            -1,
+            None)
 
     else:
         self.video.send_signal(signal.SIGINT)
-        self._select_area_button.set_visible(True)
 
-    self.notification = Notify.Notification.new(constants["APPNAME"], _("Recording is complete"))
-    self.notification.add_action("open_folder", _("Open Folder"), self.openFolder)
-    self.notification.add_action("open_file", _("Open File"), self.openVideoFile)
-    self.notification.show()
+    notification = Gio.Notification.new(constants["APPNAME"])
+    notification.set_body(_("Recording is complete!"))
+    notification.add_button(_("Open Folder"), "app.open-folder")
+    notification.add_button(_("Open File"), "app.open-file")
+    notification.set_default_action("app.open-file")
+    self.application.send_notification(None, notification)
+
     self.isrecording = False
+    self.istimerrunning = False
 
+    self._record_stop_record_button_stack.set_visible_child(self._record_button)
+    self._paused_start_stack.set_visible_child(self._recording_label)
+    self._main_stack.set_visible_child(self._main_screen_box)
+    self._menu_stack.set_visible_child(self._menu_button)
+    self.label_context.remove_class("recording")
 
-def popover_init():
-    about = Gtk.AboutDialog()
-    about.set_program_name(_(constants["APPNAME"]))
-    about.set_version("1.1.1")
-    about.set_authors(
-        ["Alexey Mikhailov <mikha1lov@yahoo.com>", "Artem Polishchuk <ego.cordatus@gmail.com>",
-         "@lateseal (Telegram)", "@gasinvein (Telegram)",
-         "@dead_mozay (Telegram) <dead_mozay@opensuse.org>",
-         "and contributors of Telegram chat https://t.me/gnome_rus"])
-    about.set_artists(["Raxi Petrov <raxi2012@gmail.com>"])
-    about.set_copyright("GPLv3+")
-    about.set_comments(_("Simple app for recording desktop"))
-    about.set_website("https://github.com/amikha1lov/RecApp")
-    about.set_website_label(_("Website"))
-    about.set_logo_icon_name(constants["APPID"])
-    about.set_wrap_license(True)
-    about.set_license_type(Gtk.License.GPL_3_0)
-    about.run()
-    about.destroy()
+    self.elapsed_time = datetime.timedelta()
+    self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
 
 
 def delete_event(self, w, h):
@@ -260,42 +335,7 @@ def delete_event(self, w, h):
         stop_recording(self)
 
 
-def toggle_audio(self, *args):
-    if not self.isrecording:
-        if self._sound_on_switch.get_active():
-            self._sound_on_switch.set_active(False)
-        else:
-            if self.displayServer == "wayland":
-                self._sound_on_switch.set_active(False)
-            else:
-                self._sound_on_switch.set_active(True)
-
-
-def toggle_high_quality(self, *args):
-    if not self.isrecording:
-        if self._quality_video_switcher.get_active():
-            self._quality_video_switcher.set_active(False)
-        else:
-            self._quality_video_switcher.set_active(True)
-
-
-def toggle_record(self, *args):
-    if self.isrecording:
-        stop_recording(self)
-    else:
-        start_recording(self)
-
-
 def quit_app(self, *args):
     if self.isrecording:
         stop_recording(self)
-
     self.destroy()
-
-
-def toggle_mouse_record(self, *args):
-    if not self.isrecording:
-        if self._record_mouse_switcher.get_active():
-            self._record_mouse_switcher.set_active(False)
-        else:
-            self._record_mouse_switcher.set_active(True)

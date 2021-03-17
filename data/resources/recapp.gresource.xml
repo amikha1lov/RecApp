@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<gresources>
+  <gresource prefix="/com/github/amikha1lov/RecApp">
+    <file>window.ui</file>
+    <file>primary-menu.ui</file>
+    <file>selectlocation.ui</file>
+    <file>shortcuts.ui</file>
+    <file>about.ui</file>
+
+    <file>style.css</file>
+
+    <file preprocess="xml-stripblanks">icons/data_icons_display-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/data_icons_selection-symbolic.svg</file>
+    <file preprocess="xml-stripblanks">icons/data_icons_window-symbolic.svg</file>
+
+    <file>sounds/chime.ogg</file>
+  </gresource>
+</gresources>

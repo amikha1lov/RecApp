@@ -12,6 +12,7 @@ finish-args:
   - --socket=wayland
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.gnome.Shell.Screencast
+  - --talk-name=org.gnome.Shell.Screenshot
 cleanup:
   - '*.a'
   - '*.la'
@@ -71,15 +72,6 @@ modules:
             url: https://github.com/naelstrof/slop/archive/v7.5.tar.gz
             sha256: 94d8b6270217cd7f56ce7d4a9a75069025262830a2f91c3239b7fc07da5ea8da
 
-      - name: pydbus
-        buildsystem: simple
-        build-commands:
-          - python3 ./setup.py install --prefix=/app --root=/
-        sources:
-          - type: archive
-            url: https://files.pythonhosted.org/packages/58/56/3e84f2c1f2e39b9ea132460183f123af41e3b9c8befe222a35636baa6a5a/pydbus-0.6.0.tar.gz
-            sha256: 4207162eff54223822c185da06c1ba8a34137a9602f3da5a528eedf3f78d0f2c
-
       - name: pulsectl
         buildsystem: simple
         build-commands:
@@ -88,3 +80,18 @@ modules:
           - type: archive
             url: https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-20.4.3.tar.gz
             sha256: f5fffd7db08aba0bb90ea2af8e777c272a6882d574598d511433930cc8f9aed4
+
+      - name: libhandy
+        buildsystem: meson
+        config-opts:
+          - -Dprofiling=false
+          - -Dintrospection=enabled
+          - -Dgtk_doc=false
+          - -Dtests=false
+          - -Dexamples=false
+          - -Dvapi=false
+          - -Dglade_catalog=disabled
+        sources:
+          - type: git
+            url: https://gitlab.gnome.org/GNOME/libhandy
+            tag: 1.0.2

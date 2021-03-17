@@ -15,18 +15,15 @@
 # You should have received a copy of the GNU General Public License
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
-import locale
+import gi
 import sys
 
-import gi
-
 from .recapp_constants import recapp_constants as constants
+from .window import RecappWindow
 
 gi.require_version('Gtk', '3.0')
 
-from gi.repository import Gio, Gtk
-
-from .window import RecappWindow
+from gi.repository import Gio, Gtk  # noqa: E402
 
 
 class Application(Gtk.Application):
