@@ -74,9 +74,9 @@ def on__formats_changed(self, *args):
     return self.recordFormat
 
 
-def delay_button_change(self, spin):
-    self.delayBeforeRecording = spin.get_value_as_int()
-    self.settings.set_int('delay', spin.get_value_as_int())
+# def delay_button_change(self, spin):
+#     self.delayBeforeRecording = spin.get_value_as_int()
+#     self.settings.set_int('delay', spin.get_value_as_int())
 
 
 def mouse_switcher(self, switch, gparam):

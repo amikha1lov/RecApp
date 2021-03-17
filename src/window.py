@@ -21,7 +21,7 @@ from locale import gettext as _
 
 import gi
 
-from .rec import delay_button_change, mouse_switcher, start_recording, on__sound_switch, stop_recording, delete_event
+from .rec import mouse_switcher, start_recording, on__sound_switch, stop_recording, delete_event
 from .recapp_constants import recapp_constants as constants
 from .preferences import PreferencesWindow
 from .about import AboutWindow
@@ -59,7 +59,7 @@ class RecappWindow(Handy.ApplicationWindow):
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
     _delay_button = Gtk.Template.Child()
-    _sound_on_switch = Gtk.Template.Child()
+    _sound_on_computer = Gtk.Template.Child()
     _record_mouse_switcher = Gtk.Template.Child()
     _record_stop_record_button_stack = Gtk.Template.Child()
     _fullscreen_mode_button = Gtk.Template.Child()
@@ -105,10 +105,11 @@ class RecappWindow(Handy.ApplicationWindow):
         self.connect("delete-event", self.on_delete_event)
 
         self.settings = Gio.Settings.new(constants["APPID"])
-        self.recordSoundOn = self.settings.get_boolean('record-audio-switch')
+        # self.recordSoundOn = self.settings.get_boolean('sound-on-computer')
         self.delayBeforeRecording = self.settings.get_int('delay')
         self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
-        self._sound_on_switch.set_active(self.recordSoundOn)
+        self._sound_on_computer.set_active(self.settings.get_boolean('sound-on-computer'))
+        self._sound_on_microphone.set_active(self.settings.get_boolean('sound-on-microphone'))
         self._record_mouse_switcher.set_active(self.recordMouse)
         self._delay_button.set_value(self.delayBeforeRecording)
 
@@ -164,8 +165,8 @@ class RecappWindow(Handy.ApplicationWindow):
         self.displayServer = GLib.getenv('XDG_SESSION_TYPE').lower()
 
         if self.displayServer == "wayland":
-            self._sound_rowbox.set_visible(False)
-            self._sound_on_switch.set_active(False)
+            # self._sound_rowbox.set_visible(False)
+            # self._sound_on_computer.set_active(False)
             self.bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
             if GLib.getenv('XDG_CURRENT_DESKTOP') != 'GNOME':
                 self._record_button.set_sensitive(False)
@@ -322,11 +323,16 @@ class RecappWindow(Handy.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__delay_button_change_value(self, spin):
-        delay_button_change(self, spin)
+        self.delayBeforeRecording = spin.get_value_as_int()
+        self.settings.set_int('delay', spin.props.value)
 
     @Gtk.Template.Callback()
-    def on__sound_on_switch_activate(self, switch, gparam):
-        on__sound_switch(self, switch, gparam)
+    def on__sound_on_computer_state_set(self, switcher, state):
+        self.settings.set_boolean('sound-on-computer', state)
+
+    @Gtk.Template.Callback()
+    def on__sound_on_microphone_state_set(self, switcher, state):
+        self.settings.set_boolean('sound-on-microphone', state)
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, widget):

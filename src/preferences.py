@@ -26,19 +26,7 @@ from .recapp_constants import recapp_constants as constants
 class PreferencesWindow(Handy.PreferencesWindow):
     __gtype_name__ = "hdy_preferences_dialog"
 
-    delay_button = Gtk.Template.Child()
-    record_audio_switch = Gtk.Template.Child()
-
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
         self.settings = Gio.Settings.new(constants["APPID"])
-        self.delay_button.props.value = self.settings.get_int('delay')
-        self.record_audio_switch.props.state = self.settings.get_boolean('record-audio-switch')
 
-    @Gtk.Template.Callback()
-    def on_delay_button_value_changed(self, button):
-        self.settings.set_int('delay', button.props.value)
-
-    @Gtk.Template.Callback()
-    def on_record_audio_switch_state_set(self, switch, state):
-        self.settings.set_boolean('record-audio-switch', state)

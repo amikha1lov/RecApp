@@ -35,10 +35,15 @@
       <summary>Delay</summary>
       <description>Delay before recording.</description>
     </key>
-	  <key type="b" name="record-audio-switch">
+	  <key type="b" name="sound-on-microphone">
       <default>false</default>
-      <summary>Enabling audio recording</summary>
-      <description>The inclusion of audio recording.</description>
+      <summary>Enabling sound from microphone</summary>
+      <description>Enabling sound from microphone recording.</description>
+    </key>
+      <key type="b" name="sound-on-computer">
+      <default>false</default>
+      <summary>Enabling sound from computer</summary>
+      <description>Enabling sound from computer recording.</description>
     </key>
 	  <key type="b" name="record-mouse-cursor-switch">
       <default>true</default>
