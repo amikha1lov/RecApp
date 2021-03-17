@@ -1,9 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schemalist gettext-domain="recapp">
-  <enum id="com.github.amikha1lov.RecApp.Quality">
-    <value nick="low" value="0"/>
-    <value nick="high" value="1"/>
-  </enum>
   <enum id="com.github.amikha1lov.RecApp.Frames">
     <value nick="15" value="0"/>
     <value nick="30" value="1"/>
@@ -15,8 +11,8 @@
     <value nick="mp4" value="2"/>
   </enum>
 	<schema id="com.github.amikha1lov.RecApp" path="/com/github/amikha1lov/recapp/">
-	  <key enum="com.github.amikha1lov.RecApp.Quality" name="video-quality">
-      <default>"low"</default>
+	  <key type="b" name="high-video-quality">
+      <default>false</default>
       <summary>Quality</summary>
       <description>Quality of the recording</description>
     </key>
