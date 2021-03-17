@@ -34,6 +34,21 @@
                 </child>
               </object>
             </child>
+            <child>
+              <object class="HdyActionRow">
+                <property name="visible">True</property>
+                <property name="activatable_widget">record_audio_switch</property>
+                <property name="title" translatable="yes">Record Audio</property>
+                <property name="use_underline">True</property>
+                <child>
+                  <object class="GtkSwitch" id="record_audio_switch">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state-set" handler="on_record_audio_switch_state_set" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
           </object>
         </child>
       </object>

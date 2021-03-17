@@ -3,7 +3,6 @@
   <requires lib="gtk+" version="3.20"/>
   <template class="_about_dialog" parent="GtkAboutDialog">
     <property name="can_focus">False</property>
-    <property name="icon_name">com.github.Latesil.exif-remover</property>
     <property name="type_hint">dialog</property>
     <property name="copyright" translatable="yes">© 2021 Alexey Mikhailov</property>
     <property name="comments" translatable="yes">Simple screencasting application</property>
