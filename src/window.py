@@ -21,7 +21,7 @@ from locale import gettext as _
 
 import gi
 
-from .rec import mouse_switcher, start_recording, on__sound_switch, stop_recording, delete_event
+from .rec import start_recording, stop_recording
 from .recapp_constants import recapp_constants as constants
 from .preferences import PreferencesWindow
 from .about import AboutWindow
@@ -76,12 +76,17 @@ class RecappWindow(Handy.ApplicationWindow):
     _recording_label = Gtk.Template.Child()
     _paused_label = Gtk.Template.Child()
     _sound_on_microphone = Gtk.Template.Child()
-    main_popover = Gtk.Template.Child()
+    _main_stack = Gtk.Template.Child()
+    _delay_box = Gtk.Template.Child()
+    _record_stop_record_button_stack = Gtk.Template.Child()
+    _menu_stack_revealer = Gtk.Template.Child()
+    _delay_label = Gtk.Template.Child()
+    _paused_start_stack_box = Gtk.Template.Child()
+
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.application = kwargs["application"]
-        self._menu_button.set_popover(self.main_popover)
 
         # Initialize recording timer
         GLib.timeout_add(1000, self.refresh_time)
@@ -89,18 +94,17 @@ class RecappWindow(Handy.ApplicationWindow):
         self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
         accel = Gtk.AccelGroup()
-        accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
+        accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.onQuit)
         self.add_accel_group(accel)
 
         self.cpus = os.cpu_count() - 1
-        self.connect("delete-event", self.on_delete_event)
+        # self.connect("delete-event", self.on_delete_event)
 
         self.settings = Gio.Settings.new(constants["APPID"])
         self.delayBeforeRecording = self.settings.get_int('delay')
-        self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
         self._sound_on_computer.set_active(self.settings.get_boolean('sound-on-computer'))
         self._sound_on_microphone.set_active(self.settings.get_boolean('sound-on-microphone'))
-        self._record_mouse_switcher.set_active(self.recordMouse)
+        self._record_mouse_switcher.set_active(self.settings.get_boolean('record-mouse-cursor-switch'))
         self._delay_button.set_value(self.delayBeforeRecording)
 
         # Notification actions
@@ -114,10 +118,6 @@ class RecappWindow(Handy.ApplicationWindow):
 
         action = Gio.SimpleAction.new("selectlocation", None)
         action.connect("activate", self.open_selectlocation)
-        self.application.add_action(action)
-
-        action = Gio.SimpleAction.new("shortcuts", None)
-        action.connect("activate", self.open_shortcuts_window)
         self.application.add_action(action)
 
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
@@ -179,7 +179,7 @@ class RecappWindow(Handy.ApplicationWindow):
                 elif encoder == "x264enc":
                     self.formats.append("mp4")
             else:
-                pass
+                print('Cannot find Gst plugin')
 
     def playsound(self, sound):
         playbin = Gst.ElementFactory.make('playbin', 'playbin')
@@ -190,6 +190,7 @@ class RecappWindow(Handy.ApplicationWindow):
         playbin.set_state(Gst.State.NULL)
 
     def openFolder(self, notification, action, user_data=None):
+        print('openfolder')
         try:
             videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
             Gio.AppInfo.launch_default_for_uri("file:///" + videoFolderForOpen.lstrip("/"))
@@ -268,11 +269,11 @@ class RecappWindow(Handy.ApplicationWindow):
         shortcuts.set_transient_for(self)
         shortcuts.present()
 
-    def on_delete_event(self, w, h):
-        delete_event(self, w, h)
+    # def on_delete_event(self, w, h):
+    #     delete_event(self, w, h)
 
-    def on_quit_app(self, *args):
-        quit_app(self, *args)  # TODO fix this
+    # def on_quit_app(self, *args):
+    #     quit_app(self, *args)  # TODO fix this
 
     def refresh_time(self):
         if self.istimerrunning:
@@ -281,8 +282,9 @@ class RecappWindow(Handy.ApplicationWindow):
         return True
 
     @Gtk.Template.Callback()
-    def on__record_mouse_switcher_state_set(self, switch, gparam):
-        mouse_switcher(self, switch, gparam)
+    def on__record_mouse_switcher_state_set(self, switch, state):
+        self.recordMouse = state
+        self.settings.set_boolean('record-mouse-cursor-switch', state)
 
     @Gtk.Template.Callback()
     def on__delay_button_change_value(self, spin):
@@ -306,8 +308,11 @@ class RecappWindow(Handy.ApplicationWindow):
         stop_recording(self)
 
     @Gtk.Template.Callback()
-    def onQuit(self, window):
-        print('onQuit')  # TODO this called by click exit button
+    def onQuit(self, *args):
+        print('quit')
+        if self.isrecording:
+            stop_recording(self)
+        self.destroy()  # TODO this called by click exit button
 
     @Gtk.Template.Callback()
     def on_preferences_button_clicked(self, button):

@@ -44,21 +44,21 @@ def on__frames_changed(self, *args):
 
 
 def on__quality_changed(self, *args):
-    quality = self.settings.get_enum("video-quality")
+    quality = self.settings.get_boolean("high-video-quality")
     self.recordFormat = on__formats_changed(self, *args)
-    if quality == 0:
-        if self.recordFormat == "webm" or self.recordFormat == "mkv":
-            self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
-                self.cpus)
-        elif self.recordFormat == "mp4":
-            self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
-                self.cpus)
-    if quality == 1:
+    if quality:  # high quality
         if self.recordFormat == "webm" or self.recordFormat == "mkv":
             self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
                 self.cpus)
         elif self.recordFormat == "mp4":
             self.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
+                self.cpus)
+    else:
+        if self.recordFormat == "webm" or self.recordFormat == "mkv":
+            self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
+                self.cpus)
+        elif self.recordFormat == "mp4":
+            self.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
                 self.cpus)
     return self.quality_video
 
@@ -79,15 +79,15 @@ def on__formats_changed(self, *args):
 #     self.settings.set_int('delay', spin.get_value_as_int())
 
 
-def mouse_switcher(self, switch, gparam):
-    if switch.get_active():
-        state = "on"
-        self.recordMouse = True
-        self.settings.set_boolean('record-mouse-cursor-switch', True)
-    else:
-        state = "off"
-        self.recordMouse = False
-        self.settings.set_boolean('record-mouse-cursor-switch', False)
+# def mouse_switcher(self, switch, gparam):
+#     if switch.get_active():
+#         state = "on"
+#         self.recordMouse = True
+#         self.settings.set_boolean('record-mouse-cursor-switch', True)
+#     else:
+#         state = "off"
+#         self.recordMouse = False
+#         self.settings.set_boolean('record-mouse-cursor-switch', False)
 
 
 def on__select_area(self):
@@ -325,9 +325,9 @@ def stop_recording(self, *args):
     self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
 
-def delete_event(self, w, h):
-    if self.isrecording:
-        stop_recording(self)
+# def delete_event(self, w, h):
+#     if self.isrecording:
+#         stop_recording(self)
 
 
 def quit_app(self, *args):
