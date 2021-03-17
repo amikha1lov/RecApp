@@ -22,14 +22,22 @@ from .recapp_constants import recapp_constants as constants
 from .window import RecappWindow
 
 gi.require_version('Gtk', '3.0')
+gi.require_version('Handy', '1')
+gi.require_version('Gst', '1.0')
 
-from gi.repository import Gio, Gtk  # noqa: E402
+from gi.repository import Gio, Gtk, Handy, Gst  # noqa: E402
 
 
 class Application(Gtk.Application):
     def __init__(self):
         super().__init__(application_id=constants["APPID"],
                          flags=Gio.ApplicationFlags.FLAGS_NONE)
+
+    def do_startup(self):
+        Gtk.Application.do_startup(self)
+        Gtk.init(sys.argv)
+        Gst.init(sys.argv)
+        Handy.init()
 
     def do_activate(self):
         win = self.props.active_window

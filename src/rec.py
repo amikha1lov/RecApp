@@ -30,12 +30,8 @@ from .recapp_constants import recapp_constants as constants
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('GstPbutils', '1.0')
+gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk
-
-Gtk.init(sys.argv)
-# initialize GStreamer
-Gst.init(sys.argv)
-
 
 def on__frames_changed(self, *args):
     frames = self.settings.get_enum("frames-per-second")

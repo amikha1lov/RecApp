@@ -32,17 +32,11 @@ gi.require_version('Gdk', '3.0')
 gi.require_version('Handy', '1')
 from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Handy
 
-Gtk.init(sys.argv)
-# initialize GStreamer
-Gst.init(sys.argv)
-
 # TODO Not working yet: record computer sounds (keyboard shortcut already working)
 
 @Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
 class RecappWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'RecAppWindow'
-
-    Handy.init()
 
     soundOn = ""
     mux = ""
