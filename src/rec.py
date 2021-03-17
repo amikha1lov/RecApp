@@ -211,7 +211,7 @@ def record_logic(self, *args):
 
         if self.displayServer == "wayland":
             RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
-            if self.coordinateMode == True:
+            if self.coordinateMode is True:
                 self.GNOMEScreencast.call_sync(
                     "ScreencastArea",
                     GLib.Variant.new_tuple(
@@ -245,9 +245,9 @@ def record_logic(self, *args):
                     -1,
                     None)
         else:
-            if self.coordinateMode == True:
+            if self.coordinateMode is True:
                 video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + " ! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7}"
-                if self.recordSoundOn == True:
+                if self.recordSoundOn is True:
                     self.video = Popen(
                         video_str.format(self.recordMouse, self.widthArea, self.heightArea,
                                          self.videoFrames, self.quality_video, self.mux, self.fileName,
@@ -261,7 +261,7 @@ def record_logic(self, *args):
 
                 self.coordinateMode = False
             else:
-                if self.recordSoundOn == True:
+                if self.recordSoundOn is True:
                     self.video = Popen(
                         self.video_str.format(self.recordMouse, self.videoFrames, self.quality_video,
                                               self.mux, self.fileName, self.extension) + self.soundOn,
@@ -278,6 +278,7 @@ def record_logic(self, *args):
 
 def delay(self, *args):
     self.time_delay = (self.delayBeforeRecording * 100)
+    
     def countdown(*args):
         if self.time_delay > 0:
             self.time_delay -=10
