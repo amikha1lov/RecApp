@@ -1,0 +1,67 @@
+<interface>
+  <menu id="primary-menu">
+    <submenu>
+      <attribute translatable="yes" name="label">_Frames Per Second</attribute>
+      <item>
+        <attribute translatable="yes" name="label">_15</attribute>
+        <attribute name="action">app.frames-per-second</attribute>
+        <attribute name="target">15</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_30</attribute>
+        <attribute name="action">app.frames-per-second</attribute>
+        <attribute name="target">30</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_60</attribute>
+        <attribute name="action">app.frames-per-second</attribute>
+        <attribute name="target">60</attribute>
+      </item>
+    </submenu>
+    <submenu>
+      <attribute translatable="yes" name="label">_Video Quality</attribute>
+      <item>
+        <attribute translatable="yes" name="label">_Low</attribute>
+        <attribute name="action">app.video-quality</attribute>
+        <attribute name="target">low</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_High</attribute>
+        <attribute name="action">app.video-quality</attribute>
+        <attribute name="target">high</attribute>
+      </item>
+    </submenu>
+    <submenu>
+      <attribute translatable="yes" name="label">_Video Format</attribute>
+      <item>
+        <attribute translatable="yes" name="label">_WebM</attribute>
+        <attribute name="action">app.video-format</attribute>
+        <attribute name="target">webm</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_Matroska</attribute>
+        <attribute name="action">app.video-format</attribute>
+        <attribute name="target">mkv</attribute>
+      </item>
+      <item>
+        <attribute translatable="yes" name="label">_MP4</attribute>
+        <attribute name="action">app.video-format</attribute>
+        <attribute name="target">mp4</attribute>
+      </item>
+    </submenu>
+    <item>
+      <attribute name="action">app.selectlocation</attribute>
+      <attribute translatable="yes" name="label">_Select Saving Location…</attribute>
+    </item>
+    <section>
+      <item>
+        <attribute name="action">app.shortcuts</attribute>
+        <attribute name="label" translatable="yes">_Keyboard Shortcuts</attribute>
+      </item>
+      <item>
+        <attribute name="action">app.about</attribute>
+        <attribute name="label" translatable="yes">_About RecApp</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>

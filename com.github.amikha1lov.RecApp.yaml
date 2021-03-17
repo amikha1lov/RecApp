@@ -12,6 +12,7 @@ finish-args:
   - --socket=wayland
   - --talk-name=org.freedesktop.Notifications
   - --talk-name=org.gnome.Shell.Screencast
+  - --talk-name=org.gnome.Shell.Screenshot
 cleanup:
   - '*.a'
   - '*.la'

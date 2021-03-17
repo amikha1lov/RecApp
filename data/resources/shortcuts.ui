@@ -14,8 +14,15 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">1</property>
+                <property name="accelerator">F10</property>
+                <property name="title" translatable="yes" context="shortcut window">Show primary menu</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">1</property>
                 <property name="accelerator">&lt;ctrl&gt;q</property>
-                <property name="title" translatable="yes" context="shortcut window">Quit the application</property>
+                <property name="title" translatable="yes" context="shortcut window">Quit</property>
               </object>
             </child>
             <child>
@@ -41,8 +48,8 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">1</property>
-                <property name="accelerator">&lt;ctrl&gt;h</property>
-                <property name="title" translatable="yes" context="shortcut window">Toggle high quality mode</property>
+                <property name="accelerator">&lt;ctrl&gt;m</property>
+                <property name="title" translatable="yes" context="shortcut window">Toggle record from microphone</property>
               </object>
             </child>
             <child>
@@ -57,13 +64,6 @@
                 <property name="visible">1</property>
                 <property name="accelerator">&lt;ctrl&gt;p</property>
                 <property name="title" translatable="yes" context="shortcut window">Toggle show pointer</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">1</property>
-                <property name="accelerator">&lt;ctrl&gt;m</property>
-                <property name="title" translatable="yes" context="shortcut window">Toggle record from microphone</property>
               </object>
             </child>
           </object>
