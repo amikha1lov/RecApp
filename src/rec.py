@@ -33,6 +33,7 @@ gi.require_version('GstPbutils', '1.0')
 gi.require_version('Gdk', '3.0')
 from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk
 
+
 def on__frames_changed(self, *args):
     frames = self.settings.get_enum("frames-per-second")
     if frames == 0:
@@ -217,10 +218,10 @@ def record_logic(self, *args):
                         GLib.Variant("i", self.waylandcoordinates[3]),
                         GLib.Variant.new_string(self.fileName + self.extension),
                         GLib.Variant("a{sv}",
-                            {"framerate": GLib.Variant("i", int(self.videoFrames)),
-                             "draw-cursor": GLib.Variant("b", self.recordMouse),
-                             "pipeline": GLib.Variant("s", RecorderPipeline)}
-                        ),
+                                     {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                                      "draw-cursor": GLib.Variant("b", self.recordMouse),
+                                      "pipeline": GLib.Variant("s", RecorderPipeline)}
+                                     ),
                     ),
                     Gio.DBusProxyFlags.NONE,
                     -1,
@@ -232,10 +233,10 @@ def record_logic(self, *args):
                     GLib.Variant.new_tuple(
                         GLib.Variant.new_string(self.fileName + self.extension),
                         GLib.Variant("a{sv}",
-                            {"framerate": GLib.Variant("i", int(self.videoFrames)),
-                             "draw-cursor": GLib.Variant("b", self.recordMouse),
-                             "pipeline": GLib.Variant("s", RecorderPipeline)}
-                        ),
+                                     {"framerate": GLib.Variant("i", int(self.videoFrames)),
+                                      "draw-cursor": GLib.Variant("b", self.recordMouse),
+                                      "pipeline": GLib.Variant("s", RecorderPipeline)}
+                                     ),
                     ),
                     Gio.DBusProxyFlags.NONE,
                     -1,
@@ -274,17 +275,18 @@ def record_logic(self, *args):
 
 def delay(self, *args):
     self.time_delay = (self.delayBeforeRecording * 100)
-    
+
     def countdown(*args):
         if self.time_delay > 0:
-            self.time_delay -=10
+            self.time_delay -= 10
             GLib.timeout_add(100, countdown)
-            self._delay_label.set_label(str((self.time_delay // 100)+1))
+            self._delay_label.set_label(str((self.time_delay // 100) + 1))
         else:
             self.isrecordingwithdelay = False
             self._menu_stack_revealer.set_reveal_child(True)
             record_logic(self, *args)
             self.time_delay = (self.delayBeforeRecording * 100)
+
     countdown(*args)
 
 
@@ -294,7 +296,6 @@ def cancel_delay(self, *args):
 
 
 def stop_recording(self, *args):
-
     if self.displayServer == "wayland":
         self.GNOMEScreencast.call_sync(
             "StopScreencast",
@@ -323,7 +324,7 @@ def stop_recording(self, *args):
     self.label_context.remove_class("recording")
 
     self.elapsed_time = datetime.timedelta()
-    self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+    self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
 
 def delete_event(self, w, h):

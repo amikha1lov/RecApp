@@ -89,12 +89,6 @@ class RecappWindow(Handy.ApplicationWindow):
         super().__init__(**kwargs)
         self.application = kwargs["application"]
 
-        css_provider = Gtk.CssProvider()
-        css_provider.load_from_resource(constants['RESOURCEID'] + '/style.css')
-        screen = Gdk.Screen.get_default()
-        style_context = Gtk.StyleContext()
-        style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
-
         # Initialize popover
         builder = Gtk.Builder()
         builder.add_from_resource(constants['RESOURCEID'] + '/primary-menu.ui')
@@ -165,7 +159,7 @@ class RecappWindow(Handy.ApplicationWindow):
             if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) is None:
 
                 directory = "/RecAppVideo"
-                parent_dir = os.path.expanduser("~")
+                parent_dir = GLib.get_home_dir()
                 path = parent_dir + directory
 
                 if not os.path.exists(path):
@@ -175,13 +169,13 @@ class RecappWindow(Handy.ApplicationWindow):
                 self.settings.set_string('path-to-save-video-folder', GLib.get_user_special_dir(
                     GLib.UserDirectory.DIRECTORY_VIDEOS))
 
-        self.displayServer = os.environ['XDG_SESSION_TYPE'].lower()
+        self.displayServer = GLib.getenv('XDG_SESSION_TYPE').lower()
 
         if self.displayServer == "wayland":
             self._sound_rowbox.set_visible(False)
             self._sound_on_switch.set_active(False)
             self.bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            if os.environ['XDG_CURRENT_DESKTOP'] != 'GNOME':
+            if GLib.getenv('XDG_CURRENT_DESKTOP') != 'GNOME':
                 self._record_button.set_sensitive(False)
                 notification = Gio.Notification.new(constants["APPNAME"])
                 notification.set_body(_("Sorry, Wayland session is not supported yet."))
@@ -321,7 +315,7 @@ class RecappWindow(Handy.ApplicationWindow):
         delete_event(self, w, h)
 
     def on_quit_app(self, *args):
-        quit_app(self, *args)
+        quit_app(self, *args)  # TODO fix this
 
     def refresh_time(self):
         if self.istimerrunning:
