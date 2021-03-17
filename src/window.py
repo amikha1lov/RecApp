@@ -32,9 +32,10 @@ gi.require_version('Gdk', '3.0')
 gi.require_version('Handy', '1')
 from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Handy
 
+
 # TODO Not working yet: record computer sounds (keyboard shortcut already working)
 
-@Gtk.Template(resource_path='/com/github/amikha1lov/RecApp/window.ui')
+@Gtk.Template(resource_path=constants['RESOURCEID'] + '/window.ui')
 class RecappWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'RecAppWindow'
 
@@ -84,20 +85,19 @@ class RecappWindow(Handy.ApplicationWindow):
     _paused_label = Gtk.Template.Child()
     _sound_on_microphone = Gtk.Template.Child()
 
-
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.application = kwargs["application"]
 
         css_provider = Gtk.CssProvider()
-        css_provider.load_from_resource('/com/github/amikha1lov/RecApp/style.css')
+        css_provider.load_from_resource(constants['RESOURCEID'] + '/style.css')
         screen = Gdk.Screen.get_default()
         style_context = Gtk.StyleContext()
         style_context.add_provider_for_screen(screen, css_provider, Gtk.STYLE_PROVIDER_PRIORITY_APPLICATION)
 
         # Initialize popover
         builder = Gtk.Builder()
-        builder.add_from_resource('/com/github/amikha1lov/RecApp/primary-menu.ui')
+        builder.add_from_resource(constants['RESOURCEID'] + '/primary-menu.ui')
         primaryMenuModel = builder.get_object('primary-menu')
         self.popover = Gtk.Popover.new_from_model(self._menu_button, primaryMenuModel)
         self._menu_button.set_popover(self.popover)
@@ -105,7 +105,7 @@ class RecappWindow(Handy.ApplicationWindow):
         # Initialize recording timer
         GLib.timeout_add(1000, self.refresh_time)
         self.elapsed_time = datetime.timedelta()
-        self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+        self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit_app)
@@ -162,7 +162,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
         if self.currentFolder == "Default":
-            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) == None:
+            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) is None:
 
                 directory = "/RecAppVideo"
                 parent_dir = os.path.expanduser("~")
@@ -205,15 +205,17 @@ class RecappWindow(Handy.ApplicationWindow):
                     "org.gnome.Shell.Screenshot",
                     None)
         else:
-            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw,framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! queue ! filesink location='{4}'{5}"
+            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw," \
+                             "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
+                             "queue ! filesink location='{4}'{5} "
 
         for encoder in self.encoders:
             plugin = Gst.ElementFactory.find(encoder)
             if plugin:
-                if (encoder == "vp8enc"):
+                if encoder == "vp8enc":
                     self.formats.append("webm")
                     self.formats.append("mkv")
-                elif (encoder == "x264enc"):
+                elif encoder == "x264enc":
                     self.formats.append("mp4")
             else:
                 pass
@@ -272,7 +274,8 @@ class RecappWindow(Handy.ApplicationWindow):
             dialog.destroy()
 
     def open_selectlocation(self, action, widget):
-        dialog = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/selectlocation.ui').get_object('selectlocation')
+        dialog = Gtk.Builder.new_from_resource(constants['RESOURCEID'] + '/selectlocation.ui').get_object(
+            'selectlocation')
         dialog.set_transient_for(self)
         dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT)
         response = dialog.run()
@@ -283,7 +286,7 @@ class RecappWindow(Handy.ApplicationWindow):
         dialog.destroy()
 
         try:
-            if not os.access(directory[0], os.W_OK) or not directory[0][:5] == '/home': # not ideal solution
+            if not os.access(directory[0], os.W_OK) or not directory[0][:5] == '/home':  # not ideal solution
                 error = Gtk.MessageDialog(
                     transient_for=self,
                     type=Gtk.MessageType.WARNING,
@@ -300,14 +303,13 @@ class RecappWindow(Handy.ApplicationWindow):
         except:
             return
 
-
     def open_shortcuts_window(self, action, widget):
-        window = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/shortcuts.ui').get_object('shortcuts')
+        window = Gtk.Builder.new_from_resource(constants['RESOURCEID'] + '/shortcuts.ui').get_object('shortcuts')
         window.set_transient_for(self)
         window.present()
 
     def open_about_dialog(self, action, widget):
-        dialog = Gtk.Builder.new_from_resource('/com/github/amikha1lov/RecApp/about.ui').get_object('about')
+        dialog = Gtk.Builder.new_from_resource(constants['RESOURCEID'] + '/about.ui').get_object('about')
         dialog.set_program_name(_(constants["APPNAME"]))
         dialog.set_logo_icon_name(constants["APPID"])
         dialog.set_version(constants["APPVERSION"])
@@ -324,7 +326,7 @@ class RecappWindow(Handy.ApplicationWindow):
     def refresh_time(self):
         if self.istimerrunning:
             self.elapsed_time += datetime.timedelta(seconds=1)
-            self._time_recording_label.set_label(str(self.elapsed_time).replace(":","∶"))
+            self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
         return True
 
     @Gtk.Template.Callback()
@@ -346,8 +348,9 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, widget):
         stop_recording(self)
-# TODO
-# Connect pause and continue to something
+
+    # TODO
+    # Connect pause and continue to something
 
     @Gtk.Template.Callback()
     def on__pause_record_button_clicked(self, widget):
@@ -367,8 +370,8 @@ class RecappWindow(Handy.ApplicationWindow):
     def on__cancel_button_clicked(self, widget):
         cancel_delay(self)
 
-# TODO
-# Connect window mode to something
+    # TODO
+    # Connect window mode to something
 
     @Gtk.Template.Callback()
     def on__fullscreen_mode_pressed(self, widget):
