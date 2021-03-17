@@ -96,7 +96,6 @@ class RecappWindow(Handy.ApplicationWindow):
         self.connect("delete-event", self.on_delete_event)
 
         self.settings = Gio.Settings.new(constants["APPID"])
-        # self.recordSoundOn = self.settings.get_boolean('sound-on-computer')
         self.delayBeforeRecording = self.settings.get_int('delay')
         self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
         self._sound_on_computer.set_active(self.settings.get_boolean('sound-on-computer'))
@@ -112,22 +111,6 @@ class RecappWindow(Handy.ApplicationWindow):
         action = Gio.SimpleAction.new("open-file", None)
         action.connect("activate", self.openVideoFile)
         self.application.add_action(action)
-
-        # Popover actions
-        # action = Gio.SimpleAction.new_stateful("frames-per-second", GLib.VariantType.new("s"), GLib.Variant('s', "30"))
-        # action.set_state(self.settings.get_value("frames-per-second"))
-        # action.connect("change-state", self.on_frames_per_second_change_state)
-        # self.application.add_action(action)
-
-        # action = Gio.SimpleAction.new_stateful("video-quality", GLib.VariantType.new("s"), GLib.Variant('s', "low"))
-        # action.set_state(self.settings.get_value("video-quality"))
-        # action.connect("change-state", self.on_video_quality_change_state)
-        # self.application.add_action(action)
-
-        # action = Gio.SimpleAction.new_stateful("video-format", GLib.VariantType.new("s"), GLib.Variant('s', "webm"))
-        # action.set_state(self.settings.get_value("video-format"))
-        # action.connect("change-state", self.on_video_format_change_state)
-        # self.application.add_action(action)
 
         action = Gio.SimpleAction.new("selectlocation", None)
         action.connect("activate", self.open_selectlocation)
@@ -197,18 +180,6 @@ class RecappWindow(Handy.ApplicationWindow):
                     self.formats.append("mp4")
             else:
                 pass
-
-    def on_frames_per_second_change_state(self, action, value):
-        self.settings.set_value("frames-per-second", value)
-        action.set_state(value)
-
-    def on_video_quality_change_state(self, action, value):
-        self.settings.set_value("video-quality", value)
-        action.set_state(value)
-
-    def on_video_format_change_state(self, action, value):
-        self.settings.set_value("video-format", value)
-        action.set_state(value)
 
     def playsound(self, sound):
         playbin = Gst.ElementFactory.make('playbin', 'playbin')
@@ -280,11 +251,6 @@ class RecappWindow(Handy.ApplicationWindow):
                 self.settings.set_string("path-to-save-video-folder", directory[0])
         except:
             return
-
-    # def open_shortcuts_window(self, action, widget):
-    #     window = Gtk.Builder.new_from_resource(constants['RESOURCEID'] + '/shortcuts.ui').get_object('shortcuts')
-    #     window.set_transient_for(self)
-    #     window.present()
 
     @Gtk.Template.Callback()
     def on_about_button_clicked(self, widget):
