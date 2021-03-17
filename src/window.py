@@ -25,6 +25,7 @@ from .rec import mouse_switcher, start_recording, on__sound_switch, stop_recordi
 from .recapp_constants import recapp_constants as constants
 from .preferences import PreferencesWindow
 from .about import AboutWindow
+from .shortcuts import RecAppShortcuts
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
@@ -113,20 +114,20 @@ class RecappWindow(Handy.ApplicationWindow):
         self.application.add_action(action)
 
         # Popover actions
-        action = Gio.SimpleAction.new_stateful("frames-per-second", GLib.VariantType.new("s"), GLib.Variant('s', "30"))
-        action.set_state(self.settings.get_value("frames-per-second"))
-        action.connect("change-state", self.on_frames_per_second_change_state)
-        self.application.add_action(action)
+        # action = Gio.SimpleAction.new_stateful("frames-per-second", GLib.VariantType.new("s"), GLib.Variant('s', "30"))
+        # action.set_state(self.settings.get_value("frames-per-second"))
+        # action.connect("change-state", self.on_frames_per_second_change_state)
+        # self.application.add_action(action)
 
         # action = Gio.SimpleAction.new_stateful("video-quality", GLib.VariantType.new("s"), GLib.Variant('s', "low"))
         # action.set_state(self.settings.get_value("video-quality"))
         # action.connect("change-state", self.on_video_quality_change_state)
         # self.application.add_action(action)
 
-        action = Gio.SimpleAction.new_stateful("video-format", GLib.VariantType.new("s"), GLib.Variant('s', "webm"))
-        action.set_state(self.settings.get_value("video-format"))
-        action.connect("change-state", self.on_video_format_change_state)
-        self.application.add_action(action)
+        # action = Gio.SimpleAction.new_stateful("video-format", GLib.VariantType.new("s"), GLib.Variant('s', "webm"))
+        # action.set_state(self.settings.get_value("video-format"))
+        # action.connect("change-state", self.on_video_format_change_state)
+        # self.application.add_action(action)
 
         action = Gio.SimpleAction.new("selectlocation", None)
         action.connect("activate", self.open_selectlocation)
@@ -280,10 +281,10 @@ class RecappWindow(Handy.ApplicationWindow):
         except:
             return
 
-    def open_shortcuts_window(self, action, widget):
-        window = Gtk.Builder.new_from_resource(constants['RESOURCEID'] + '/shortcuts.ui').get_object('shortcuts')
-        window.set_transient_for(self)
-        window.present()
+    # def open_shortcuts_window(self, action, widget):
+    #     window = Gtk.Builder.new_from_resource(constants['RESOURCEID'] + '/shortcuts.ui').get_object('shortcuts')
+    #     window.set_transient_for(self)
+    #     window.present()
 
     @Gtk.Template.Callback()
     def on_about_button_clicked(self, widget):
@@ -294,6 +295,12 @@ class RecappWindow(Handy.ApplicationWindow):
         about.set_transient_for(self)
         about.run()
         about.destroy()
+
+    @Gtk.Template.Callback()
+    def on_shortcuts_button_clicked(self, button):
+        shortcuts = RecAppShortcuts(self)
+        shortcuts.set_transient_for(self)
+        shortcuts.present()
 
     def on_delete_event(self, w, h):
         delete_event(self, w, h)

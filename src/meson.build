@@ -25,6 +25,7 @@ recapp_sources = [
   'rec.py',
   'preferences.py',
   'about.py',
+  'shortcuts.py',
 ]
 
 install_data(recapp_sources, install_dir: moduledir)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <object class="GtkShortcutsWindow" id="shortcuts">
+  <template class="RecAppShortcuts" parent="GtkShortcutsWindow">
     <property name="modal">1</property>
     <child>
       <object class="GtkShortcutsSection">
@@ -70,5 +70,5 @@
         </child>
       </object>
     </child>
-  </object>
+  </template>
 </interface>
