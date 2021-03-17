@@ -22,6 +22,7 @@ from locale import gettext as _
 import gi
 
 from .rec import start_recording, stop_recording
+from .recording import Recording
 from .recapp_constants import recapp_constants as constants
 from .preferences import PreferencesWindow
 from .about import AboutWindow
@@ -107,6 +108,8 @@ class RecappWindow(Handy.ApplicationWindow):
         self._record_mouse_switcher.set_active(self.settings.get_boolean('record-mouse-cursor-switch'))
         self._delay_button.set_value(self.delayBeforeRecording)
 
+        self.recording = Recording(self)
+
         # Notification actions
         action = Gio.SimpleAction.new("open-folder", None)
         action.connect("activate", self.openFolder)
@@ -120,22 +123,7 @@ class RecappWindow(Handy.ApplicationWindow):
         action.connect("activate", self.open_selectlocation)
         self.application.add_action(action)
 
-        self.currentFolder = self.settings.get_string('path-to-save-video-folder')
-
-        if self.currentFolder == "Default":
-            if GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS) is None:
-
-                directory = "/RecAppVideo"
-                parent_dir = GLib.get_home_dir()
-                path = parent_dir + directory
-
-                if not os.path.exists(path):
-                    os.makedirs(path)
-                self.settings.set_string('path-to-save-video-folder', path)
-            else:
-                self.settings.set_string('path-to-save-video-folder', GLib.get_user_special_dir(
-                    GLib.UserDirectory.DIRECTORY_VIDEOS))
-
+        self.currentFolder = self.get_output_folder()
         self.displayServer = GLib.getenv('XDG_SESSION_TYPE').lower()
 
         if self.displayServer == "wayland":
@@ -252,6 +240,22 @@ class RecappWindow(Handy.ApplicationWindow):
                 self.settings.set_string("path-to-save-video-folder", directory[0])
         except:
             return
+
+    def get_output_folder(self):
+        path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS)  # XDG-VIDEOS
+        if self.settings.get_string('path-to-save-video-folder') == "Default":
+            if path is None:  # there is no XDG-VIDEOS folder
+                directory = "/RecAppVideo"
+                parent_dir = GLib.get_home_dir()
+                path = parent_dir + directory  # set up a new path
+                if not os.path.exists(path):
+                    os.makedirs(path)
+                self.settings.set_string('path-to-save-video-folder', path)
+            else:
+                self.settings.set_string('path-to-save-video-folder', path)  # XDG-VIDEOS
+        else:
+            path = self.settings.get_string('path-to-save-video-folder')
+        return path
 
     @Gtk.Template.Callback()
     def on_about_button_clicked(self, widget):
