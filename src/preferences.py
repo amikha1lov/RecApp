@@ -27,13 +27,19 @@ class PreferencesWindow(Handy.PreferencesWindow):
     __gtype_name__ = "hdy_preferences_dialog"
 
     formats_combobox = Gtk.Template.Child()
+    fps_combobox = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
         self.settings = Gio.Settings.new(constants["APPID"])
         self.formats_combobox.set_active(self.settings.get_enum('video-format'))
+        self.fps_combobox.set_active(self.settings.get_enum('frames-per-second'))
 
     @Gtk.Template.Callback()
     def on_formats_combobox_changed(self, combobox):
         self.settings.set_enum('video-format', combobox.get_active())
+
+    @Gtk.Template.Callback()
+    def on_fps_combobox_changed(self, combobox):
+        self.settings.set_enum('frames-per-second', combobox.get_active())
 

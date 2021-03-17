@@ -40,7 +40,29 @@
                     <signal name="changed" handler="on_formats_combobox_changed" swapped="no"/>
                   </object>
                 </child>
-
+              </object>
+            </child>
+            <child>
+              <object class="HdyActionRow">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes">Frames per second</property>
+                <property name="use_underline">True</property>
+                <child>
+                  <object class="GtkComboBoxText" id="fps_combobox">
+                    <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">end</property>
+                    <property name="valign">center</property>
+                    <property name="active">1</property>
+                    <property name="active-id">1</property>
+                    <items>
+                      <item id="0">15</item>
+                      <item id="1">30</item>
+                      <item id="2">60</item>
+                    </items>
+                    <signal name="changed" handler="on_fps_combobox_changed" swapped="no"/>
+                  </object>
+                </child>
               </object>
             </child>
           </object>
