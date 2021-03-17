@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import sys
 import datetime
 from locale import gettext as _
 
@@ -24,6 +23,8 @@ import gi
 
 from .rec import delay_button_change, mouse_switcher, start_recording, on__sound_switch, stop_recording, delete_event
 from .recapp_constants import recapp_constants as constants
+from .preferences import PreferencesWindow
+from .about import AboutWindow
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
@@ -84,17 +85,12 @@ class RecappWindow(Handy.ApplicationWindow):
     _recording_label = Gtk.Template.Child()
     _paused_label = Gtk.Template.Child()
     _sound_on_microphone = Gtk.Template.Child()
+    main_popover = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.application = kwargs["application"]
-
-        # Initialize popover
-        builder = Gtk.Builder()
-        builder.add_from_resource(constants['RESOURCEID'] + '/primary-menu.ui')
-        primaryMenuModel = builder.get_object('primary-menu')
-        self.popover = Gtk.Popover.new_from_model(self._menu_button, primaryMenuModel)
-        self._menu_button.set_popover(self.popover)
+        self._menu_button.set_popover(self.main_popover)
 
         # Initialize recording timer
         GLib.timeout_add(1000, self.refresh_time)
@@ -149,9 +145,9 @@ class RecappWindow(Handy.ApplicationWindow):
         action.connect("activate", self.open_shortcuts_window)
         self.application.add_action(action)
 
-        action = Gio.SimpleAction.new("about", None)
-        action.connect("activate", self.open_about_dialog)
-        self.application.add_action(action)
+        # action = Gio.SimpleAction.new("about", None)
+        # action.connect("activate", self.open_about_dialog)
+        # self.application.add_action(action)
 
         self.currentFolder = self.settings.get_string('path-to-save-video-folder')
 
@@ -302,14 +298,15 @@ class RecappWindow(Handy.ApplicationWindow):
         window.set_transient_for(self)
         window.present()
 
-    def open_about_dialog(self, action, widget):
-        dialog = Gtk.Builder.new_from_resource(constants['RESOURCEID'] + '/about.ui').get_object('about')
-        dialog.set_program_name(_(constants["APPNAME"]))
-        dialog.set_logo_icon_name(constants["APPID"])
-        dialog.set_version(constants["APPVERSION"])
-        dialog.set_transient_for(self)
-        dialog.run()
-        dialog.destroy()
+    @Gtk.Template.Callback()
+    def on_about_button_clicked(self, widget):
+        about = AboutWindow(self)
+        about.set_program_name(_(constants["APPNAME"]))
+        about.set_logo_icon_name(constants["APPID"])
+        about.set_version(constants["APPVERSION"])
+        about.set_transient_for(self)
+        about.run()
+        about.destroy()
 
     def on_delete_event(self, w, h):
         delete_event(self, w, h)
@@ -342,6 +339,15 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, widget):
         stop_recording(self)
+
+    @Gtk.Template.Callback()
+    def onQuit(self, window):
+        print('onQuit')  # TODO this called by click exit button
+
+    @Gtk.Template.Callback()
+    def on_preferences_button_clicked(self, button):
+        preferences = PreferencesWindow(self)
+        preferences.show()
 
     # TODO
     # Connect pause and continue to something

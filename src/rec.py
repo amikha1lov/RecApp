@@ -18,20 +18,18 @@
 import locale
 import os
 import signal
-import sys
 import datetime
 from locale import gettext as _
 from subprocess import PIPE, Popen
 
 import gi
-
 from .recapp_constants import recapp_constants as constants
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('GstPbutils', '1.0')
 gi.require_version('Gdk', '3.0')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk
+from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils
 
 
 def on__frames_changed(self, *args):

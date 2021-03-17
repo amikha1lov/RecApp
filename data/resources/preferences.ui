@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="hdy_preferences_dialog" parent="HdyPreferencesWindow">
+    <property name="can_swipe_back">True</property>
+    <property name="default-width">600</property>
+    <property name="default-height">500</property>
+    <child>
+      <object class="HdyPreferencesPage">
+        <property name="icon_name">document-open-symbolic</property>
+        <property name="visible">True</property>
+        <property name="title" translatable="yes">Video</property>
+        <child>
+          <object class="HdyPreferencesGroup">
+            <property name="visible">True</property>
+            <property name="title" translatable="yes">Output</property>
+            <child>
+              <object class="HdyActionRow">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes">Output folder</property>
+                <property name="use_underline">True</property>
+                <child>
+                  <object class="GtkEntry" id="rename_entry">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <signal name="changed" handler="on_rename_entry_changed" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="HdyActionRow">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes">Output folder</property>
+                <property name="subtitle" translatable="yes">Final output folder that will contain all cleared photos</property>
+                <property name="use_underline">True</property>
+                <child>
+                  <object class="GtkEntry" id="rename_folder_entry">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <signal name="changed" handler="on_rename_folder_entry_changed" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>
