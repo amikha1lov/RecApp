@@ -21,17 +21,26 @@
             <child>
               <object class="HdyActionRow">
                 <property name="visible">True</property>
-                <property name="title" translatable="yes">Delay</property>
+                <property name="title" translatable="yes">Format</property>
                 <property name="use_underline">True</property>
+                <property name="activatable_widget">formats_combobox</property>
                 <child>
-                  <object class="GtkSpinButton" id="delay_button">
+                  <object class="GtkComboBoxText" id="formats_combobox">
                     <property name="visible">True</property>
+                    <property name="can-focus">False</property>
+                    <property name="halign">end</property>
                     <property name="valign">center</property>
-                    <property name="adjustment">delay_adjustment</property>
-                    <property name="digits">0</property>
-                    <signal name="value-changed" handler="on_delay_button_value_changed" swapped="no"/>
+                    <property name="active">0</property>
+                    <property name="active-id">0</property>
+                    <items>
+                      <item id="0">webm</item>
+                      <item id="1">mkv</item>
+                      <item id="2">mp4</item>
+                    </items>
+                    <signal name="changed" handler="on_formats_combobox_changed" swapped="no"/>
                   </object>
                 </child>
+
               </object>
             </child>
           </object>
