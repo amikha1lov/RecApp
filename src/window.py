@@ -20,8 +20,6 @@ import datetime
 from locale import gettext as _
 
 import gi
-
-# from .rec import start_recording, stop_recording
 from .recording import Recording
 from .recapp_constants import recapp_constants as constants
 from .preferences import PreferencesWindow
@@ -56,8 +54,6 @@ class RecappWindow(Handy.ApplicationWindow):
     istimerrunning = False
     # isrecordingwithdelay = False
     isFullscreenMode = True
-    encoders = ["vp8enc", "x264enc"]
-    formats = []
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
     _delay_button = Gtk.Template.Child()
@@ -161,16 +157,7 @@ class RecappWindow(Handy.ApplicationWindow):
                              "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
                              "queue ! filesink location='{4}'{5} "
 
-        for encoder in self.encoders:
-            plugin = Gst.ElementFactory.find(encoder)
-            if plugin:
-                if encoder == "vp8enc":
-                    self.formats.append("webm")
-                    self.formats.append("mkv")
-                elif encoder == "x264enc":
-                    self.formats.append("mp4")
-            else:
-                print('Cannot find Gst plugin')
+        self.recording.find_encoders()
 
     def openFolder(self, notification, action, user_data=None):
         print('openfolder')

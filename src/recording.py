@@ -31,9 +31,12 @@ from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils
 
 
 class Recording:
+
     is_recording = False
     coordinateMode = False
     isrecordingwithdelay = False
+    encoders = ["vp8enc", "x264enc"]
+    formats = []
 
     def __init__(self, window):
         self.win = window
@@ -315,3 +318,15 @@ class Recording:
         bus = playbin.get_bus()
         bus.poll(Gst.MessageType.EOS, Gst.CLOCK_TIME_NONE)
         playbin.set_state(Gst.State.NULL)
+
+    def find_encoders(self):
+        for encoder in self.encoders:
+            plugin = Gst.ElementFactory.find(encoder)
+            if plugin:
+                if encoder == "vp8enc":
+                    self.formats.append("webm")
+                    self.formats.append("mkv")
+                elif encoder == "x264enc":
+                    self.formats.append("mp4")
+            else:
+                print('Cannot find Gst plugin')
