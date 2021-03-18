@@ -40,6 +40,7 @@ class Recording:
 
     def __init__(self, window):
         self.win = window
+        self.cpus = os.cpu_count() - 1
 
     def start_recording(self, *args):
         if self.win.isFullscreenMode:
@@ -218,17 +219,17 @@ class Recording:
         if quality:  # high quality
             if self.recordFormat == "webm" or self.recordFormat == "mkv":
                 self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
-                    self.win.cpus)
+                    self.cpus)
             elif self.recordFormat == "mp4":
                 self.win.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
-                    self.win.cpus)
+                    self.cpus)
         else:
             if self.recordFormat == "webm" or self.recordFormat == "mkv":
                 self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
-                    self.win.cpus)
+                    self.cpus)
             elif self.recordFormat == "mp4":
                 self.win.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
-                    self.win.cpus)
+                    self.cpus)
         return self.quality_video
 
     def on__formats_changed(self, *args):

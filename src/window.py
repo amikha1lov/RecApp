@@ -96,7 +96,7 @@ class RecappWindow(Handy.ApplicationWindow):
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.onQuit)
         self.add_accel_group(accel)
 
-        self.cpus = os.cpu_count() - 1
+        # self.cpus = os.cpu_count() - 1
         # self.connect("delete-event", self.on_delete_event)
 
         self.settings = Gio.Settings.new(constants["APPID"])
