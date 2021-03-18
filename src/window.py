@@ -74,10 +74,10 @@ class RecappWindow(Handy.ApplicationWindow):
         super().__init__(**kwargs)
         self.application = kwargs["application"]
 
-        # Initialize recording timer
-        GLib.timeout_add(1000, self.refresh_time)
-        self.elapsed_time = datetime.timedelta()
-        self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
+        # # Initialize recording timer
+        # GLib.timeout_add(1000, self.refresh_time)
+        # self.elapsed_time = datetime.timedelta()
+        # self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.onQuit)
@@ -246,11 +246,11 @@ class RecappWindow(Handy.ApplicationWindow):
     # def on_quit_app(self, *args):
     #     quit_app(self, *args)  # TODO fix this
 
-    def refresh_time(self):
-        if self.recording.istimerrunning:
-            self.elapsed_time += datetime.timedelta(seconds=1)
-            self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
-        return True
+    # def refresh_time(self):
+    #     if self.recording.istimerrunning:
+    #         self.elapsed_time += datetime.timedelta(seconds=1)
+    #         self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
+    #     return True
 
     @Gtk.Template.Callback()
     def on__record_mouse_switcher_state_set(self, switch, state):

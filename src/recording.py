@@ -51,6 +51,11 @@ class Recording:
         self.istimerrunning = False
         self.isrecordingwithdelay = False
 
+        # Initialize recording timer
+        GLib.timeout_add(1000, self.refresh_time)
+        self.elapsed_time = datetime.timedelta()
+        self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
+
     def start_recording(self, *args):
         if self.win.isFullscreenMode:
             self.coordinateMode = False
@@ -63,6 +68,12 @@ class Recording:
             else:
                 self.on__select_area()  # was self
             self.record(self)
+
+    def refresh_time(self):
+        if self.istimerrunning:
+            self.elapsed_time += datetime.timedelta(seconds=1)
+            self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
+        return True
 
     def record(self, *args):
         if self.win.delayBeforeRecording > 0:
