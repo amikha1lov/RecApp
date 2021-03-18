@@ -98,10 +98,6 @@ class RecappWindow(Handy.ApplicationWindow):
         action.connect("activate", self.openVideoFile)
         self.application.add_action(action)
 
-        action = Gio.SimpleAction.new("selectlocation", None)
-        action.connect("activate", self.open_selectlocation)
-        self.application.add_action(action)
-
         self.currentFolder = self.get_output_folder()
         self.recording.check_display_server()
         self.recording.find_encoders()
@@ -138,36 +134,6 @@ class RecappWindow(Handy.ApplicationWindow):
             dialog.format_secondary_text(str(error))
             dialog.run()
             dialog.destroy()
-
-    def open_selectlocation(self, action, widget):
-        dialog = Gtk.Builder.new_from_resource(constants['RESOURCEID'] + '/selectlocation.ui').get_object(
-            'selectlocation')
-        dialog.set_transient_for(self)
-        dialog.add_buttons(_("_Cancel"), Gtk.ResponseType.CANCEL, _("_Open"), Gtk.ResponseType.ACCEPT)
-        response = dialog.run()
-        if response == Gtk.ResponseType.ACCEPT:
-            directory = dialog.get_filenames()
-        else:
-            directory = None
-        dialog.destroy()
-
-        try:
-            if not os.access(directory[0], os.W_OK) or not directory[0][:5] == '/home':  # not ideal solution
-                error = Gtk.MessageDialog(
-                    transient_for=self,
-                    type=Gtk.MessageType.WARNING,
-                    buttons=Gtk.ButtonsType.OK,
-                    text=_("Inaccessible location")
-                )
-                error.format_secondary_text(
-                    _("Please choose another location and retry.")
-                )
-                error.run()
-                error.destroy()
-            else:
-                self.settings.set_string("path-to-save-video-folder", directory[0])
-        except:
-            return
 
     def get_output_folder(self):
         path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS)  # XDG-VIDEOS
