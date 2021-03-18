@@ -21,7 +21,7 @@ from locale import gettext as _
 
 import gi
 
-from .rec import start_recording, stop_recording
+# from .rec import start_recording, stop_recording
 from .recording import Recording
 from .recapp_constants import recapp_constants as constants
 from .preferences import PreferencesWindow
@@ -50,11 +50,11 @@ class RecappWindow(Handy.ApplicationWindow):
     recordFormat = ""
     widthArea = 0
     heightArea = 0
-    coordinateMode = False
+    # coordinateMode = False
     isrecording = False
     iscancelled = False
     istimerrunning = False
-    isrecordingwithdelay = False
+    # isrecordingwithdelay = False
     isFullscreenMode = True
     encoders = ["vp8enc", "x264enc"]
     formats = []
@@ -83,7 +83,9 @@ class RecappWindow(Handy.ApplicationWindow):
     _menu_stack_revealer = Gtk.Template.Child()
     _delay_label = Gtk.Template.Child()
     _paused_start_stack_box = Gtk.Template.Child()
-
+    # _sound_on_switch = Gtk.Template.Child()
+    _sound_on_computer = Gtk.Template.Child()
+    _main_screen_box = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -103,9 +105,10 @@ class RecappWindow(Handy.ApplicationWindow):
 
         self.settings = Gio.Settings.new(constants["APPID"])
         self.delayBeforeRecording = self.settings.get_int('delay')
+        self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
         self._sound_on_computer.set_active(self.settings.get_boolean('sound-on-computer'))
         self._sound_on_microphone.set_active(self.settings.get_boolean('sound-on-microphone'))
-        self._record_mouse_switcher.set_active(self.settings.get_boolean('record-mouse-cursor-switch'))
+        self._record_mouse_switcher.set_active(self.recordMouse)
         self._delay_button.set_value(self.delayBeforeRecording)
 
         self.recording = Recording(self)
@@ -168,14 +171,6 @@ class RecappWindow(Handy.ApplicationWindow):
                     self.formats.append("mp4")
             else:
                 print('Cannot find Gst plugin')
-
-    def playsound(self, sound):
-        playbin = Gst.ElementFactory.make('playbin', 'playbin')
-        playbin.props.uri = 'resource://' + sound
-        set_result = playbin.set_state(Gst.State.PLAYING)
-        bus = playbin.get_bus()
-        bus.poll(Gst.MessageType.EOS, Gst.CLOCK_TIME_NONE)
-        playbin.set_state(Gst.State.NULL)
 
     def openFolder(self, notification, action, user_data=None):
         print('openfolder')
@@ -305,11 +300,11 @@ class RecappWindow(Handy.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__record_button_clicked(self, widget):
-        start_recording(self)
+        self.recording.start_recording()
 
     @Gtk.Template.Callback()
     def on__stop_record_button_clicked(self, widget):
-        stop_recording(self)
+        self.recording.stop_recording()
 
     @Gtk.Template.Callback()
     def onQuit(self, *args):
