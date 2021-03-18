@@ -56,6 +56,8 @@ class Recording:
         self.elapsed_time = datetime.timedelta()
         self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
+        self.displayServer = GLib.getenv('XDG_SESSION_TYPE').lower()
+
     def start_recording(self, *args):
         if self.win.isFullscreenMode:
             self.coordinateMode = False
@@ -63,7 +65,7 @@ class Recording:
         elif self.win.isWindowMode:
             print('window mode')
         else:
-            if self.win.displayServer == "wayland":
+            if self.displayServer == "wayland":
                 self.on__select_area_wayland()  # was self
             else:
                 self.on__select_area()  # was self
@@ -85,8 +87,34 @@ class Recording:
         else:
             self.record_logic(self, *args)
 
+    def check_display_server(self):
+        if self.displayServer == "wayland":
+            # self.win._sound_rowbox.set_visible(False)
+            # self.win._sound_on_computer.set_active(False)
+            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+            if GLib.getenv('XDG_CURRENT_DESKTOP') != 'GNOME':
+                self.win._record_button.set_sensitive(False)
+                notification = Gio.Notification.new(constants["APPNAME"])
+                notification.set_body(_("Sorry, Wayland session is not supported yet."))
+                self.win.application.send_notification(None, notification)
+            else:
+                self.GNOMEScreencast = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                    "org.gnome.Shell.Screencast",
+                    "/org/gnome/Shell/Screencast",
+                    "org.gnome.Shell.Screencast",
+                    None)
+                self.GNOMESelectArea = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
+                    "org.gnome.Shell.Screenshot",
+                    "/org/gnome/Shell/Screenshot",
+                    "org.gnome.Shell.Screenshot",
+                    None)
+        else:
+            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw," \
+                             "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
+                             "queue ! filesink location='{4}'{5} "
+
     def on__select_area_wayland(self):
-        self.waylandcoordinates = self.win.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
+        self.waylandcoordinates = self.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
         self.coordinateMode = True
 
     def on__select_area(self):
@@ -167,10 +195,10 @@ class Recording:
                 self.mux = "mp4mux"
                 self.extension = ".mp4"
 
-            if self.win.displayServer == "wayland":
+            if self.displayServer == "wayland":
                 RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
                 if self.coordinateMode is True:
-                    self.win.GNOMEScreencast.call_sync(
+                    self.GNOMEScreencast.call_sync(
                         "ScreencastArea",
                         GLib.Variant.new_tuple(
                             GLib.Variant("i", self.waylandcoordinates[0]),
@@ -189,7 +217,7 @@ class Recording:
                         None)
                     self.coordinateMode = False
                 else:
-                    self.win.GNOMEScreencast.call_sync(
+                    self.GNOMEScreencast.call_sync(
                         "Screencast",
                         GLib.Variant.new_tuple(
                             GLib.Variant.new_string(self.win.fileName + self.extension),
@@ -203,9 +231,11 @@ class Recording:
                         -1,
                         None)
             else:
-                if self.coordinateMode is True:
-                    video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + "! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale ! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7} "
-                    if self.recordSoundOn is True:
+                if self.coordinateMode:
+                    video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + \
+                                "! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale " \
+                                "! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7} "
+                    if self.recordSoundOn:
                         self.video = Popen(
                             video_str.format(self.win.recordMouse, self.widthArea, self.heightArea,
                                              self.videoFrames, self.quality_video, self.mux, self.win.fileName,
@@ -219,14 +249,14 @@ class Recording:
 
                     self.coordinateMode = False
                 else:
-                    if self.recordSoundOn is True:
+                    if self.recordSoundOn:
                         self.video = Popen(
-                            self.win.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
+                            self.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
                                                       self.mux, self.win.fileName, self.extension) + self.soundOn,
                             shell=True)
                     else:
                         self.video = Popen(
-                            self.win.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
+                            self.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
                                                   self.mux, self.win.fileName, self.extension), shell=True)
 
             self.isrecording = True
@@ -293,14 +323,8 @@ class Recording:
             self.win.settings.set_boolean('sound-on-computer', False)
 
     def stop_recording(self, *args):
-        if self.win.displayServer == "wayland":
-            self.win.GNOMEScreencast.call_sync(
-                "StopScreencast",
-                None,
-                Gio.DBusCallFlags.NONE,
-                -1,
-                None)
-
+        if self.displayServer == "wayland":
+            self.GNOMEScreencast.call_sync("StopScreencast", None, Gio.DBusCallFlags.NONE, -1, None)
         else:
             self.video.send_signal(signal.SIGINT)
 
@@ -320,8 +344,8 @@ class Recording:
         self.win._menu_stack.set_visible_child(self.win._menu_button)
         self.win.label_context.remove_class("recording")
 
-        self.win.elapsed_time = datetime.timedelta()
-        self.win._time_recording_label.set_label(str(self.win.elapsed_time).replace(":", "∶"))
+        self.elapsed_time = datetime.timedelta()
+        self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
     def quit_app(self, *args):
         if self.isrecording:

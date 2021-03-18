@@ -74,11 +74,6 @@ class RecappWindow(Handy.ApplicationWindow):
         super().__init__(**kwargs)
         self.application = kwargs["application"]
 
-        # # Initialize recording timer
-        # GLib.timeout_add(1000, self.refresh_time)
-        # self.elapsed_time = datetime.timedelta()
-        # self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
-
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.onQuit)
         self.add_accel_group(accel)
@@ -108,40 +103,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self.application.add_action(action)
 
         self.currentFolder = self.get_output_folder()
-        self.displayServer = GLib.getenv('XDG_SESSION_TYPE').lower()
-
-        if self.displayServer == "wayland":
-            # self._sound_rowbox.set_visible(False)
-            # self._sound_on_computer.set_active(False)
-            self.bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            if GLib.getenv('XDG_CURRENT_DESKTOP') != 'GNOME':
-                self._record_button.set_sensitive(False)
-                notification = Gio.Notification.new(constants["APPNAME"])
-                notification.set_body(_("Sorry, Wayland session is not supported yet."))
-
-                self.application.send_notification(None, notification)
-            else:
-                self.GNOMEScreencast = Gio.DBusProxy.new_sync(
-                    self.bus,
-                    Gio.DBusProxyFlags.NONE,
-                    None,
-                    "org.gnome.Shell.Screencast",
-                    "/org/gnome/Shell/Screencast",
-                    "org.gnome.Shell.Screencast",
-                    None)
-                self.GNOMESelectArea = Gio.DBusProxy.new_sync(
-                    self.bus,
-                    Gio.DBusProxyFlags.NONE,
-                    None,
-                    "org.gnome.Shell.Screenshot",
-                    "/org/gnome/Shell/Screenshot",
-                    "org.gnome.Shell.Screenshot",
-                    None)
-        else:
-            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw," \
-                             "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
-                             "queue ! filesink location='{4}'{5} "
-
+        self.recording.check_display_server()
         self.recording.find_encoders()
 
     def openFolder(self, notification, action, user_data=None):
@@ -245,12 +207,6 @@ class RecappWindow(Handy.ApplicationWindow):
 
     # def on_quit_app(self, *args):
     #     quit_app(self, *args)  # TODO fix this
-
-    # def refresh_time(self):
-    #     if self.recording.istimerrunning:
-    #         self.elapsed_time += datetime.timedelta(seconds=1)
-    #         self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
-    #     return True
 
     @Gtk.Template.Callback()
     def on__record_mouse_switcher_state_set(self, switch, state):
