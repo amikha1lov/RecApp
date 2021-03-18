@@ -43,6 +43,7 @@ class Recording:
         self.quality_video = ""
         self.coordinateArea = ""
         self.recordFormat = ""
+        self.fileName = ""
         self.widthArea = 0
         self.heightArea = 0
         self.coordinateMode = False
@@ -181,7 +182,7 @@ class Recording:
             self.soundOn = self.on__sound_switch(self, *args)
             fileNameTime = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
             videoFolder = self.win.settings.get_string('path-to-save-video-folder')
-            self.win.fileName = os.path.join(videoFolder, fileNameTime)
+            self.fileName = os.path.join(videoFolder, fileNameTime)
 
             if self.recordFormat == "webm":
                 self.mux = "webmmux"
@@ -205,7 +206,7 @@ class Recording:
                             GLib.Variant("i", self.waylandcoordinates[1]),
                             GLib.Variant("i", self.waylandcoordinates[2]),
                             GLib.Variant("i", self.waylandcoordinates[3]),
-                            GLib.Variant.new_string(self.win.fileName + self.extension),
+                            GLib.Variant.new_string(self.fileName + self.extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", int(self.videoFrames)),
                                           "draw-cursor": GLib.Variant("b", self.win.recordMouse),
@@ -220,7 +221,7 @@ class Recording:
                     self.GNOMEScreencast.call_sync(
                         "Screencast",
                         GLib.Variant.new_tuple(
-                            GLib.Variant.new_string(self.win.fileName + self.extension),
+                            GLib.Variant.new_string(self.fileName + self.extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", int(self.videoFrames)),
                                           "draw-cursor": GLib.Variant("b", self.win.recordMouse),
@@ -238,13 +239,13 @@ class Recording:
                     if self.recordSoundOn:
                         self.video = Popen(
                             video_str.format(self.win.recordMouse, self.widthArea, self.heightArea,
-                                             self.videoFrames, self.quality_video, self.mux, self.win.fileName,
+                                             self.videoFrames, self.quality_video, self.mux, self.fileName,
                                              self.extension) + self.soundOn, shell=True)
 
                     else:
                         self.video = Popen(
                             video_str.format(self.win.recordMouse, self.widthArea, self.heightArea,
-                                             self.videoFrames, self.quality_video, self.mux, self.win.fileName,
+                                             self.videoFrames, self.quality_video, self.mux, self.fileName,
                                              self.extension), shell=True)
 
                     self.coordinateMode = False
@@ -252,12 +253,12 @@ class Recording:
                     if self.recordSoundOn:
                         self.video = Popen(
                             self.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
-                                                      self.mux, self.win.fileName, self.extension) + self.soundOn,
+                                                      self.mux, self.fileName, self.extension) + self.soundOn,
                             shell=True)
                     else:
                         self.video = Popen(
                             self.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
-                                                  self.mux, self.win.fileName, self.extension), shell=True)
+                                                  self.mux, self.fileName, self.extension), shell=True)
 
             self.isrecording = True
             self.istimerrunning = True
