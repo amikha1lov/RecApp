@@ -22,7 +22,6 @@ recapp_sources = [
   'main.py',
   'window.py',
   'recapp_constants.py',
-  'rec.py',
   'preferences.py',
   'about.py',
   'shortcuts.py',
