@@ -40,19 +40,6 @@ from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Handy
 class RecappWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'RecAppWindow'
 
-    soundOn = ""
-    mux = ""
-    extension = ""
-    quality_video = ""
-    coordinateArea = ""
-    recordFormat = ""
-    widthArea = 0
-    heightArea = 0
-    # coordinateMode = False
-    isrecording = False
-    iscancelled = False
-    istimerrunning = False
-    # isrecordingwithdelay = False
     isFullscreenMode = True
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
@@ -95,8 +82,6 @@ class RecappWindow(Handy.ApplicationWindow):
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.onQuit)
         self.add_accel_group(accel)
-
-        # self.cpus = os.cpu_count() - 1
         # self.connect("delete-event", self.on_delete_event)
 
         self.settings = Gio.Settings.new(constants["APPID"])
@@ -179,7 +164,7 @@ class RecappWindow(Handy.ApplicationWindow):
     def openVideoFile(self, notification, action, user_data=None):
         try:
             Gio.AppInfo.launch_default_for_uri(
-                "file:///" + self.fileName.lstrip("/") + self.extension
+                "file:///" + self.fileName.lstrip("/") + self.recording.extension
             )
 
         except Exception as error:
@@ -262,7 +247,7 @@ class RecappWindow(Handy.ApplicationWindow):
     #     quit_app(self, *args)  # TODO fix this
 
     def refresh_time(self):
-        if self.istimerrunning:
+        if self.recording.istimerrunning:
             self.elapsed_time += datetime.timedelta(seconds=1)
             self._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
         return True
@@ -296,8 +281,8 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def onQuit(self, *args):
         print('quit')
-        if self.isrecording:
-            stop_recording(self)
+        if self.recording.isrecording:
+            self.recording.stop_recording(self)
         self.destroy()  # TODO this called by click exit button
 
     @Gtk.Template.Callback()
@@ -313,18 +298,18 @@ class RecappWindow(Handy.ApplicationWindow):
         self._menu_stack.set_visible_child(self._continue_record_button)
         self._paused_start_stack.set_visible_child(self._paused_label)
         self.label_context.remove_class("recording")
-        self.istimerrunning = False
+        self.recording.istimerrunning = False
 
     @Gtk.Template.Callback()
     def on__continue_record_button_clicked(self, widget):
         self._menu_stack.set_visible_child(self._pause_record_button)
         self._paused_start_stack.set_visible_child(self._recording_label)
         self.label_context.add_class("recording")
-        self.istimerrunning = True
+        self.recording.istimerrunning = True
 
     @Gtk.Template.Callback()
     def on__cancel_button_clicked(self, widget):
-        cancel_delay(self)
+        self.recording.cancel_delay(self)
 
     # TODO
     # Connect window mode to something
