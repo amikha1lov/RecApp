@@ -12,12 +12,11 @@
     <property name="default-height">500</property>
     <child>
       <object class="HdyPreferencesPage">
-        <property name="icon_name">document-open-symbolic</property>
         <property name="visible">True</property>
-        <property name="title" translatable="yes">Video</property>
         <child>
           <object class="HdyPreferencesGroup">
             <property name="visible">True</property>
+            <property name="title" translatable="yes">Video</property>
             <child>
               <object class="HdyActionRow">
                 <property name="visible">True</property>
@@ -77,6 +76,28 @@
                     <property name="visible">True</property>
                     <property name="valign">center</property>
                     <signal name="state_set" handler="on_high_quality_switcher_state_set" swapped="no"/>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="HdyPreferencesGroup">
+            <property name="visible">True</property>
+            <property name="title" translatable="yes">Sound</property>
+            <child>
+              <object class="HdyActionRow">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes">Startup sound </property>
+                <property name="subtitle" translatable="yes">Plays sound on record</property>
+                <property name="use_underline">True</property>
+                <property name="activatable_widget">startup_sound_switcher</property>
+                <child>
+                  <object class="GtkSwitch" id="startup_sound_switcher">
+                    <property name="visible">True</property>
+                    <property name="valign">center</property>
+                    <signal name="state_set" handler="on_startup_sound_switcher_state_set" swapped="no"/>
                   </object>
                 </child>
               </object>

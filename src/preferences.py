@@ -29,6 +29,7 @@ class PreferencesWindow(Handy.PreferencesWindow):
     formats_combobox = Gtk.Template.Child()
     fps_combobox = Gtk.Template.Child()
     high_quality_switcher = Gtk.Template.Child()
+    startup_sound_switcher = Gtk.Template.Child()
 
     def __init__(self, *args, **kwargs):
         super().__init__(**kwargs)
@@ -36,6 +37,7 @@ class PreferencesWindow(Handy.PreferencesWindow):
         self.formats_combobox.set_active(self.settings.get_enum('video-format'))
         self.fps_combobox.set_active(self.settings.get_enum('frames-per-second'))
         self.high_quality_switcher.set_active(self.settings.get_boolean('high-video-quality'))
+        self.startup_sound_switcher.set_active(self.settings.get_boolean('sound-on-startup'))
 
     @Gtk.Template.Callback()
     def on_formats_combobox_changed(self, combobox):
@@ -48,4 +50,8 @@ class PreferencesWindow(Handy.PreferencesWindow):
     @Gtk.Template.Callback()
     def on_high_quality_switcher_state_set(self, switcher, state):
         self.settings.set_boolean('high-video-quality', state)
+
+    @Gtk.Template.Callback()
+    def on_startup_sound_switcher_state_set(self, switcher, state):
+        self.settings.set_boolean('sound-on-startup', state)
 

@@ -61,10 +61,6 @@ class Recording:
         output_folder = self.settings.get_string('path-to-save-video-folder')
         self.filename = os.path.join(output_folder, filename_time)
 
-        self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw," \
-                         "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
-                         "queue ! filesink location='{4}'{5} "
-
     def start_recording(self, *args):
         if self.win.isFullscreenMode:
             self.record()
@@ -201,35 +197,28 @@ class Recording:
                         None)
             else:
                 if coords:
-                    video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + coords + \
-                                "! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale " \
-                                "! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7} "
+                    video_str = f"gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={mouse_record} " + coords + \
+                                f"! videoscale ! video/x-raw,width={self.width_area},height={self.height_area}, " \
+                                f"framerate={frames}/1 ! queue ! videoscale ! videoconvert ! {output_quality} " \
+                                f"! queue ! {mux} name=mux ! queue ! filesink location='{self.filename}'{self.extension} "
                     if sound_record:
-                        self.video = Popen(
-                            video_str.format(mouse_record, self.width_area, self.height_area,
-                                             frames, output_quality, mux, self.filename,
-                                             self.extension) + output_sound_string, shell=True)
-
+                        self.video = Popen(video_str + output_sound_string, shell=True)
                     else:
-                        self.video = Popen(
-                            video_str.format(mouse_record, self.width_area, self.height_area,
-                                             frames, output_quality, mux, self.filename,
-                                             self.extension), shell=True)
+                        self.video = Popen(video_str, shell=True)
 
                 else:
+                    video_str = f"gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={mouse_record} ! " \
+                                f"video/x-raw, framerate={frames}/1 ! queue ! videoscale ! videoconvert ! {output_quality} " \
+                                f"! queue ! {mux} name=mux ! queue ! filesink location='{self.filename}'{self.extension} "
                     if sound_record:
-                        self.video = Popen(
-                            self.video_str.format(mouse_record, frames, output_quality,
-                                                  mux, self.filename, self.extension) + output_sound_string,
-                            shell=True)
+                        self.video = Popen(video_str + output_sound_string, shell=True)
                     else:
-                        self.video = Popen(
-                            self.video_str.format(mouse_record, frames, output_quality,
-                                                  mux, self.filename, self.extension), shell=True)
+                        self.video = Popen(video_str, shell=True)
 
             self.is_recording = True
             self.is_timer_running = True
-            self.playsound('/com/github/amikha1lov/RecApp/sounds/chime.ogg')
+            if self.settings.get_boolean('sound-on-startup'):
+                self.playsound('/com/github/amikha1lov/RecApp/sounds/chime.ogg')
 
     def get_output_quality_string(self):
         quality = self.settings.get_boolean("high-video-quality")

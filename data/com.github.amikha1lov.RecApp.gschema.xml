@@ -36,6 +36,11 @@
       <summary>Enabling sound from microphone</summary>
       <description>Enabling sound from microphone recording.</description>
     </key>
+      <key type="b" name="sound-on-startup">
+      <default>true</default>
+      <summary>Enabling startup sound</summary>
+      <description>Enabling sound when record starts.</description>
+    </key>
       <key type="b" name="sound-on-computer">
       <default>false</default>
       <summary>Enabling sound from computer</summary>
