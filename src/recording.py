@@ -136,7 +136,7 @@ class Recording:
             self.width_area = endx - startx + 2
             self.height_area = endy - starty + 1
 
-        self.coordinate_area = "startx={} starty={} endx={} endy={}".format(startx, starty, endx, endy)
+        self.coordinate_area = f"startx={startx} starty={starty} endx={endx} endy={endy}"
         self.coordinate_mode = True
 
     def delay(self):
@@ -259,19 +259,23 @@ class Recording:
     def get_output_quality_string(self):
         quality = self.settings.get_boolean("high-video-quality")
         if quality:  # high quality
-            if self.output_format == "webm" or self.output_format == "mkv":
-                quality_video = f"vp8enc min_quantizer=25 max_quantizer=25 cpu-used={self.cpus} cq_level=13 " \
-                                     f"deadline=1000000 threads={self.cpus}"
-            elif self.output_format == "mp4":
-                quality_video = f"x264enc qp-min=17 qp-max=17 speed-preset=1 threads={self.cpus} ! h264parse ! " \
-                                     "video/x-h264, profile=baseline"
+            min_quantizer = 25
+            max_quantizer = 25
+            qp_min = 17
+            qp_max = 17
         else:
-            if self.output_format == "webm" or self.output_format == "mkv":
-                quality_video = f"vp8enc min_quantizer=5 max_quantizer=10 cpu-used={self.cpus} cq_level=13 " \
-                                     f"deadline=1000000 threads={self.cpus}"
-            elif self.output_format == "mp4":
-                quality_video = f"x264enc qp-min=5 qp-max=5 speed-preset=1 threads={self.cpus} ! h264parse ! " \
-                                     "video/x-h264, profile=baseline"
+            min_quantizer = 5
+            max_quantizer = 10
+            qp_min = 5
+            qp_max = 5
+
+        if self.output_format == "webm" or self.output_format == "mkv":
+            quality_video = f"vp8enc min_quantizer={min_quantizer} max_quantizer={max_quantizer} cpu-used={self.cpus} cq_level=13 " \
+                            f"deadline=1000000 threads={self.cpus}"
+        elif self.output_format == "mp4":
+            quality_video = f"x264enc qp-min={qp_min} qp-max={qp_max} speed-preset=1 threads={self.cpus} ! h264parse ! " \
+                            "video/x-h264, profile=baseline"
+
         return quality_video
 
     def get_output_format(self):
