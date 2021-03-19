@@ -43,7 +43,6 @@ class Recording:
         self.is_cancelled = False
         self.is_timer_running = False
         self.is_recording_with_delay = False
-        self.sound_record = self.settings.get_boolean('sound-on-computer')
 
         # Initialize recording timer
         GLib.timeout_add(1000, self.refresh_time)
@@ -56,7 +55,6 @@ class Recording:
             self.GNOMEScreencast, self.GNOMESelectArea = self.get_gnome_screencast()
 
         self.output_format = self.get_output_format()
-        self.output_quality = self.get_output_quality_string()
         self.extension = '.' + self.output_format
 
         filename_time = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
@@ -76,7 +74,7 @@ class Recording:
             if self.is_wayland:
                 coords = self.get_select_area(wayland=True)
             else:
-                coords = self.set_select_area()
+                coords = self.get_select_area()
             self.record(coords)
 
     def refresh_time(self):
@@ -101,12 +99,12 @@ class Recording:
             "/org/gnome/Shell/Screencast",
             "org.gnome.Shell.Screencast", None
         ),
-        Gio.DBusProxy.new_sync(
-            bus, Gio.DBusProxyFlags.NONE, None,
-            "org.gnome.Shell.Screenshot",
-            "/org/gnome/Shell/Screenshot",
-            "org.gnome.Shell.Screenshot", None
-        ))
+                Gio.DBusProxy.new_sync(
+                    bus, Gio.DBusProxyFlags.NONE, None,
+                    "org.gnome.Shell.Screenshot",
+                    "/org/gnome/Shell/Screenshot",
+                    "org.gnome.Shell.Screenshot", None
+                ))
 
     def get_select_area(self, wayland=False):
         if wayland:
@@ -161,11 +159,14 @@ class Recording:
             self.is_cancelled = False
         else:
             self.win.prepare_for_record()
+            sound_record = self.settings.get_boolean('sound-on-computer')
+            mouse_record = self.settings.get_boolean('record-mouse-cursor-switch')
             frames = self.get_frames()
             output_sound_string = self.get_sound_string()
+            output_quality = self.get_output_quality_string()
             mux = self.get_mux()
             if self.is_wayland:
-                RecorderPipeline = "{0} ! queue ! {1}".format(self.output_quality, mux)
+                RecorderPipeline = "{0} ! queue ! {1}".format(output_quality, mux)
                 if coords:
                     self.GNOMEScreencast.call_sync(
                         "ScreencastArea",
@@ -177,7 +178,7 @@ class Recording:
                             GLib.Variant.new_string(self.filename + self.extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", frames),
-                                          "draw-cursor": GLib.Variant("b", self.win.recordMouse),
+                                          "draw-cursor": GLib.Variant("b", mouse_record),
                                           "pipeline": GLib.Variant("s", RecorderPipeline)}
                                          ),
                         ),
@@ -191,7 +192,7 @@ class Recording:
                             GLib.Variant.new_string(self.filename + self.extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", frames),
-                                          "draw-cursor": GLib.Variant("b", self.win.recordMouse),
+                                          "draw-cursor": GLib.Variant("b", mouse_record),
                                           "pipeline": GLib.Variant("s", RecorderPipeline)}
                                          ),
                         ),
@@ -203,27 +204,27 @@ class Recording:
                     video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + coords + \
                                 "! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale " \
                                 "! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7} "
-                    if self.sound_record:
+                    if sound_record:
                         self.video = Popen(
-                            video_str.format(self.win.recordMouse, self.width_area, self.height_area,
-                                             frames, self.output_quality, mux, self.filename,
+                            video_str.format(mouse_record, self.width_area, self.height_area,
+                                             frames, output_quality, mux, self.filename,
                                              self.extension) + output_sound_string, shell=True)
 
                     else:
                         self.video = Popen(
-                            video_str.format(self.win.recordMouse, self.width_area, self.height_area,
-                                             frames, self.output_quality, mux, self.filename,
+                            video_str.format(mouse_record, self.width_area, self.height_area,
+                                             frames, output_quality, mux, self.filename,
                                              self.extension), shell=True)
 
                 else:
-                    if self.sound_record:
+                    if sound_record:
                         self.video = Popen(
-                            self.video_str.format(self.win.recordMouse, frames, self.output_quality,
-                                                      mux, self.filename, self.extension) + output_sound_string,
+                            self.video_str.format(mouse_record, frames, output_quality,
+                                                  mux, self.filename, self.extension) + output_sound_string,
                             shell=True)
                     else:
                         self.video = Popen(
-                            self.video_str.format(self.win.recordMouse, frames, self.output_quality,
+                            self.video_str.format(mouse_record, frames, output_quality,
                                                   mux, self.filename, self.extension), shell=True)
 
             self.is_recording = True
@@ -287,13 +288,13 @@ class Recording:
             sound_source = pulse.sink_list()[0].name
             if self.output_format == "webm" or self.output_format == "mkv":
                 sound_output_string = "pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! " \
-                               "'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! " \
-                               "audioconvert ! vorbisenc ! queue ! mux.".format(sound_source)
+                                      "'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! " \
+                                      "audioconvert ! vorbisenc ! queue ! mux.".format(sound_source)
 
             elif self.output_format == "mp4":
                 sound_output_string = "pulsesrc buffer-time=20000000 device='{}.monitor' ! 'audio/x-raw,channels=2," \
-                               "rate=48000' ! queue ! audioconvert ! queue ! opusenc bitrate=512000 ! queue ! " \
-                               "mux.".format(sound_source)
+                                      "rate=48000' ! queue ! audioconvert ! queue ! opusenc bitrate=512000 ! queue ! " \
+                                      "mux.".format(sound_source)
         return sound_output_string
 
     def stop_recording(self):

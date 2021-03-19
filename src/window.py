@@ -79,10 +79,10 @@ class RecappWindow(Handy.ApplicationWindow):
 
         self.settings = Gio.Settings.new(constants["APPID"])
         self.delayBeforeRecording = self.settings.get_int('delay')
-        self.recordMouse = self.settings.get_boolean('record-mouse-cursor-switch')
+        self.record_mouse = self.settings.get_boolean('record-mouse-cursor-switch')
         self._sound_on_computer.set_active(self.settings.get_boolean('sound-on-computer'))
         self._sound_on_microphone.set_active(self.settings.get_boolean('sound-on-microphone'))
-        self._record_mouse_switcher.set_active(self.recordMouse)
+        self._record_mouse_switcher.set_active(self.record_mouse)
         self._delay_button.set_value(self.delayBeforeRecording)
 
         self.recording = Recording(self)
@@ -200,7 +200,7 @@ class RecappWindow(Handy.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__record_mouse_switcher_state_set(self, switch, state):
-        self.recordMouse = state
+        self.record_mouse = state
         self.settings.set_boolean('record-mouse-cursor-switch', state)
 
     @Gtk.Template.Callback()
@@ -232,6 +232,7 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on_preferences_button_clicked(self, button):
         preferences = PreferencesWindow(self)
+        preferences.set_transient_for(self)
         preferences.show()
 
     # TODO
@@ -242,14 +243,14 @@ class RecappWindow(Handy.ApplicationWindow):
         self._menu_stack.set_visible_child(self._continue_record_button)
         self._paused_start_stack.set_visible_child(self._paused_label)
         self.label_context.remove_class("recording")
-        self.recording.istimerrunning = False
+        self.recording.is_timer_running = False
 
     @Gtk.Template.Callback()
     def on__continue_record_button_clicked(self, widget):
         self._menu_stack.set_visible_child(self._pause_record_button)
         self._paused_start_stack.set_visible_child(self._recording_label)
         self.label_context.add_class("recording")
-        self.recording.istimerrunning = True
+        self.recording.is_timer_running = True
 
     @Gtk.Template.Callback()
     def on__cancel_button_clicked(self, widget):
