@@ -40,16 +40,16 @@ class Recording:
         self.mux = ""
         self.extension = ""
         self.quality_video = ""
-        self.coordinateArea = ""
-        self.recordFormat = ""
-        self.fileName = ""
-        self.widthArea = 0
-        self.heightArea = 0
-        self.coordinateMode = False
-        self.isrecording = False
-        self.iscancelled = False
-        self.istimerrunning = False
-        self.isrecordingwithdelay = False
+        self.coordinate_area = ""
+        self.record_format = ""
+        self.filename = ""
+        self.width_area = 0
+        self.height_area = 0
+        self.coordinate_mode = False
+        self.is_recording = False
+        self.is_cancelled = False
+        self.is_timer_running = False
+        self.is_recording_with_delay = False
 
         # Initialize recording timer
         GLib.timeout_add(1000, self.refresh_time)
@@ -67,7 +67,6 @@ class Recording:
 
     def start_recording(self, *args):
         if self.win.isFullscreenMode:
-            self.coordinateMode = False
             self.record(self)
         elif self.win.isWindowMode:
             print('window mode')
@@ -79,7 +78,7 @@ class Recording:
             self.record(self)
 
     def refresh_time(self):
-        if self.istimerrunning:
+        if self.is_timer_running:
             self.elapsed_time += datetime.timedelta(seconds=1)
             self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
         return True
@@ -91,7 +90,7 @@ class Recording:
             self.win._main_stack.set_visible_child(self.win._delay_box)
             self.win._record_stop_record_button_stack.set_visible_child(self.win._cancel_button)
             self.win._menu_stack_revealer.set_reveal_child(False)
-            self.isrecordingwithdelay = True
+            self.is_recording_with_delay = True
             self.delay(self, *args)
         else:
             self.record_logic(self, *args)
@@ -112,8 +111,8 @@ class Recording:
         ))
 
     def on__select_area_wayland(self):
-        self.waylandcoordinates = self.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
-        self.coordinateMode = True
+        self.wayland_coordinates = self.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
+        self.coordinate_mode = True
 
     def on__select_area(self):
         coordinate = Popen("slop -n -c 0.3,0.4,0.6,0.4 -l -t 0 -f '%w %h %x %y'", shell=True,
@@ -128,20 +127,20 @@ class Recording:
         startx, starty, endx, endy = listCoor[2], listCoor[3], listCoor[2] + listCoor[0] - 1, listCoor[
             1] + listCoor[3] - 1
         if listCoor[0] % 2 == 0 and listCoor[1] % 2 == 0:
-            self.widthArea = endx - startx + 1
+            self.width_area = endx - startx + 1
             self.heightArea = endy - starty + 1
         elif listCoor[0] % 2 == 0 and listCoor[1] % 2 == 1:
-            self.widthArea = endx - startx + 1
+            self.width_area = endx - startx + 1
             self.heightArea = endy - starty + 2
         elif listCoor[0] % 2 == 1 and listCoor[1] % 2 == 1:
-            self.widthArea = endx - startx
+            self.width_area = endx - startx
             self.heightArea = endy - starty
         elif listCoor[0] % 2 == 1 and listCoor[1] % 2 == 0:
-            self.widthArea = endx - startx + 2
+            self.width_area = endx - startx + 2
             self.heightArea = endy - starty + 1
 
-        self.coordinateArea = "startx={} starty={} endx={} endy={}".format(startx, starty, endx, endy)
-        self.coordinateMode = True
+        self.coordinate_area = "startx={} starty={} endx={} endy={}".format(startx, starty, endx, endy)
+        self.coordinate_mode = True
 
     def delay(self, *args):
         self.win.time_delay = (self.win.delayBeforeRecording * 100)
@@ -152,7 +151,7 @@ class Recording:
                 GLib.timeout_add(100, countdown)
                 self.win._delay_label.set_label(str((self.win.time_delay // 100) + 1))
             else:
-                self.isrecordingwithdelay = False
+                self.is_recording_with_delay = False
                 self.win._menu_stack_revealer.set_reveal_child(True)
                 self.record_logic(self, *args)
                 self.win.time_delay = (self.win.delayBeforeRecording * 100)
@@ -160,11 +159,11 @@ class Recording:
         countdown(*args)
 
     def record_logic(self, *args):
-        if self.iscancelled:
+        if self.is_cancelled:
             self.win._main_stack.set_visible_child(self.win._main_screen_box)
             self.win._record_stop_record_button_stack.set_visible_child(self.win._record_button)
             self.win._menu_stack.set_visible_child(self.win._menu_button)
-            self.iscancelled = False
+            self.is_cancelled = False
         else:
             self.win._record_stop_record_button_stack.set_visible_child(self.win._stop_record_button)
             self.win._main_stack.set_visible_child(self.win._paused_start_stack_box)
@@ -174,36 +173,36 @@ class Recording:
 
             self.quality_video = self.on__quality_changed(self, *args)
             self.videoFrames = self.on__frames_changed(self, *args)
-            self.recordFormat = self.on__formats_changed(self, *args)
+            self.record_format = self.on__formats_changed(self, *args)
 
             self.soundOn = self.on__sound_switch(self, *args)
             fileNameTime = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
             videoFolder = self.win.settings.get_string('path-to-save-video-folder')
-            self.fileName = os.path.join(videoFolder, fileNameTime)
+            self.filename = os.path.join(videoFolder, fileNameTime)
 
-            if self.recordFormat == "webm":
+            if self.record_format == "webm":
                 self.mux = "webmmux"
                 self.extension = ".webm"
 
-            elif self.recordFormat == "mkv":
+            elif self.record_format == "mkv":
                 self.mux = "matroskamux"
                 self.extension = ".mkv"
 
-            elif self.recordFormat == "mp4":
+            elif self.record_format == "mp4":
                 self.mux = "mp4mux"
                 self.extension = ".mp4"
 
             if self.is_wayland:
                 RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
-                if self.coordinateMode is True:
+                if self.coordinate_mode:
                     self.GNOMEScreencast.call_sync(
                         "ScreencastArea",
                         GLib.Variant.new_tuple(
-                            GLib.Variant("i", self.waylandcoordinates[0]),
-                            GLib.Variant("i", self.waylandcoordinates[1]),
-                            GLib.Variant("i", self.waylandcoordinates[2]),
-                            GLib.Variant("i", self.waylandcoordinates[3]),
-                            GLib.Variant.new_string(self.fileName + self.extension),
+                            GLib.Variant("i", self.wayland_coordinates[0]),
+                            GLib.Variant("i", self.wayland_coordinates[1]),
+                            GLib.Variant("i", self.wayland_coordinates[2]),
+                            GLib.Variant("i", self.wayland_coordinates[3]),
+                            GLib.Variant.new_string(self.filename + self.extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", int(self.videoFrames)),
                                           "draw-cursor": GLib.Variant("b", self.win.recordMouse),
@@ -213,12 +212,12 @@ class Recording:
                         Gio.DBusProxyFlags.NONE,
                         -1,
                         None)
-                    self.coordinateMode = False
+                    self.coordinate_mode = False
                 else:
                     self.GNOMEScreencast.call_sync(
                         "Screencast",
                         GLib.Variant.new_tuple(
-                            GLib.Variant.new_string(self.fileName + self.extension),
+                            GLib.Variant.new_string(self.filename + self.extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", int(self.videoFrames)),
                                           "draw-cursor": GLib.Variant("b", self.win.recordMouse),
@@ -229,53 +228,53 @@ class Recording:
                         -1,
                         None)
             else:
-                if self.coordinateMode:
-                    video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinateArea + \
+                if self.coordinate_mode:
+                    video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinate_area + \
                                 "! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale " \
                                 "! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7} "
                     if self.recordSoundOn:
                         self.video = Popen(
-                            video_str.format(self.win.recordMouse, self.widthArea, self.heightArea,
-                                             self.videoFrames, self.quality_video, self.mux, self.fileName,
+                            video_str.format(self.win.recordMouse, self.width_area, self.heightArea,
+                                             self.videoFrames, self.quality_video, self.mux, self.filename,
                                              self.extension) + self.soundOn, shell=True)
 
                     else:
                         self.video = Popen(
-                            video_str.format(self.win.recordMouse, self.widthArea, self.heightArea,
-                                             self.videoFrames, self.quality_video, self.mux, self.fileName,
+                            video_str.format(self.win.recordMouse, self.width_area, self.heightArea,
+                                             self.videoFrames, self.quality_video, self.mux, self.filename,
                                              self.extension), shell=True)
 
-                    self.coordinateMode = False
+                    self.coordinate_mode = False
                 else:
                     if self.recordSoundOn:
                         self.video = Popen(
                             self.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
-                                                      self.mux, self.fileName, self.extension) + self.soundOn,
+                                                      self.mux, self.filename, self.extension) + self.soundOn,
                             shell=True)
                     else:
                         self.video = Popen(
                             self.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
-                                                  self.mux, self.fileName, self.extension), shell=True)
+                                                  self.mux, self.filename, self.extension), shell=True)
 
-            self.isrecording = True
-            self.istimerrunning = True
+            self.is_recording = True
+            self.is_timer_running = True
             self.playsound('/com/github/amikha1lov/RecApp/sounds/chime.ogg')
 
     def on__quality_changed(self, *args):
         quality = self.win.settings.get_boolean("high-video-quality")
-        self.recordFormat = self.on__formats_changed(self, *args)
+        self.record_format = self.on__formats_changed(self, *args)
         if quality:  # high quality
-            if self.recordFormat == "webm" or self.recordFormat == "mkv":
+            if self.record_format == "webm" or self.record_format == "mkv":
                 self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
                     self.cpus)
-            elif self.recordFormat == "mp4":
+            elif self.record_format == "mp4":
                 self.win.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
                     self.cpus)
         else:
-            if self.recordFormat == "webm" or self.recordFormat == "mkv":
+            if self.record_format == "webm" or self.record_format == "mkv":
                 self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
                     self.cpus)
-            elif self.recordFormat == "mp4":
+            elif self.record_format == "mp4":
                 self.win.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
                     self.cpus)
         return self.quality_video
@@ -283,12 +282,12 @@ class Recording:
     def on__formats_changed(self, *args):
         format = self.win.settings.get_enum("video-format")
         if format == 0:
-            self.recordFormat = "webm"
+            self.record_format = "webm"
         if format == 1:
-            self.recordFormat = "mkv"
+            self.record_format = "mkv"
         if format == 2:
-            self.recordFormat = "mp4"
-        return self.recordFormat
+            self.record_format = "mp4"
+        return self.record_format
 
     def on__frames_changed(self, *args):
         frames = self.win.settings.get_enum("frames-per-second")
@@ -308,11 +307,11 @@ class Recording:
             with pulsectl.Pulse() as pulse:
                 self.soundOnSource = pulse.sink_list()[0].name
                 self.win.settings.set_boolean('sound-on-computer', True)
-                if self.recordFormat == "webm" or self.recordFormat == "mkv":
+                if self.record_format == "webm" or self.record_format == "mkv":
                     self.soundOn = " pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! 'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! audioconvert ! vorbisenc ! queue ! mux.".format(
                         self.soundOnSource)
 
-                elif self.recordFormat == "mp4":
+                elif self.record_format == "mp4":
                     self.soundOn = " pulsesrc buffer-time=20000000 device='{}.monitor' ! 'audio/x-raw,channels=2,rate=48000' ! queue ! audioconvert ! queue ! opusenc bitrate=512000 ! queue ! mux.".format(
                         self.soundOnSource)
             return self.soundOn
@@ -333,8 +332,8 @@ class Recording:
         notification.set_default_action("app.open-file")
         self.win.application.send_notification(None, notification)
 
-        self.isrecording = False
-        self.istimerrunning = False
+        self.is_recording = False
+        self.is_timer_running = False
 
         self.win._record_stop_record_button_stack.set_visible_child(self.win._record_button)
         self.win._paused_start_stack.set_visible_child(self.win._recording_label)
@@ -346,13 +345,13 @@ class Recording:
         self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
     def quit_app(self, *args):
-        if self.isrecording:
+        if self.is_recording:
             self.stop_recording(self)
         self.win.destroy()
 
     def cancel_delay(self, *args):
         self.win.time_delay = 0
-        self.iscancelled = True
+        self.is_cancelled = True
 
     def playsound(self, sound):
         playbin = Gst.ElementFactory.make('playbin', 'playbin')

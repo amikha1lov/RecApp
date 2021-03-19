@@ -66,7 +66,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _delay_label = Gtk.Template.Child()
     _paused_start_stack_box = Gtk.Template.Child()
     # _sound_on_switch = Gtk.Template.Child()
-    _sound_on_computer = Gtk.Template.Child()
     _main_screen_box = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
