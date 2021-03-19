@@ -120,7 +120,7 @@ class RecappWindow(Handy.ApplicationWindow):
     def openVideoFile(self, notification, action, user_data=None):
         try:
             Gio.AppInfo.launch_default_for_uri(
-                "file:///" + self.recording.fileName.lstrip("/") + self.recording.extension
+                "file:///" + self.recording.filename.lstrip("/") + self.recording.extension
             )
 
         except Exception as error:
@@ -208,10 +208,10 @@ class RecappWindow(Handy.ApplicationWindow):
         self.recording.stop_recording()
 
     @Gtk.Template.Callback()
-    def onQuit(self, *args):
+    def onQuit(self):
         print('quit')
-        if self.recording.isrecording:
-            self.recording.stop_recording(self)
+        if self.recording.is_recording:
+            self.recording.stop_recording()
         self.destroy()  # TODO this called by click exit button
 
     @Gtk.Template.Callback()

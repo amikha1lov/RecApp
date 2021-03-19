@@ -67,7 +67,7 @@ class Recording:
 
     def start_recording(self, *args):
         if self.win.isFullscreenMode:
-            self.record(self)
+            self.record()
         elif self.win.isWindowMode:
             print('window mode')
         else:
@@ -75,7 +75,7 @@ class Recording:
                 self.on__select_area_wayland()  # was self
             else:
                 self.on__select_area()  # was self
-            self.record(self)
+            self.record()
 
     def refresh_time(self):
         if self.is_timer_running:
@@ -83,17 +83,15 @@ class Recording:
             self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
         return True
 
-    def record(self, *args):
-        for arg in args:
-            print(arg)
+    def record(self):
         if self.win.delayBeforeRecording > 0:
             self.win._main_stack.set_visible_child(self.win._delay_box)
             self.win._record_stop_record_button_stack.set_visible_child(self.win._cancel_button)
             self.win._menu_stack_revealer.set_reveal_child(False)
             self.is_recording_with_delay = True
-            self.delay(self, *args)
+            self.delay()
         else:
-            self.record_logic(self, *args)
+            self.record_logic()
 
     def get_gnome_screencast(self):
         bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
@@ -142,10 +140,10 @@ class Recording:
         self.coordinate_area = "startx={} starty={} endx={} endy={}".format(startx, starty, endx, endy)
         self.coordinate_mode = True
 
-    def delay(self, *args):
+    def delay(self):
         self.win.time_delay = (self.win.delayBeforeRecording * 100)
 
-        def countdown(*args):
+        def countdown():
             if self.win.time_delay > 0:
                 self.win.time_delay -= 10
                 GLib.timeout_add(100, countdown)
@@ -153,12 +151,12 @@ class Recording:
             else:
                 self.is_recording_with_delay = False
                 self.win._menu_stack_revealer.set_reveal_child(True)
-                self.record_logic(self, *args)
+                self.record_logic()
                 self.win.time_delay = (self.win.delayBeforeRecording * 100)
 
-        countdown(*args)
+        countdown()
 
-    def record_logic(self, *args):
+    def record_logic(self):
         if self.is_cancelled:
             self.win._main_stack.set_visible_child(self.win._main_screen_box)
             self.win._record_stop_record_button_stack.set_visible_child(self.win._record_button)
@@ -171,11 +169,11 @@ class Recording:
             self.win.label_context = self.win._time_recording_label.get_style_context()
             self.win.label_context.add_class("recording")
 
-            self.quality_video = self.on__quality_changed(self, *args)
-            self.videoFrames = self.on__frames_changed(self, *args)
-            self.record_format = self.on__formats_changed(self, *args)
+            self.quality_video = self.on__quality_changed()
+            self.videoFrames = self.on__frames_changed()
+            self.record_format = self.on__formats_changed()
 
-            self.soundOn = self.on__sound_switch(self, *args)
+            self.soundOn = self.on__sound_switch()
             fileNameTime = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
             videoFolder = self.win.settings.get_string('path-to-save-video-folder')
             self.filename = os.path.join(videoFolder, fileNameTime)
@@ -260,9 +258,9 @@ class Recording:
             self.is_timer_running = True
             self.playsound('/com/github/amikha1lov/RecApp/sounds/chime.ogg')
 
-    def on__quality_changed(self, *args):
+    def on__quality_changed(self):
         quality = self.win.settings.get_boolean("high-video-quality")
-        self.record_format = self.on__formats_changed(self, *args)
+        self.record_format = self.on__formats_changed()
         if quality:  # high quality
             if self.record_format == "webm" or self.record_format == "mkv":
                 self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
@@ -279,7 +277,7 @@ class Recording:
                     self.cpus)
         return self.quality_video
 
-    def on__formats_changed(self, *args):
+    def on__formats_changed(self):
         format = self.win.settings.get_enum("video-format")
         if format == 0:
             self.record_format = "webm"
@@ -289,7 +287,7 @@ class Recording:
             self.record_format = "mp4"
         return self.record_format
 
-    def on__frames_changed(self, *args):
+    def on__frames_changed(self):
         frames = self.win.settings.get_enum("frames-per-second")
         if frames == 0:
             self.videoFrames = 15
@@ -299,7 +297,7 @@ class Recording:
             self.videoFrames = 60
         return self.videoFrames
 
-    def on__sound_switch(self, *args):
+    def on__sound_switch(self):
         if self.win._sound_on_computer.get_active():
             self.recordSoundOn = True
 
@@ -319,7 +317,7 @@ class Recording:
             self.recordSoundOn = False
             self.win.settings.set_boolean('sound-on-computer', False)
 
-    def stop_recording(self, *args):
+    def stop_recording(self):
         if self.is_wayland:
             self.GNOMEScreencast.call_sync("StopScreencast", None, Gio.DBusCallFlags.NONE, -1, None)
         else:
@@ -344,12 +342,12 @@ class Recording:
         self.elapsed_time = datetime.timedelta()
         self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
-    def quit_app(self, *args):
+    def quit_app(self):
         if self.is_recording:
-            self.stop_recording(self)
+            self.stop_recording()
         self.win.destroy()
 
-    def cancel_delay(self, *args):
+    def cancel_delay(self):
         self.win.time_delay = 0
         self.is_cancelled = True
 
