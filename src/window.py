@@ -73,7 +73,7 @@ class RecappWindow(Handy.ApplicationWindow):
         self.application = kwargs["application"]
 
         accel = Gtk.AccelGroup()
-        accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.onQuit)
+        accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit)
         self.add_accel_group(accel)
         # self.connect("delete-event", self.on_delete_event)
 
@@ -207,9 +207,7 @@ class RecappWindow(Handy.ApplicationWindow):
     def on__stop_record_button_clicked(self, widget):
         self.recording.stop_recording()
 
-    @Gtk.Template.Callback()
-    def onQuit(self):
-        print('quit')
+    def on_quit(self, window):
         if self.recording.is_recording:
             self.recording.stop_recording()
         self.destroy()  # TODO this called by click exit button
