@@ -261,14 +261,14 @@ class Recording:
         if quality:  # high quality
             if self.output_format == "webm" or self.output_format == "mkv":
                 quality_video = f"vp8enc min_quantizer=25 max_quantizer=25 cpu-used={self.cpus} cq_level=13 " \
-                                     "deadline=1000000 threads={}"
+                                     f"deadline=1000000 threads={self.cpus}"
             elif self.output_format == "mp4":
                 quality_video = f"x264enc qp-min=17 qp-max=17 speed-preset=1 threads={self.cpus} ! h264parse ! " \
                                      "video/x-h264, profile=baseline"
         else:
             if self.output_format == "webm" or self.output_format == "mkv":
                 quality_video = f"vp8enc min_quantizer=5 max_quantizer=10 cpu-used={self.cpus} cq_level=13 " \
-                                     "deadline=1000000 threads={0}"
+                                     f"deadline=1000000 threads={self.cpus}"
             elif self.output_format == "mp4":
                 quality_video = f"x264enc qp-min=5 qp-max=5 speed-preset=1 threads={self.cpus} ! h264parse ! " \
                                      "video/x-h264, profile=baseline"
