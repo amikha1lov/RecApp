@@ -37,8 +37,6 @@ class Recording:
         self.win = window
         self.settings = self.win.settings
         self.cpus = os.cpu_count() - 1
-        self.mux = ""
-        self.extension = ""
         self.coordinate_area = ""
         self.width_area = 0
         self.height_area = 0
@@ -48,6 +46,7 @@ class Recording:
         self.is_timer_running = False
         self.is_recording_with_delay = False
         self.sound_record = self.settings.get_boolean('sound-on-computer')
+
         # Initialize recording timer
         GLib.timeout_add(1000, self.refresh_time)
         self.elapsed_time = datetime.timedelta()
@@ -157,6 +156,7 @@ class Recording:
         countdown()
 
     def record_logic(self):
+        global extension, mux
         if self.is_cancelled:
             self.win._main_stack.set_visible_child(self.win._main_screen_box)
             self.win._record_stop_record_button_stack.set_visible_child(self.win._record_button)
@@ -177,19 +177,19 @@ class Recording:
             filename = os.path.join(output_folder, filename_time)
 
             if self.output_format == "webm":
-                self.mux = "webmmux"
-                self.extension = ".webm"
+                mux = "webmmux"
+                extension = ".webm"
 
             elif self.output_format == "mkv":
-                self.mux = "matroskamux"
-                self.extension = ".mkv"
+                mux = "matroskamux"
+                extension = ".mkv"
 
             elif self.output_format == "mp4":
-                self.mux = "mp4mux"
-                self.extension = ".mp4"
+                mux = "mp4mux"
+                extension = ".mp4"
 
             if self.is_wayland:
-                RecorderPipeline = "{0} ! queue ! {1}".format(self.output_quality, self.mux)
+                RecorderPipeline = "{0} ! queue ! {1}".format(self.output_quality, mux)
                 if self.coordinate_mode:
                     self.GNOMEScreencast.call_sync(
                         "ScreencastArea",
@@ -198,7 +198,7 @@ class Recording:
                             GLib.Variant("i", self.wayland_coordinates[1]),
                             GLib.Variant("i", self.wayland_coordinates[2]),
                             GLib.Variant("i", self.wayland_coordinates[3]),
-                            GLib.Variant.new_string(filename + self.extension),
+                            GLib.Variant.new_string(filename + extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", int(self.videoFrames)),
                                           "draw-cursor": GLib.Variant("b", self.win.recordMouse),
@@ -213,7 +213,7 @@ class Recording:
                     self.GNOMEScreencast.call_sync(
                         "Screencast",
                         GLib.Variant.new_tuple(
-                            GLib.Variant.new_string(filename + self.extension),
+                            GLib.Variant.new_string(filename + extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", int(self.videoFrames)),
                                           "draw-cursor": GLib.Variant("b", self.win.recordMouse),
@@ -231,26 +231,26 @@ class Recording:
                     if self.sound_record:
                         self.video = Popen(
                             video_str.format(self.win.recordMouse, self.width_area, self.height_area,
-                                             self.videoFrames, self.output_quality, self.mux, filename,
-                                             self.extension) + output_sound_string, shell=True)
+                                             self.videoFrames, self.output_quality, mux, filename,
+                                             extension) + output_sound_string, shell=True)
 
                     else:
                         self.video = Popen(
                             video_str.format(self.win.recordMouse, self.width_area, self.height_area,
-                                             self.videoFrames, self.output_quality, self.mux, filename,
-                                             self.extension), shell=True)
+                                             self.videoFrames, self.output_quality, mux, filename,
+                                             extension), shell=True)
 
                     self.coordinate_mode = False
                 else:
                     if self.sound_record:
                         self.video = Popen(
                             self.video_str.format(self.win.recordMouse, self.videoFrames, self.output_quality,
-                                                      self.mux, filename, self.extension) + output_sound_string,
+                                                      mux, filename, extension) + output_sound_string,
                             shell=True)
                     else:
                         self.video = Popen(
                             self.video_str.format(self.win.recordMouse, self.videoFrames, self.output_quality,
-                                                  self.mux, filename, self.extension), shell=True)
+                                                  mux, filename, extension), shell=True)
 
             self.is_recording = True
             self.is_timer_running = True
