@@ -139,6 +139,13 @@ class RecappWindow(Handy.ApplicationWindow):
         self._record_stop_record_button_stack.set_visible_child(self._record_button)
         self._menu_stack.set_visible_child(self._menu_button)
 
+    def prepare_for_record(self):
+        self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
+        self._main_stack.set_visible_child(self._paused_start_stack_box)
+        self._menu_stack.set_visible_child(self._pause_record_button)
+        self.label_context = self._time_recording_label.get_style_context()
+        self.label_context.add_class("recording")
+
     def prepare_to_wayland(self):
         # self._sound_rowbox.set_visible(False)
         # self._sound_on_computer.set_active(False)
