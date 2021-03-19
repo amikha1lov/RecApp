@@ -39,7 +39,7 @@ from gi.repository import Gdk, Gio, GLib, Gst, Gtk, Handy
 class RecappWindow(Handy.ApplicationWindow):
     __gtype_name__ = 'RecAppWindow'
 
-    isFullscreenMode = True
+    is_full_screen_mode = True
     _record_button = Gtk.Template.Child()
     _stop_record_button = Gtk.Template.Child()
     _delay_button = Gtk.Template.Child()
@@ -65,7 +65,6 @@ class RecappWindow(Handy.ApplicationWindow):
     _menu_stack_revealer = Gtk.Template.Child()
     _delay_label = Gtk.Template.Child()
     _paused_start_stack_box = Gtk.Template.Child()
-    # _sound_on_switch = Gtk.Template.Child()
     _main_screen_box = Gtk.Template.Child()
 
     def __init__(self, **kwargs):
@@ -75,25 +74,25 @@ class RecappWindow(Handy.ApplicationWindow):
         accel = Gtk.AccelGroup()
         accel.connect(Gdk.keyval_from_name('q'), Gdk.ModifierType.CONTROL_MASK, 0, self.on_quit)
         self.add_accel_group(accel)
-        # self.connect("delete-event", self.on_delete_event)
+        self.connect("delete-event", self.on_delete_event)
 
         self.settings = Gio.Settings.new(constants["APPID"])
-        self.delayBeforeRecording = self.settings.get_int('delay')
+        self.delay_before_recording = self.settings.get_int('delay')
         self.record_mouse = self.settings.get_boolean('record-mouse-cursor-switch')
         self._sound_on_computer.set_active(self.settings.get_boolean('sound-on-computer'))
         self._sound_on_microphone.set_active(self.settings.get_boolean('sound-on-microphone'))
         self._record_mouse_switcher.set_active(self.record_mouse)
-        self._delay_button.set_value(self.delayBeforeRecording)
+        self._delay_button.set_value(self.delay_before_recording)
 
         self.recording = Recording(self)
 
         # Notification actions
         action = Gio.SimpleAction.new("open-folder", None)
-        action.connect("activate", self.openFolder)
+        action.connect("activate", self.open_folder)
         self.application.add_action(action)
 
         action = Gio.SimpleAction.new("open-file", None)
-        action.connect("activate", self.openVideoFile)
+        action.connect("activate", self.open_video_file)
         self.application.add_action(action)
 
         self.currentFolder = self.get_output_folder()
@@ -101,10 +100,12 @@ class RecappWindow(Handy.ApplicationWindow):
             self.prepare_to_wayland()
         self.recording.find_encoders()
 
-    def openFolder(self, notification, action, user_data=None):
+        self.label_context = self._time_recording_label.get_style_context()
+
+    def open_folder(self, notification, action, user_data=None):
         try:
-            videoFolderForOpen = self.settings.get_string('path-to-save-video-folder')
-            Gio.AppInfo.launch_default_for_uri("file:///" + videoFolderForOpen.lstrip("/"))
+            video_folder_for_open = self.settings.get_string('path-to-save-video-folder')
+            Gio.AppInfo.launch_default_for_uri("file:///" + video_folder_for_open.lstrip("/"))
 
         except Exception as error:
             dialog = Gtk.MessageDialog(
@@ -117,7 +118,7 @@ class RecappWindow(Handy.ApplicationWindow):
             dialog.run()
             dialog.destroy()
 
-    def openVideoFile(self, notification, action, user_data=None):
+    def open_video_file(self, notification, action, user_data=None):
         try:
             Gio.AppInfo.launch_default_for_uri(
                 "file:///" + self.recording.filename.lstrip("/") + self.recording.extension
@@ -143,8 +144,14 @@ class RecappWindow(Handy.ApplicationWindow):
         self._record_stop_record_button_stack.set_visible_child(self._stop_record_button)
         self._main_stack.set_visible_child(self._paused_start_stack_box)
         self._menu_stack.set_visible_child(self._pause_record_button)
-        self.label_context = self._time_recording_label.get_style_context()
         self.label_context.add_class("recording")
+
+    def after_stop_record(self):
+        self._record_stop_record_button_stack.set_visible_child(self._record_button)
+        self._paused_start_stack.set_visible_child(self._recording_label)
+        self._main_stack.set_visible_child(self._main_screen_box)
+        self._menu_stack.set_visible_child(self._menu_button)
+        self.label_context.remove_class("recording")
 
     def show_delay_view(self):
         self._main_stack.set_visible_child(self._delay_box)
@@ -152,8 +159,6 @@ class RecappWindow(Handy.ApplicationWindow):
         self._menu_stack_revealer.set_reveal_child(False)
 
     def prepare_to_wayland(self):
-        # self._sound_rowbox.set_visible(False)
-        # self._sound_on_computer.set_active(False)
         if GLib.getenv('XDG_CURRENT_DESKTOP') != 'GNOME':
             self._record_button.set_sensitive(False)
             notification = Gio.Notification.new(constants["APPNAME"])
@@ -192,11 +197,9 @@ class RecappWindow(Handy.ApplicationWindow):
         shortcuts.set_transient_for(self)
         shortcuts.present()
 
-    # def on_delete_event(self, w, h):
-    #     delete_event(self, w, h)
-
-    # def on_quit_app(self, *args):
-    #     quit_app(self, *args)  # TODO fix this
+    def on_delete_event(self, w, h):
+        if self.recording.is_recording:
+            self.recording.stop_recording()
 
     @Gtk.Template.Callback()
     def on__record_mouse_switcher_state_set(self, switch, state):
@@ -205,7 +208,7 @@ class RecappWindow(Handy.ApplicationWindow):
 
     @Gtk.Template.Callback()
     def on__delay_button_change_value(self, spin):
-        self.delayBeforeRecording = spin.get_value_as_int()
+        self.delay_before_recording = spin.get_value_as_int()
         self.settings.set_int('delay', spin.props.value)
 
     @Gtk.Template.Callback()
@@ -227,7 +230,7 @@ class RecappWindow(Handy.ApplicationWindow):
     def on_quit(self, window):
         if self.recording.is_recording:
             self.recording.stop_recording()
-        self.destroy()  # TODO this called by click exit button
+        self.destroy()
 
     @Gtk.Template.Callback()
     def on_preferences_button_clicked(self, button):
@@ -262,20 +265,20 @@ class RecappWindow(Handy.ApplicationWindow):
     @Gtk.Template.Callback()
     def on__fullscreen_mode_pressed(self, widget):
         if self._fullscreen_mode_button.get_active():
-            self.isFullscreenMode = True
-            self.isWindowMode = False
-            self.isSelectionMode = False
+            self.is_full_screen_mode = True
+            self.is_window_mode = False
+            self.is_selection_mode = False
 
     @Gtk.Template.Callback()
     def on__window_mode_pressed(self, widget):
         if self._window_mode_button.get_active():
-            self.isWindowMode = True
-            self.isFullscreenMode = False
-            self.isSelectionMode = False
+            self.is_window_mode = True
+            self.is_full_screen_mode = False
+            self.is_selection_mode = False
 
     @Gtk.Template.Callback()
     def on__selection_mode_pressed(self, widget):
         if self._selection_mode_button.get_active():
-            self.isSelectionMode = True
-            self.isFullscreenMode = False
-            self.isWindowMode = False
+            self.is_selection_mode = True
+            self.is_full_screen_mode = False
+            self.is_window_mode = False

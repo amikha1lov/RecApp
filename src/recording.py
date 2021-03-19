@@ -25,8 +25,7 @@ from subprocess import PIPE, Popen
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('Gdk', '3.0')
-from gi.repository import Gdk, Gio, GLib, Gst
+from gi.repository import Gio, GLib, Gst
 
 
 class Recording:
@@ -57,14 +56,10 @@ class Recording:
         self.output_format = self.get_output_format()
         self.extension = '.' + self.output_format
 
-        filename_time = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
-        output_folder = self.settings.get_string('path-to-save-video-folder')
-        self.filename = os.path.join(output_folder, filename_time)
-
     def start_recording(self, *args):
-        if self.win.isFullscreenMode:
+        if self.win.is_full_screen_mode:
             self.record()
-        elif self.win.isWindowMode:
+        elif self.win.is_window_mode:
             print('window mode')
         else:
             if self.is_wayland:
@@ -80,7 +75,7 @@ class Recording:
         return True
 
     def record(self, coords=None):
-        if self.win.delayBeforeRecording > 0:
+        if self.win.delay_before_recording > 0:
             self.win.show_delay_view()
             self.is_recording_with_delay = True
             self.delay(coords)
@@ -134,7 +129,7 @@ class Recording:
         return coordinate_area
 
     def delay(self, coords):
-        self.win.time_delay = (self.win.delayBeforeRecording * 100)
+        self.win.time_delay = (self.win.delay_before_recording * 100)
 
         def countdown():
             if self.win.time_delay > 0:
@@ -145,11 +140,15 @@ class Recording:
                 self.is_recording_with_delay = False
                 self.win._menu_stack_revealer.set_reveal_child(True)
                 self.record_logic(coords)
-                self.win.time_delay = (self.win.delayBeforeRecording * 100)
+                self.win.time_delay = (self.win.delay_before_recording * 100)
 
         countdown()
 
     def record_logic(self, coords):
+        filename_time = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
+        output_folder = self.settings.get_string('path-to-save-video-folder')
+        self.filename = os.path.join(output_folder, filename_time)
+
         if self.is_cancelled:
             self.win.to_default()
             self.is_cancelled = False
@@ -276,14 +275,14 @@ class Recording:
         with pulsectl.Pulse() as pulse:
             sound_source = pulse.sink_list()[0].name
             if self.output_format == "webm" or self.output_format == "mkv":
-                sound_output_string = "pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! " \
-                                      "'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! " \
-                                      "audioconvert ! vorbisenc ! queue ! mux.".format(sound_source)
+                sound_output_string = f"pulsesrc provide-clock=false device='{sound_source}.monitor' buffer-time=20000000 ! " \
+                                      f"'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! " \
+                                      f"audioconvert ! vorbisenc ! queue ! mux."
 
             elif self.output_format == "mp4":
-                sound_output_string = "pulsesrc buffer-time=20000000 device='{}.monitor' ! 'audio/x-raw,channels=2," \
-                                      "rate=48000' ! queue ! audioconvert ! queue ! opusenc bitrate=512000 ! queue ! " \
-                                      "mux.".format(sound_source)
+                sound_output_string = f"pulsesrc buffer-time=20000000 device='{sound_source}.monitor' ! 'audio/x-raw,channels=2," \
+                                      f"rate=48000' ! queue ! audioconvert ! queue ! opusenc bitrate=512000 ! queue ! " \
+                                      f"mux."
         return sound_output_string
 
     def stop_recording(self):
@@ -302,11 +301,7 @@ class Recording:
         self.is_recording = False
         self.is_timer_running = False
 
-        self.win._record_stop_record_button_stack.set_visible_child(self.win._record_button)
-        self.win._paused_start_stack.set_visible_child(self.win._recording_label)
-        self.win._main_stack.set_visible_child(self.win._main_screen_box)
-        self.win._menu_stack.set_visible_child(self.win._menu_button)
-        self.win.label_context.remove_class("recording")
+        self.win.after_stop_record()
 
         self.elapsed_time = datetime.timedelta()
         self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
