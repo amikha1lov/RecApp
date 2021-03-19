@@ -146,6 +146,11 @@ class RecappWindow(Handy.ApplicationWindow):
         self.label_context = self._time_recording_label.get_style_context()
         self.label_context.add_class("recording")
 
+    def show_delay_view(self):
+        self._main_stack.set_visible_child(self._delay_box)
+        self._record_stop_record_button_stack.set_visible_child(self._cancel_button)
+        self._menu_stack_revealer.set_reveal_child(False)
+
     def prepare_to_wayland(self):
         # self._sound_rowbox.set_visible(False)
         # self._sound_on_computer.set_active(False)

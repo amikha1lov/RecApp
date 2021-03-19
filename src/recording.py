@@ -37,10 +37,8 @@ class Recording:
         self.win = window
         self.settings = self.win.settings
         self.cpus = os.cpu_count() - 1
-        self.coordinate_area = ""
         self.width_area = 0
         self.height_area = 0
-        self.coordinate_mode = False
         self.is_recording = False
         self.is_cancelled = False
         self.is_timer_running = False
@@ -76,10 +74,10 @@ class Recording:
             print('window mode')
         else:
             if self.is_wayland:
-                self.on__select_area_wayland()  # was self
+                coords = self.get_select_area(wayland=True)
             else:
-                self.on__select_area()  # was self
-            self.record()
+                coords = self.set_select_area()
+            self.record(coords)
 
     def refresh_time(self):
         if self.is_timer_running:
@@ -87,15 +85,13 @@ class Recording:
             self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
         return True
 
-    def record(self):
+    def record(self, coords=None):
         if self.win.delayBeforeRecording > 0:
-            self.win._main_stack.set_visible_child(self.win._delay_box)
-            self.win._record_stop_record_button_stack.set_visible_child(self.win._cancel_button)
-            self.win._menu_stack_revealer.set_reveal_child(False)
+            self.win.show_delay_view()
             self.is_recording_with_delay = True
-            self.delay()
+            self.delay(coords)
         else:
-            self.record_logic()
+            self.record_logic(coords)
 
     def get_gnome_screencast(self):
         bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
@@ -112,39 +108,38 @@ class Recording:
             "org.gnome.Shell.Screenshot", None
         ))
 
-    def on__select_area_wayland(self):
-        self.wayland_coordinates = self.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
-        self.coordinate_mode = True
+    def get_select_area(self, wayland=False):
+        if wayland:
+            coordinate_area = self.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
+        else:
+            coordinate = Popen("slop -n -c 0.3,0.4,0.6,0.4 -l -t 0 -f '%w %h %x %y'", shell=True,
+                               stdout=PIPE).communicate()
+            listCoor = [int(i) for i in coordinate[0].decode().split()]
+            if not listCoor[0] or not listCoor[1]:
+                notification = Gio.Notification.new(constants["APPNAME"])
+                notification.set_body(_("Please re-select the area"))
+                self.win.application.send_notification(None, notification)
+                return
 
-    def on__select_area(self):
-        coordinate = Popen("slop -n -c 0.3,0.4,0.6,0.4 -l -t 0 -f '%w %h %x %y'", shell=True,
-                           stdout=PIPE).communicate()
-        listCoor = [int(i) for i in coordinate[0].decode().split()]
-        if not listCoor[0] or not listCoor[1]:
-            notification = Gio.Notification.new(constants["APPNAME"])
-            notification.set_body(_("Please re-select the area"))
-            self.win.application.send_notification(None, notification)
-            return
+            startx, starty, endx, endy = listCoor[2], listCoor[3], listCoor[2] + listCoor[0] - 1, listCoor[
+                1] + listCoor[3] - 1
+            if listCoor[0] % 2 == 0 and listCoor[1] % 2 == 0:
+                self.width_area = endx - startx + 1
+                self.height_area = endy - starty + 1
+            elif listCoor[0] % 2 == 0 and listCoor[1] % 2 == 1:
+                self.width_area = endx - startx + 1
+                self.height_area = endy - starty + 2
+            elif listCoor[0] % 2 == 1 and listCoor[1] % 2 == 1:
+                self.width_area = endx - startx
+                self.height_area = endy - starty
+            elif listCoor[0] % 2 == 1 and listCoor[1] % 2 == 0:
+                self.width_area = endx - startx + 2
+                self.height_area = endy - starty + 1
+            coordinate_area = f"startx={startx} starty={starty} endx={endx} endy={endy}"
 
-        startx, starty, endx, endy = listCoor[2], listCoor[3], listCoor[2] + listCoor[0] - 1, listCoor[
-            1] + listCoor[3] - 1
-        if listCoor[0] % 2 == 0 and listCoor[1] % 2 == 0:
-            self.width_area = endx - startx + 1
-            self.height_area = endy - starty + 1
-        elif listCoor[0] % 2 == 0 and listCoor[1] % 2 == 1:
-            self.width_area = endx - startx + 1
-            self.height_area = endy - starty + 2
-        elif listCoor[0] % 2 == 1 and listCoor[1] % 2 == 1:
-            self.width_area = endx - startx
-            self.height_area = endy - starty
-        elif listCoor[0] % 2 == 1 and listCoor[1] % 2 == 0:
-            self.width_area = endx - startx + 2
-            self.height_area = endy - starty + 1
+        return coordinate_area
 
-        self.coordinate_area = f"startx={startx} starty={starty} endx={endx} endy={endy}"
-        self.coordinate_mode = True
-
-    def delay(self):
+    def delay(self, coords):
         self.win.time_delay = (self.win.delayBeforeRecording * 100)
 
         def countdown():
@@ -155,12 +150,12 @@ class Recording:
             else:
                 self.is_recording_with_delay = False
                 self.win._menu_stack_revealer.set_reveal_child(True)
-                self.record_logic()
+                self.record_logic(coords)
                 self.win.time_delay = (self.win.delayBeforeRecording * 100)
 
         countdown()
 
-    def record_logic(self):
+    def record_logic(self, coords):
         if self.is_cancelled:
             self.win.to_default()
             self.is_cancelled = False
@@ -168,26 +163,17 @@ class Recording:
             self.win.prepare_for_record()
             frames = self.get_frames()
             output_sound_string = self.get_sound_string()
-
-            if self.output_format == "webm":
-                mux = "webmmux"
-
-            elif self.output_format == "mkv":
-                mux = "matroskamux"
-
-            elif self.output_format == "mp4":
-                mux = "mp4mux"
-
+            mux = self.get_mux()
             if self.is_wayland:
                 RecorderPipeline = "{0} ! queue ! {1}".format(self.output_quality, mux)
-                if self.coordinate_mode:
+                if coords:
                     self.GNOMEScreencast.call_sync(
                         "ScreencastArea",
                         GLib.Variant.new_tuple(
-                            GLib.Variant("i", self.wayland_coordinates[0]),
-                            GLib.Variant("i", self.wayland_coordinates[1]),
-                            GLib.Variant("i", self.wayland_coordinates[2]),
-                            GLib.Variant("i", self.wayland_coordinates[3]),
+                            GLib.Variant("i", coords[0]),
+                            GLib.Variant("i", coords[1]),
+                            GLib.Variant("i", coords[2]),
+                            GLib.Variant("i", coords[3]),
                             GLib.Variant.new_string(self.filename + self.extension),
                             GLib.Variant("a{sv}",
                                          {"framerate": GLib.Variant("i", frames),
@@ -198,7 +184,6 @@ class Recording:
                         Gio.DBusProxyFlags.NONE,
                         -1,
                         None)
-                    self.coordinate_mode = False
                 else:
                     self.GNOMEScreencast.call_sync(
                         "Screencast",
@@ -214,8 +199,8 @@ class Recording:
                         -1,
                         None)
             else:
-                if self.coordinate_mode:
-                    video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinate_area + \
+                if coords:
+                    video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + coords + \
                                 "! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale " \
                                 "! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7} "
                     if self.sound_record:
@@ -230,7 +215,6 @@ class Recording:
                                              frames, self.output_quality, mux, self.filename,
                                              self.extension), shell=True)
 
-                    self.coordinate_mode = False
                 else:
                     if self.sound_record:
                         self.video = Popen(
@@ -277,6 +261,15 @@ class Recording:
         elif f_format == 2:
             output_format = "mp4"
         return output_format
+
+    def get_mux(self):
+        if self.output_format == "webm":
+            mux = "webmmux"
+        elif self.output_format == "mkv":
+            mux = "matroskamux"
+        elif self.output_format == "mp4":
+            mux = "mp4mux"
+        return mux
 
     def get_frames(self):
         frames_value = self.win.settings.get_enum("frames-per-second")
