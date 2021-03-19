@@ -156,11 +156,8 @@ class Recording:
         countdown()
 
     def record_logic(self):
-        global extension, mux
         if self.is_cancelled:
-            self.win._main_stack.set_visible_child(self.win._main_screen_box)
-            self.win._record_stop_record_button_stack.set_visible_child(self.win._record_button)
-            self.win._menu_stack.set_visible_child(self.win._menu_button)
+            self.win.to_default()
             self.is_cancelled = False
         else:
             self.win._record_stop_record_button_stack.set_visible_child(self.win._stop_record_button)
