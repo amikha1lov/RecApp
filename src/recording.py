@@ -39,7 +39,6 @@ class Recording:
         self.cpus = os.cpu_count() - 1
         self.mux = ""
         self.extension = ""
-        self.quality_video = ""
         self.coordinate_area = ""
         self.record_format = ""
         self.width_area = 0
@@ -60,6 +59,7 @@ class Recording:
         if self.is_wayland:
             self.GNOMEScreencast, self.GNOMESelectArea = self.get_gnome_screencast()
 
+        self.output_quality = self.get_output_quality_string()
         self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw," \
                          "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
                          "queue ! filesink location='{4}'{5} "
@@ -168,12 +168,10 @@ class Recording:
             self.win.label_context = self.win._time_recording_label.get_style_context()
             self.win.label_context.add_class("recording")
 
-            self.quality_video = self.on__quality_changed()
             self.videoFrames = self.on__frames_changed()
             self.record_format = self.on__formats_changed()
 
-            if self.sound_record:
-                output_sound_string = self.get_sound_string()
+            output_sound_string = self.get_sound_string()
             filename_time = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
             output_folder = self.win.settings.get_string('path-to-save-video-folder')
             filename = os.path.join(output_folder, filename_time)
@@ -191,7 +189,7 @@ class Recording:
                 self.extension = ".mp4"
 
             if self.is_wayland:
-                RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
+                RecorderPipeline = "{0} ! queue ! {1}".format(self.output_quality, self.mux)
                 if self.coordinate_mode:
                     self.GNOMEScreencast.call_sync(
                         "ScreencastArea",
@@ -230,52 +228,52 @@ class Recording:
                     video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={0} " + self.coordinate_area + \
                                 "! videoscale ! video/x-raw,width={1},height={2},framerate={3}/1 ! queue ! videoscale " \
                                 "! videoconvert ! {4} ! queue ! {5} name=mux ! queue ! filesink location='{6}'{7} "
-                    if self.recordSoundOn:
+                    if self.sound_record:
                         self.video = Popen(
                             video_str.format(self.win.recordMouse, self.width_area, self.height_area,
-                                             self.videoFrames, self.quality_video, self.mux, filename,
+                                             self.videoFrames, self.output_quality, self.mux, filename,
                                              self.extension) + output_sound_string, shell=True)
 
                     else:
                         self.video = Popen(
                             video_str.format(self.win.recordMouse, self.width_area, self.height_area,
-                                             self.videoFrames, self.quality_video, self.mux, filename,
+                                             self.videoFrames, self.output_quality, self.mux, filename,
                                              self.extension), shell=True)
 
                     self.coordinate_mode = False
                 else:
-                    if self.recordSoundOn:
+                    if self.sound_record:
                         self.video = Popen(
-                            self.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
+                            self.video_str.format(self.win.recordMouse, self.videoFrames, self.output_quality,
                                                       self.mux, filename, self.extension) + output_sound_string,
                             shell=True)
                     else:
                         self.video = Popen(
-                            self.video_str.format(self.win.recordMouse, self.videoFrames, self.quality_video,
+                            self.video_str.format(self.win.recordMouse, self.videoFrames, self.output_quality,
                                                   self.mux, filename, self.extension), shell=True)
 
             self.is_recording = True
             self.is_timer_running = True
             self.playsound('/com/github/amikha1lov/RecApp/sounds/chime.ogg')
 
-    def on__quality_changed(self):
-        quality = self.win.settings.get_boolean("high-video-quality")
+    def get_output_quality_string(self):
+        quality = self.settings.get_boolean("high-video-quality")
         self.record_format = self.on__formats_changed()
         if quality:  # high quality
             if self.record_format == "webm" or self.record_format == "mkv":
-                self.quality_video = "vp8enc min_quantizer=25 max_quantizer=25 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
-                    self.cpus)
+                quality_video = f"vp8enc min_quantizer=25 max_quantizer=25 cpu-used={self.cpus} cq_level=13 " \
+                                     "deadline=1000000 threads={}"
             elif self.record_format == "mp4":
-                self.win.quality_video = "x264enc qp-min=17 qp-max=17 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
-                    self.cpus)
+                quality_video = f"x264enc qp-min=17 qp-max=17 speed-preset=1 threads={self.cpus} ! h264parse ! " \
+                                     "video/x-h264, profile=baseline"
         else:
             if self.record_format == "webm" or self.record_format == "mkv":
-                self.quality_video = "vp8enc min_quantizer=5 max_quantizer=10 cpu-used={0} cq_level=13 deadline=1000000 threads={0}".format(
-                    self.cpus)
+                quality_video = f"vp8enc min_quantizer=5 max_quantizer=10 cpu-used={self.cpus} cq_level=13 " \
+                                     "deadline=1000000 threads={0}"
             elif self.record_format == "mp4":
-                self.win.quality_video = "x264enc qp-min=5 qp-max=5 speed-preset=1 threads={0} ! h264parse ! video/x-h264, profile=baseline".format(
-                    self.cpus)
-        return self.quality_video
+                quality_video = f"x264enc qp-min=5 qp-max=5 speed-preset=1 threads={self.cpus} ! h264parse ! " \
+                                     "video/x-h264, profile=baseline"
+        return quality_video
 
     def on__formats_changed(self):
         format = self.win.settings.get_enum("video-format")
