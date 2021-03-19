@@ -25,9 +25,8 @@ from subprocess import PIPE, Popen
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('GstPbutils', '1.0')
 gi.require_version('Gdk', '3.0')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils
+from gi.repository import Gdk, Gio, GLib, Gst
 
 
 class Recording:
@@ -57,7 +56,14 @@ class Recording:
         self.elapsed_time = datetime.timedelta()
         self.win._time_recording_label.set_label(str(self.elapsed_time).replace(":", "∶"))
 
-        self.displayServer = GLib.getenv('XDG_SESSION_TYPE').lower()
+        display_server = GLib.getenv('XDG_SESSION_TYPE').lower()
+        self.is_wayland = True if display_server == "wayland" else False
+        if self.is_wayland:
+            self.GNOMEScreencast, self.GNOMESelectArea = self.get_gnome_screencast()
+
+        self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw," \
+                         "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
+                         "queue ! filesink location='{4}'{5} "
 
     def start_recording(self, *args):
         if self.win.isFullscreenMode:
@@ -66,7 +72,7 @@ class Recording:
         elif self.win.isWindowMode:
             print('window mode')
         else:
-            if self.displayServer == "wayland":
+            if self.is_wayland:
                 self.on__select_area_wayland()  # was self
             else:
                 self.on__select_area()  # was self
@@ -79,6 +85,8 @@ class Recording:
         return True
 
     def record(self, *args):
+        for arg in args:
+            print(arg)
         if self.win.delayBeforeRecording > 0:
             self.win._main_stack.set_visible_child(self.win._delay_box)
             self.win._record_stop_record_button_stack.set_visible_child(self.win._cancel_button)
@@ -88,31 +96,20 @@ class Recording:
         else:
             self.record_logic(self, *args)
 
-    def check_display_server(self):
-        if self.displayServer == "wayland":
-            # self.win._sound_rowbox.set_visible(False)
-            # self.win._sound_on_computer.set_active(False)
-            bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-            if GLib.getenv('XDG_CURRENT_DESKTOP') != 'GNOME':
-                self.win._record_button.set_sensitive(False)
-                notification = Gio.Notification.new(constants["APPNAME"])
-                notification.set_body(_("Sorry, Wayland session is not supported yet."))
-                self.win.application.send_notification(None, notification)
-            else:
-                self.GNOMEScreencast = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                    "org.gnome.Shell.Screencast",
-                    "/org/gnome/Shell/Screencast",
-                    "org.gnome.Shell.Screencast",
-                    None)
-                self.GNOMESelectArea = Gio.DBusProxy.new_sync(bus, Gio.DBusProxyFlags.NONE, None,
-                    "org.gnome.Shell.Screenshot",
-                    "/org/gnome/Shell/Screenshot",
-                    "org.gnome.Shell.Screenshot",
-                    None)
-        else:
-            self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw," \
-                             "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
-                             "queue ! filesink location='{4}'{5} "
+    def get_gnome_screencast(self):
+        bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
+        return (Gio.DBusProxy.new_sync(
+            bus, Gio.DBusProxyFlags.NONE, None,
+            "org.gnome.Shell.Screencast",
+            "/org/gnome/Shell/Screencast",
+            "org.gnome.Shell.Screencast", None
+        ),
+        Gio.DBusProxy.new_sync(
+            bus, Gio.DBusProxyFlags.NONE, None,
+            "org.gnome.Shell.Screenshot",
+            "/org/gnome/Shell/Screenshot",
+            "org.gnome.Shell.Screenshot", None
+        ))
 
     def on__select_area_wayland(self):
         self.waylandcoordinates = self.GNOMESelectArea.call_sync("SelectArea", None, Gio.DBusProxyFlags.NONE, -1, None)
@@ -196,7 +193,7 @@ class Recording:
                 self.mux = "mp4mux"
                 self.extension = ".mp4"
 
-            if self.displayServer == "wayland":
+            if self.is_wayland:
                 RecorderPipeline = "{0} ! queue ! {1}".format(self.quality_video, self.mux)
                 if self.coordinateMode is True:
                     self.GNOMEScreencast.call_sync(
@@ -324,7 +321,7 @@ class Recording:
             self.win.settings.set_boolean('sound-on-computer', False)
 
     def stop_recording(self, *args):
-        if self.displayServer == "wayland":
+        if self.is_wayland:
             self.GNOMEScreencast.call_sync("StopScreencast", None, Gio.DBusCallFlags.NONE, -1, None)
         else:
             self.video.send_signal(signal.SIGINT)

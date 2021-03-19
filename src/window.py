@@ -28,10 +28,9 @@ from .shortcuts import RecAppShortcuts
 
 gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
-gi.require_version('GstPbutils', '1.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('Handy', '1')
-from gi.repository import Gdk, Gio, GLib, Gst, GstPbutils, Gtk, Handy
+from gi.repository import Gdk, Gio, GLib, Gst, Gtk, Handy
 
 
 # TODO Not working yet: record computer sounds (keyboard shortcut already working)
@@ -99,7 +98,8 @@ class RecappWindow(Handy.ApplicationWindow):
         self.application.add_action(action)
 
         self.currentFolder = self.get_output_folder()
-        self.recording.check_display_server()
+        if self.recording.is_wayland:
+            self.prepare_to_wayland()
         self.recording.find_encoders()
 
     def openFolder(self, notification, action, user_data=None):
@@ -134,6 +134,15 @@ class RecappWindow(Handy.ApplicationWindow):
             dialog.format_secondary_text(str(error))
             dialog.run()
             dialog.destroy()
+
+    def prepare_to_wayland(self):
+        # self._sound_rowbox.set_visible(False)
+        # self._sound_on_computer.set_active(False)
+        if GLib.getenv('XDG_CURRENT_DESKTOP') != 'GNOME':
+            self._record_button.set_sensitive(False)
+            notification = Gio.Notification.new(constants["APPNAME"])
+            notification.set_body(_("Sorry, Wayland session is not supported yet."))
+            self.application.send_notification(None, notification)
 
     def get_output_folder(self):
         path = GLib.get_user_special_dir(GLib.UserDirectory.DIRECTORY_VIDEOS)  # XDG-VIDEOS
