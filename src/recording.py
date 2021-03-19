@@ -40,7 +40,6 @@ class Recording:
         self.mux = ""
         self.extension = ""
         self.coordinate_area = ""
-        self.record_format = ""
         self.width_area = 0
         self.height_area = 0
         self.coordinate_mode = False
@@ -59,7 +58,9 @@ class Recording:
         if self.is_wayland:
             self.GNOMEScreencast, self.GNOMESelectArea = self.get_gnome_screencast()
 
+        self.output_format = self.get_output_format()
         self.output_quality = self.get_output_quality_string()
+
         self.video_str = "gst-launch-1.0 --eos-on-shutdown ximagesrc use-damage=1 show-pointer={0} ! video/x-raw," \
                          "framerate={1}/1 ! queue ! videoscale ! videoconvert ! {2} ! queue ! {3} name=mux ! " \
                          "queue ! filesink location='{4}'{5} "
@@ -169,22 +170,21 @@ class Recording:
             self.win.label_context.add_class("recording")
 
             self.videoFrames = self.on__frames_changed()
-            self.record_format = self.on__formats_changed()
 
             output_sound_string = self.get_sound_string()
             filename_time = _(constants["APPNAME"]) + "-" + datetime.datetime.now().strftime("%Y-%m-%d-%H:%M:%S")
             output_folder = self.win.settings.get_string('path-to-save-video-folder')
             filename = os.path.join(output_folder, filename_time)
 
-            if self.record_format == "webm":
+            if self.output_format == "webm":
                 self.mux = "webmmux"
                 self.extension = ".webm"
 
-            elif self.record_format == "mkv":
+            elif self.output_format == "mkv":
                 self.mux = "matroskamux"
                 self.extension = ".mkv"
 
-            elif self.record_format == "mp4":
+            elif self.output_format == "mp4":
                 self.mux = "mp4mux"
                 self.extension = ".mp4"
 
@@ -258,32 +258,31 @@ class Recording:
 
     def get_output_quality_string(self):
         quality = self.settings.get_boolean("high-video-quality")
-        self.record_format = self.on__formats_changed()
         if quality:  # high quality
-            if self.record_format == "webm" or self.record_format == "mkv":
+            if self.output_format == "webm" or self.output_format == "mkv":
                 quality_video = f"vp8enc min_quantizer=25 max_quantizer=25 cpu-used={self.cpus} cq_level=13 " \
                                      "deadline=1000000 threads={}"
-            elif self.record_format == "mp4":
+            elif self.output_format == "mp4":
                 quality_video = f"x264enc qp-min=17 qp-max=17 speed-preset=1 threads={self.cpus} ! h264parse ! " \
                                      "video/x-h264, profile=baseline"
         else:
-            if self.record_format == "webm" or self.record_format == "mkv":
+            if self.output_format == "webm" or self.output_format == "mkv":
                 quality_video = f"vp8enc min_quantizer=5 max_quantizer=10 cpu-used={self.cpus} cq_level=13 " \
                                      "deadline=1000000 threads={0}"
-            elif self.record_format == "mp4":
+            elif self.output_format == "mp4":
                 quality_video = f"x264enc qp-min=5 qp-max=5 speed-preset=1 threads={self.cpus} ! h264parse ! " \
                                      "video/x-h264, profile=baseline"
         return quality_video
 
-    def on__formats_changed(self):
-        format = self.win.settings.get_enum("video-format")
-        if format == 0:
-            self.record_format = "webm"
-        if format == 1:
-            self.record_format = "mkv"
-        if format == 2:
-            self.record_format = "mp4"
-        return self.record_format
+    def get_output_format(self):
+        f_format = self.settings.get_enum("video-format")
+        if f_format == 0:
+            output_format = "webm"
+        elif f_format == 1:
+            output_format = "mkv"
+        elif f_format == 2:
+            output_format = "mp4"
+        return output_format
 
     def on__frames_changed(self):
         frames = self.win.settings.get_enum("frames-per-second")
@@ -299,12 +298,12 @@ class Recording:
         import pulsectl
         with pulsectl.Pulse() as pulse:
             sound_source = pulse.sink_list()[0].name
-            if self.record_format == "webm" or self.record_format == "mkv":
+            if self.output_format == "webm" or self.output_format == "mkv":
                 sound_output_string = "pulsesrc provide-clock=false device='{}.monitor' buffer-time=20000000 ! " \
                                "'audio/x-raw,depth=24,channels=2,rate=44100,format=F32LE,payload=96' ! queue ! " \
                                "audioconvert ! vorbisenc ! queue ! mux.".format(sound_source)
 
-            elif self.record_format == "mp4":
+            elif self.output_format == "mp4":
                 sound_output_string = "pulsesrc buffer-time=20000000 device='{}.monitor' ! 'audio/x-raw,channels=2," \
                                "rate=48000' ! queue ! audioconvert ! queue ! opusenc bitrate=512000 ! queue ! " \
                                "mux.".format(sound_source)
