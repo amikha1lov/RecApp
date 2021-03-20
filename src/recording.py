@@ -197,7 +197,7 @@ class Recording:
             else:
                 if coords:
                     video_str = f"gst-launch-1.0 --eos-on-shutdown ximagesrc show-pointer={mouse_record} " + coords + \
-                                f"! videoscale ! video/x-raw,width={self.width_area},height={self.height_area}, " \
+                                f" ! videoscale ! video/x-raw,width={self.width_area},height={self.height_area}, " \
                                 f"framerate={frames}/1 ! queue ! videoscale ! videoconvert ! {output_quality} " \
                                 f"! queue ! {mux} name=mux ! queue ! filesink location='{self.filename}'{self.extension} "
                     if sound_record:
