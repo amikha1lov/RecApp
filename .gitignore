@@ -3,3 +3,5 @@ _build
 __pycache__
 .flatpak-builder/
 build-dir/
+builddir/
+.idea/

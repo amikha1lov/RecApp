@@ -1,12 +1,68 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.38.2 -->
 <interface>
   <requires lib="gtk+" version="3.24"/>
-  <requires lib="libhandy" version="0.0"/>
   <object class="GtkAdjustment" id="delay_adjustment">
     <property name="upper">100</property>
     <property name="step-increment">1</property>
     <property name="page-increment">10</property>
+  </object>
+  <object class="GtkPopover" id="main_popover">
+    <property name="can_focus">False</property>
+    <property name="relative_to">_menu_button</property>
+    <child>
+      <object class="GtkBox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_left">10</property>
+        <property name="margin_right">10</property>
+        <property name="margin_top">10</property>
+        <property name="margin_bottom">10</property>
+        <property name="orientation">vertical</property>
+        <property name="homogeneous">False</property>
+        <child>
+          <object class="GtkModelButton" id="preferences_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Preferences</property>
+            <signal name="clicked" handler="on_preferences_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="shortcuts_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">Keyboard Shortcuts</property>
+            <signal name="clicked" handler="on_shortcuts_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="about_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">True</property>
+            <property name="text" translatable="yes">About</property>
+            <signal name="clicked" handler="on_about_button_clicked" swapped="no"/>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+      </object>
+    </child>
   </object>
   <template class="RecAppWindow" parent="HdyApplicationWindow">
     <property name="can-focus">False</property>
@@ -124,6 +180,7 @@
                             <property name="can-focus">True</property>
                             <property name="focus-on-click">False</property>
                             <property name="receives-default">True</property>
+                            <property name="popover">main_popover</property>
                             <child>
                               <object class="GtkImage">
                                 <property name="visible">True</property>
@@ -283,7 +340,7 @@
                                 </child>
                                 <child>
                                   <object class="GtkRadioButton" id="_window_mode_button">
-                                    <property name="visible">True</property>
+                                    <property name="visible">False</property>
                                     <property name="can-focus">True</property>
                                     <property name="receives-default">False</property>
                                     <property name="active">True</property>
@@ -418,6 +475,7 @@
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="valign">center</property>
+                                    <signal name="state-set" handler="on__sound_on_microphone_state_set" swapped="no"/>
                                     <accelerator key="m" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                                   </object>
                                 </child>
@@ -428,14 +486,14 @@
                                 <property name="visible">True</property>
                                 <property name="can-focus">True</property>
                                 <property name="title" translatable="yes">Record Computer Sounds</property>
-                                <property name="activatable-widget">_sound_on_switch</property>
+                                <property name="activatable-widget">_sound_on_computer</property>
                                 <property name="use-underline">True</property>
                                 <child>
-                                  <object class="GtkSwitch" id="_sound_on_switch">
+                                  <object class="GtkSwitch" id="_sound_on_computer">
                                     <property name="visible">True</property>
                                     <property name="can-focus">True</property>
                                     <property name="valign">center</property>
-                                    <signal name="state-set" handler="on__sound_on_switch_activate" swapped="no"/>
+                                    <signal name="state-set" handler="on__sound_on_computer_state_set" swapped="no"/>
                                     <accelerator key="a" signal="activate" modifiers="GDK_CONTROL_MASK"/>
                                   </object>
                                 </child>
