@@ -159,6 +159,8 @@ class Recording:
             frames = self.get_frames()
             output_sound_string = self.get_sound_string()
             output_quality = self.get_output_quality_string()
+            self.output_format = self.get_output_format()
+            self.extension = '.' + self.output_format
             mux = self.get_mux()
             if self.is_wayland:
                 RecorderPipeline = "{0} ! queue ! {1}".format(output_quality, mux)
