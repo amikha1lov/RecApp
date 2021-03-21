@@ -263,7 +263,7 @@ class Recording:
         return mux
 
     def get_frames(self):
-        frames_value = self.win.settings.get_enum("frames-per-second")
+        frames_value = self.settings.get_enum("frames-per-second")
         if frames_value == 0:
             frames = 15
         if frames_value == 1:
