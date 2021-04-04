@@ -159,7 +159,7 @@ class RecappWindow(Handy.ApplicationWindow):
 
     def prepare_to_wayland(self):
         self._sound_rowbox.set_visible(False)
-        self._sound_on_switch.set_active(False)
+        self._sound_on_computer.set_active(False)
         if GLib.getenv('XDG_CURRENT_DESKTOP') != 'GNOME':
             self._record_button.set_sensitive(False)
             notification = Gio.Notification.new(constants["APPNAME"])
