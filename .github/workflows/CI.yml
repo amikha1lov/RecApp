@@ -12,8 +12,11 @@ jobs:
       options: --privileged
     steps:
     - uses: actions/checkout@v2
+    - name: Update submodules
+      run: |
+        git submodule update --init --recursive
     - uses: bilelmoussaoui/flatpak-github-actions@v2
       with:
         bundle: "RecApp-dev.flatpak"
-        manifest-path: "io.github.seadve.RecApp.json"
+        manifest-path: "com.github.amikha1lov.RecApp.yaml"
         run-tests: "true"
