@@ -16,7 +16,6 @@
 # along with this program.  If not, see <http://www.gnu.org/licenses/>.
 
 import os
-import datetime
 from locale import gettext as _
 
 import gi
@@ -30,7 +29,7 @@ gi.require_version('Gtk', '3.0')
 gi.require_version('Gst', '1.0')
 gi.require_version('Gdk', '3.0')
 gi.require_version('Handy', '1')
-from gi.repository import Gdk, Gio, GLib, Gst, Gtk, Handy
+from gi.repository import Gdk, Gio, GLib, Gtk, Handy
 
 
 # TODO Not working yet: record computer sounds (keyboard shortcut already working)

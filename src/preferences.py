@@ -43,7 +43,6 @@ class PreferencesWindow(Handy.PreferencesWindow):
     def on_formats_combobox_changed(self, combobox):
         self.settings.set_enum('video-format', combobox.get_active())
 
-
     @Gtk.Template.Callback()
     def on_fps_combobox_changed(self, combobox):
         self.settings.set_enum('frames-per-second', combobox.get_active())
@@ -55,4 +54,3 @@ class PreferencesWindow(Handy.PreferencesWindow):
     @Gtk.Template.Callback()
     def on_startup_sound_switcher_state_set(self, switcher, state):
         self.settings.set_boolean('sound-on-startup', state)
-
