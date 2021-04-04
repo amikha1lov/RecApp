@@ -23,4 +23,4 @@ jobs:
           sudo apt -y install flake8
       - name: Lint with flake8
         run: |
-          flake8
+          flake8 --ignore E402,W503 --max-complexity=10 --max-line-length=135 --statistics src/
