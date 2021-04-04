@@ -159,6 +159,8 @@ class Recording:
             frames = self.get_frames()
             output_sound_string = self.get_sound_string()
             output_quality = self.get_output_quality_string()
+            self.output_format = self.get_output_format()
+            self.extension = '.' + self.output_format
             mux = self.get_mux()
             if self.is_wayland:
                 RecorderPipeline = "{0} ! queue ! {1}".format(output_quality, mux)
@@ -261,7 +263,7 @@ class Recording:
         return mux
 
     def get_frames(self):
-        frames_value = self.win.settings.get_enum("frames-per-second")
+        frames_value = self.settings.get_enum("frames-per-second")
         if frames_value == 0:
             frames = 15
         if frames_value == 1:
