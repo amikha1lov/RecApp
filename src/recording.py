@@ -84,18 +84,20 @@ class Recording:
 
     def get_gnome_screencast(self):
         bus = Gio.bus_get_sync(Gio.BusType.SESSION, None)
-        return (Gio.DBusProxy.new_sync(
-            bus, Gio.DBusProxyFlags.NONE, None,
-            "org.gnome.Shell.Screencast",
-            "/org/gnome/Shell/Screencast",
-            "org.gnome.Shell.Screencast", None
-        ),
-                Gio.DBusProxy.new_sync(
-                    bus, Gio.DBusProxyFlags.NONE, None,
-                    "org.gnome.Shell.Screenshot",
-                    "/org/gnome/Shell/Screenshot",
-                    "org.gnome.Shell.Screenshot", None
-                ))
+        return (
+            Gio.DBusProxy.new_sync(
+                bus, Gio.DBusProxyFlags.NONE, None,
+                "org.gnome.Shell.Screencast",
+                "/org/gnome/Shell/Screencast",
+                "org.gnome.Shell.Screencast", None
+            ),
+            Gio.DBusProxy.new_sync(
+                bus, Gio.DBusProxyFlags.NONE, None,
+                "org.gnome.Shell.Screenshot",
+                "/org/gnome/Shell/Screenshot",
+                "org.gnome.Shell.Screenshot", None
+            )
+        )
 
     def get_select_area(self, wayland=False):
         if wayland:
@@ -320,7 +322,7 @@ class Recording:
     def playsound(self, sound):
         playbin = Gst.ElementFactory.make('playbin', 'playbin')
         playbin.props.uri = 'resource://' + sound
-        set_result = playbin.set_state(Gst.State.PLAYING)
+        playbin.set_state(Gst.State.PLAYING)
         bus = playbin.get_bus()
         bus.poll(Gst.MessageType.EOS, Gst.CLOCK_TIME_NONE)
         playbin.set_state(Gst.State.NULL)
