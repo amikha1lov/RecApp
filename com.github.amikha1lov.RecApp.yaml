@@ -53,8 +53,8 @@ modules:
           - -D=x264=enabled
         sources:
           - type: archive
-            url: https://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-1.16.2.tar.xz
-            sha256: 5500415b865e8b62775d4742cbb9f37146a50caecfc0e7a6fc0160d3c560fbca
+            url: https://gstreamer.freedesktop.org/src/gst-plugins-ugly/gst-plugins-ugly-1.16.3.tar.xz
+            sha256: 403c21688065f41e53008874402b5c07832567cc1309a60df597eab7ff5843f0
 
       - name: glm
         buildsystem: cmake-ninja
@@ -78,5 +78,5 @@ modules:
           - python3 ./setup.py install --prefix=/app --root=/
         sources:
           - type: archive
-            url: https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-20.4.3.tar.gz
-            sha256: f5fffd7db08aba0bb90ea2af8e777c272a6882d574598d511433930cc8f9aed4
+            url: https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-21.3.4.tar.gz
+            sha256: faa8b9336237565990298f20870e13dd1678a4586847ca5a7ff2abf10752f356
