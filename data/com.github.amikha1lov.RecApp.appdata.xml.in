@@ -21,7 +21,9 @@
 
     <screenshots>
         <screenshot type="default">
-            <image>https://raw.githubusercontent.com/amikha1lov/RecApp/master/RecApp-screenshot.png</image>
+            <image>https://raw.githubusercontent.com/amikha1lov/RecApp/master/screenshots/RecApp-screenshot.png</image>
+            <image>https://raw.githubusercontent.com/amikha1lov/RecApp/master/screenshots/RecApp-screenshot2.png</image>
+            <image>https://raw.githubusercontent.com/amikha1lov/RecApp/master/screenshots/RecApp-screenshot3.png</image>
         </screenshot>
     </screenshots>
 
@@ -29,6 +31,7 @@
     </content_rating>
 
     <releases>
+        <release date="2021-04-14" version="2.0.0-beta"></release>
         <release date="2021-03-17" version="1.1.1"></release>
         <release date="2020-06-09" version="1.1.0"></release>
         <release date="2020-05-28" version="1.0.4"></release>
