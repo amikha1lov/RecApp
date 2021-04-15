@@ -1,0 +1,1 @@
+- [ ] I've read and follow RecApp [PR guidelines](https://github.com/amikha1lov/RecApp/blob/master/CONTRIBUTING.md).
