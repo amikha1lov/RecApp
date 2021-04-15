@@ -228,7 +228,7 @@ class RecappWindow(Handy.ApplicationWindow):
     def on__stop_record_button_clicked(self, widget):
         self.recording.stop_recording()
 
-    def on_quit(self, window):
+    def on_quit(self, window, *args):
         if self.recording.is_recording:
             self.recording.stop_recording()
         self.destroy()
