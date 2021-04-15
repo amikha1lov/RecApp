@@ -198,7 +198,7 @@
                         <child>
                           <object class="GtkButton" id="_pause_record_button">
                             <property name="name">minibutton</property>
-                            <property name="visible">True</property>
+                            <property name="visible">False</property>
                             <property name="can-focus">True</property>
                             <property name="focus-on-click">False</property>
                             <property name="receives-default">True</property>
@@ -220,7 +220,7 @@
                         <child>
                           <object class="GtkButton" id="_continue_record_button">
                             <property name="name">minibutton</property>
-                            <property name="visible">True</property>
+                            <property name="visible">False</property>
                             <property name="can-focus">True</property>
                             <property name="focus-on-click">False</property>
                             <property name="receives-default">True</property>
