@@ -280,7 +280,15 @@
                             <property name="visible">True</property>
                             <property name="can-focus">False</property>
                             <property name="margin-bottom">24</property>
+                            <property name="spacing">6</property>
                             <property name="orientation">vertical</property>
+                            <child>
+                              <object class="GtkLabel">
+                                <property name="visible">True</property>
+                                <property name="label" translatable="yes">Capture Mode</property>
+                                <property name="halign">start</property>
+                              </object>
+                            </child>
                             <child>
                               <object class="GtkBox">
                                 <property name="visible">True</property>
