@@ -2,12 +2,11 @@
 <interface>
   <requires lib="gtk+" version="3.20"/>
   <template class="_about_dialog" parent="GtkAboutDialog">
-    <property name="can_focus">False</property>
     <property name="type_hint">dialog</property>
     <property name="copyright" translatable="yes">© 2021 Alexey Mikhailov</property>
     <property name="comments" translatable="yes">Simple screencasting application</property>
     <property name="website">https://github.com/amikha1lov/RecApp</property>
-    <property name="website-label" translatable="yes">GitHub Homepage</property>
+    <property name="website-label" translatable="yes">GitHub</property>
     <property name="authors">Alexey Mikhailov &lt;mikha1lov@yahoo.com&gt;
 Artem Polishchuk &lt;ego.cordatus@gmail.com&gt;
 @lateseal (Telegram)
@@ -16,38 +15,6 @@ Artem Polishchuk &lt;ego.cordatus@gmail.com&gt;
 and contributors of Telegram chat https://t.me/gnome_rus</property>
     <property name="translator_credits">Lateseal</property>
     <property name="artists">Raxi Petrov &lt;raxi2012@gmail.com&gt;</property>
-    <property name="logo-icon-name"/>
     <property name="license-type">gpl-3-0</property>
-    <child internal-child="vbox">
-      <object class="GtkBox">
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <property name="spacing">2</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
-            <property name="layout_style">end</property>
-            <child>
-              <placeholder/>
-            </child>
-            <child>
-              <placeholder/>
-            </child>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
-    </child>
   </template>
 </interface>
-
