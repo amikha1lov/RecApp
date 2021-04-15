@@ -21,6 +21,7 @@
               <object class="HdyActionRow">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes">Format</property>
+                <property name="subtitle" translatable="yes">MP4 requires gstreamer-ugly</property>
                 <property name="use_underline">True</property>
                 <property name="activatable_widget">formats_combobox</property>
                 <child>
@@ -45,6 +46,7 @@
               <object class="HdyActionRow">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes">Frames per second</property>
+                <property name="subtitle" translatable="yes">Might cause flickering on slower devices</property>
                 <property name="use_underline">True</property>
                 <child>
                   <object class="GtkComboBoxText" id="fps_combobox">
@@ -68,7 +70,7 @@
               <object class="HdyActionRow">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes">High Quality</property>
-                <property name="subtitle" translatable="yes">What is high quality?</property>
+                <property name="subtitle" translatable="yes">Might require more CPU power</property>
                 <property name="use_underline">True</property>
                 <property name="activatable_widget">high_quality_switcher</property>
                 <child>
