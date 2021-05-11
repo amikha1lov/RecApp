@@ -42,8 +42,8 @@ if compile_schemas.found()
   )
 endif
 
-install_data('com.github.amikha1lov.RecApp.png',
-             install_dir : 'share/icons/hicolor/512x512/apps')
+install_data('com.github.amikha1lov.RecApp.svg',
+             install_dir : 'share/icons/hicolor/scalable/apps')
 
 install_data('com.github.amikha1lov.RecApp-symbolic.png',
              install_dir : 'share/icons/hicolor/symbolic/apps')
