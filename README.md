@@ -1,3 +1,7 @@
+<h2>This project is archived, it's no longer under development. If you would like to continue development, please feel free to fork the project according to the GPL license.</h2>
+
+
+
 <h1 align="center">
 	<img src="data/com.github.amikha1lov.RecApp.svg" alt="RecApp" width="192" height="192"/><br>
 	RecApp
