@@ -1,23 +1,24 @@
-# SOME DESCRIPTIVE TITLE.
-# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
-# This file is distributed under the same license as the PACKAGE package.
-# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
-# usolmz <umitsolmaz@alvehe.com>, 2021.
+# Turkish translation for com.github.amikha1lov.RecApp
+# Copyright (C) 2021-2022 com.github.amikha1lov.RecApp's COPYRIGHT HOLDER
+# This file is distributed under the same license as the com.github.amikha1lov.RecApp package.
+#
+# Ümit Solmaz <umitsolmaz@alvehe.com>, 2021.
+# Sabri Ünal <libreajans@gmail.com>, 2022.
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: unnamed project\n"
-"Report-Msgid-Bugs-To: \n"
+"Project-Id-Version: master com.github.amikha1lov.RecApp\n"
+"Report-Msgid-Bugs-To: https://github.com/amikha1lov/RecApp/issues\n"
 "POT-Creation-Date: 2020-05-27 12:39+0300\n"
-"PO-Revision-Date: 2021-03-15 16:36+0300\n"
-"Language-Team: Turkish <umitsolmaz@alvehe.com>\n"
+"PO-Revision-Date: 2022-11-27 02:56+0300\n"
+"Last-Translator: Sabri Ünal <libreajans@gmail.com>\n"
+"Language-Team: Turkish <gnome-turk@gnome.org>\n"
+"Language: tr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"X-Generator: Poedit 2.4.2\n"
-"Last-Translator: usolmz <umitsolmaz@alvehe.com>\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"Language: tr\n"
+"X-Generator: Poedit 3.0.1\n"
 
 #: data/com.github.amikha1lov.RecApp.desktop.in:3
 #: data/com.github.amikha1lov.RecApp.appdata.xml.in:8 src/window.ui:632
@@ -27,16 +28,17 @@ msgstr "RecApp"
 #: data/com.github.amikha1lov.RecApp.appdata.xml.in:9
 msgid "User friendly Open Source screencaster for Linux written in GTK"
 msgstr ""
-"Linux için GTK ile oluşturulan kullanıcı dostu, açık kaynaklı bir ekran "
-"kayıt uygulaması"
+"Linux için GTK ile oluşturulan kullanıcı dostu, Açık Kaynak ekran kayıt "
+"uygulaması"
 
 #: data/com.github.amikha1lov.RecApp.appdata.xml.in:12
 msgid ""
 "User friendly Open Source screencaster for Linux written in GTK. Using free "
 "GStreamer modules and not depend on FFmpeg."
 msgstr ""
-"GTK ve GStreamer modülleri ile yapılan Linux için kullanıcı dostu, açık "
-"kaynaklı bir ekran kayıt uygulaması. i.p.v. FFmpeg."
+"Linux için, GTK ile yazılmış kullanıcı dostu Açık Kaynak ekran kayıt "
+"uygulaması. Özgür GStreamer modüllerini kullanır ve FFmpeg'e bağımlı "
+"değildir."
 
 #: data/com.github.amikha1lov.RecApp.appdata.xml.in:38
 msgid "Alexey Mikhailov"
@@ -44,7 +46,7 @@ msgstr "Alexey Mikhailov"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:6
 msgid "Frames"
-msgstr "Aantal frames"
+msgstr "Kare"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:7
 msgid "Number of frames per video."
@@ -60,7 +62,7 @@ msgstr "Kayıttan önce gecikme."
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:16
 msgid "Enabling high quality mode"
-msgstr "Yüksek kalite modunu etkinleştirme"
+msgstr "Yüksek kalite kipini etkinleştirme"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:17
 msgid "Record video in high quality."
@@ -84,7 +86,7 @@ msgstr "Fare imlecini kaydetme."
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:31
 msgid "Path to the save folder"
-msgstr "Kayıt klasör yolu"
+msgstr "Kayıt klasörü yolu"
 
 #: data/com.github.amikha1lov.RecApp.gschema.xml:32
 msgid "Path to the folder where the file will be saved."
@@ -136,7 +138,7 @@ msgstr "Yüksek kalite"
 
 #: src/window.ui:386
 msgid "Record audio from apps"
-msgstr "Uygulamalardan ses kaydı"
+msgstr "Uygulamalardan ses kaydet"
 
 #: src/window.ui:452
 msgid "Record mouse cursor"
@@ -148,11 +150,11 @@ msgstr "Dosyanın kaydedileceği klasör"
 
 #: src/window.ui:596
 msgid "The file will be saved in "
-msgstr "Dosya kaydedilecek "
+msgstr "Dosyanın kaydedileceği konum "
 
 #: src/window.ui:633 src/rec.py:194
 msgid "Simple app for recording desktop"
-msgstr "Masaüstü Kayıt için basit bir uygulama"
+msgstr "Masaüstü kaydı için basit bir uygulama"
 
 #: src/window.ui:691
 msgid "[    ]"
@@ -164,7 +166,7 @@ msgstr "Alan Seç"
 
 #: src/window.py:142
 msgid "Sorry, Wayland session is not supported yet"
-msgstr "Ne yazık ki, Wayland oturumu henüz desteklenmiyor"
+msgstr "Ne yazık ki Wayland oturumu henüz desteklenmiyor"
 
 #: src/rec.py:88
 msgid "Please re-select the area"
@@ -184,7 +186,7 @@ msgstr " saniye"
 
 #: src/rec.py:181
 msgid "Recording is complete"
-msgstr "Kayıt Tamamlandı"
+msgstr "Kayıt tamamlandı"
 
 #: src/rec.py:182
 msgid "Open Folder"
@@ -196,4 +198,4 @@ msgstr "Dosyayı Aç"
 
 #: src/rec.py:196
 msgid "Website"
-msgstr "İnternetsitesi"
+msgstr "Web sitesi"
