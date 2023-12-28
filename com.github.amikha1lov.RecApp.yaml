@@ -1,6 +1,6 @@
 app-id: com.github.amikha1lov.RecApp
 runtime: org.gnome.Platform
-runtime-version: '40'
+runtime-version: '45'
 sdk: org.gnome.Sdk
 command: recapp
 finish-args:
@@ -69,8 +69,8 @@ modules:
         buildsystem: cmake-ninja
         sources:
           - type: archive
-            url: https://github.com/naelstrof/slop/archive/v7.5.tar.gz
-            sha256: 94d8b6270217cd7f56ce7d4a9a75069025262830a2f91c3239b7fc07da5ea8da
+            url: https://github.com/naelstrof/slop/archive/v7.6.tar.gz
+            sha256: ec45f9a69d7a24df621f5c634d202451ddca987d550cf588c5c427b99106fb6b
 
       - name: pulsectl
         buildsystem: simple
@@ -78,5 +78,5 @@ modules:
           - python3 ./setup.py install --prefix=/app --root=/
         sources:
           - type: archive
-            url: https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-21.3.4.tar.gz
-            sha256: faa8b9336237565990298f20870e13dd1678a4586847ca5a7ff2abf10752f356
+            url: https://files.pythonhosted.org/packages/source/p/pulsectl/pulsectl-23.5.2.tar.gz
+            sha256: e911d398eaf0539cf3c63b4217357b51a3d1b7e4a50607d1591cf2b49f5d2c6a
