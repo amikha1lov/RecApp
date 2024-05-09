@@ -237,10 +237,10 @@ class Recording:
             qp_max = 5
 
         if self.output_format == "webm" or self.output_format == "mkv":
-            quality_video = f"vp8enc min_quantizer={min_quantizer} max_quantizer={max_quantizer} cpu-used={self.cpus} cq_level=13 " \
+            quality_video = f"videoconvert ! queue ! vp8enc min_quantizer={min_quantizer} max_quantizer={max_quantizer} cpu-used={self.cpus} cq_level=13 " \
                             f"deadline=1000000 threads={self.cpus}"
         elif self.output_format == "mp4":
-            quality_video = f"x264enc qp-min={qp_min} qp-max={qp_max} speed-preset=1 threads={self.cpus} ! h264parse ! " \
+            quality_video = f"videoconvert ! queue ! x264enc qp-min={qp_min} qp-max={qp_max} speed-preset=1 threads={self.cpus} ! h264parse ! " \
                             "video/x-h264, profile=baseline"
 
         return quality_video
